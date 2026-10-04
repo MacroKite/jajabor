@@ -2,7 +2,7 @@
 
 A free, honest guide to travelling in Bangladesh, with stories written by travellers. A nonprofit, made in Dhaka.
 
-Built with Next.js (App Router) and Postgres (Neon). The original HTML design files are in [`design/`](design/).
+Built with Next.js (App Router), Tailwind CSS and MongoDB (Mongoose). The original HTML design files are in [`design/`](design/).
 
 ## Pages
 
@@ -21,29 +21,33 @@ The old prototype URLs (`TRIP.dc.html`, `Destination.dc.html?id=…`, `Stories.d
 ## Data
 
 - **Destinations** and their guides are in [`lib/data.ts`](lib/data.ts).
-- **Stories**, their **photos** and **contact messages** are stored in Postgres. [`lib/db.ts`](lib/db.ts) creates the tables (`stories`, `story_images`, `messages`) on first use and adds the six starter stories if there are none, so there is no separate migration step.
-- The browser shrinks each photo to at most 1600px wide before upload (usually 200–600 KB). The server checks it is a real JPG, PNG or WebP under 3 MB.
-- New stories go live immediately. To hide one:
-  ```sql
-  update stories set status = 'rejected' where id = '...';
+- **Stories** and **contact messages** are stored in MongoDB, in the `stories` and `messages` collections. The Mongoose models are in [`models/`](models/), the connection is in [`lib/mongodb.ts`](lib/mongodb.ts), and the queries are in [`lib/db.ts`](lib/db.ts). The six starter stories are added on first use if the `stories` collection is empty, so there is no separate seed step.
+- **Story photos** are stored on Cloudinary, in the `trip/stories` folder, named after the story id ([`lib/cloudinary.ts`](lib/cloudinary.ts)). Each story keeps the photo's `imageUrl` and `imagePublicId`. The browser shrinks each photo to at most 1600px wide before upload (usually 200–600 KB); the server checks it is a real JPG, PNG or WebP under 3 MB, then uploads it. Cloudinary serves it as WebP or AVIF where the browser supports it.
+- New stories go live immediately. To hide one (in `mongosh` or MongoDB Compass):
+  ```js
+  db.stories.updateOne({ _id: '...' }, { $set: { status: 'rejected' } })
   ```
+  The photo stays reachable at its Cloudinary URL; delete it in the Cloudinary Media Library (`trip/stories/<id>`) if it must go too.
 - To read contact messages:
-  ```sql
-  select * from messages order by created_at desc;
+  ```js
+  db.messages.find().sort({ createdAt: -1 })
   ```
 
 ## Deploy to Vercel
 
-1. Push this folder to a GitHub repository, then import it at [vercel.com/new](https://vercel.com/new). Vercel detects Next.js, so no settings are needed. If the repository contains the parent folder, set **Root Directory** to `TRIP-website`.
-2. In the Vercel project, go to **Storage → Create Database → Neon (Postgres)** and connect it to the project. This sets `DATABASE_URL`.
-3. Redeploy. The first request creates the tables and the starter stories.
-4. Optional: set `NEXT_PUBLIC_SITE_URL` (e.g. `https://trip.org.bd`) once you have a custom domain. It is used in the sitemap and in share previews.
+1. Push this folder to a GitHub repository, then import it at [vercel.com/new](https://vercel.com/new). Vercel detects Next.js, so no settings are needed.
+2. Create a free cluster on [MongoDB Atlas](https://www.mongodb.com/atlas). Under **Network Access**, allow `0.0.0.0/0` (Vercel has no fixed IP addresses), and create a database user.
+3. Create a free [Cloudinary](https://cloudinary.com) account.
+4. In the Vercel project, under **Settings → Environment Variables**, set `MONGODB_URI` to the Atlas connection string (with `/trip` as the database name), and `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET` from the Cloudinary dashboard.
+5. Redeploy. The first request adds the starter stories.
+6. Optional: set `NEXT_PUBLIC_SITE_URL` (e.g. `https://trip.org.bd`) once you have a custom domain. It is used in the sitemap and in share previews.
 
 ## Local development
 
 ```bash
 npm install
+cp .env.example .env.local   # points at a local MongoDB: mongodb://127.0.0.1:27017/trip
 npm run dev
 ```
 
-Without `DATABASE_URL`, the site runs read-only on the starter stories, and publishing a story or sending a message returns a friendly error. To use a real database locally, run `npx vercel env pull .env.local`, or copy `.env.example` to `.env.local` and paste your Neon connection string.
+Without `MONGODB_URI`, the site runs read-only on the starter stories, and publishing a story or sending a message returns a friendly error. Publishing a story also needs the three `CLOUDINARY_*` variables.

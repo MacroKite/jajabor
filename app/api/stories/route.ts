@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { randomBytes } from 'node:crypto';
 import { byId, type Story } from '@/lib/data';
+import { hasImageStorage } from '@/lib/cloudinary';
 import { hasDatabase, insertStory } from '@/lib/db';
 import { MIN_WORDS, wc } from '@/lib/stories';
 
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
   const image = parseImage(f.image);
   if (!image) return bad('That photo could not be used. Please try a different JPG or PNG.');
 
-  if (!hasDatabase) return bad('Stories are read-only right now. Please try again later.', 503);
+  if (!hasDatabase || !hasImageStorage) return bad('Stories are read-only right now. Please try again later.', 503);
 
   const story: Story = {
     id: 'u' + Date.now().toString(36) + randomBytes(3).toString('hex'),
