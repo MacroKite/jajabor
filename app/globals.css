@@ -1,0 +1,49 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Satoshi', 'Hind Siliguri', system-ui, sans-serif;
+  --font-bangla: 'Hind Siliguri', sans-serif;
+
+  /* Bangladesh flag green and red, plus the greys used across the design. */
+  --color-ink: #141414;
+  --color-bd-green: #006A4E;
+  --color-bd-red: #F42A41;
+  --color-muted: #5c5c5c;
+  --color-faint: #8a8a8a;
+  --color-frame: #f2f2f2;
+
+  --ease-glide: cubic-bezier(.2, .8, .2, 1);
+  --ease-swing: cubic-bezier(.65, 0, .35, 1);
+}
+
+@layer base {
+  /* Preflight sets line-height 1.5; the design was built on the browser default. */
+  body { background: #fff; color: var(--color-ink); line-height: normal; -webkit-font-smoothing: antialiased }
+  a { color: var(--color-ink); text-decoration: none }
+  a:hover { color: var(--color-bd-green) }
+  ::placeholder { color: #757575 }
+}
+
+/* Green-and-red mesh gradient clipped to text, used for highlighted words in headings. */
+@utility text-mesh {
+  background-color: #141414;
+  background-image:
+    radial-gradient(38% 60% at 18% 78%, rgba(0,106,78,0.95) 0%, rgba(0,106,78,0) 70%),
+    radial-gradient(30% 55% at 62% 22%, rgba(244,42,65,0.85) 0%, rgba(244,42,65,0) 72%),
+    radial-gradient(26% 50% at 90% 85%, rgba(0,140,100,0.6) 0%, rgba(0,140,100,0) 70%),
+    radial-gradient(45% 70% at 40% 40%, rgba(20,20,20,1) 0%, rgba(20,20,20,0) 80%);
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* The mesh word in page headings. */
+@utility mesh-word {
+  @apply text-mesh inline-block px-[0.04em] pb-[0.16em] -mb-[0.16em];
+}
+
+@utility select-chevron {
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23141414' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 20px center;
+}

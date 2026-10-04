@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Destinations · TRIP</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="./trip-data.js"></script>
+<style>
+body{margin:0;background:#fff;color:#141414;font-family:'Satoshi','Hind Siliguri',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#141414;text-decoration:none}a:hover{color:#006A4E}
+*{box-sizing:border-box}
+input,select,textarea,button{font-family:inherit}
+</style>
+</helmet>
+<div style="background:#fff;min-height:100vh;overflow-x:clip">
+
+<div style="position:sticky;top:0;z-index:30;margin-top:0"><nav style="max-width:none;margin:0;padding:14px 5vw;display:flex;align-items:center;justify-content:space-between;gap:16px 24px;flex-wrap:wrap;background:rgba(255,255,255,0.82);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:0;border-radius:0">
+  <a href="TRIP.dc.html" style="display:flex;align-items:center;gap:8px;font-weight:900;font-size:22px;letter-spacing:-0.02em">
+    <span style="width:14px;height:14px;border-radius:50%;background:#F42A41;display:block"></span>TRIP
+  </a>
+  <div style="display:flex;gap:56px;font-size:15px;font-weight:500;flex-wrap:wrap">
+    <a href="Destinations.dc.html" style="color:#006A4E">Destinations</a><a href="Stories.dc.html">Stories</a><a href="About.dc.html">About</a>
+  </div>
+  <a href="ShareStory.dc.html" style="background:#141414;color:#fff;padding:12px 22px;border-radius:999px;font-weight:500;font-size:15px">Share your story</a>
+</nav></div>
+
+<header style="padding:88px 5vw 0;display:flex;flex-direction:column;gap:28px">
+  <h1 style="margin:0;font-size:clamp(56px,10vw,160px);line-height:0.92;font-weight:700;letter-spacing:-0.055em">All <span style="background-color:#141414;background-image:radial-gradient(38% 60% at 18% 78%,rgba(0,106,78,0.95) 0%,rgba(0,106,78,0) 70%),radial-gradient(30% 55% at 62% 22%,rgba(244,42,65,0.85) 0%,rgba(244,42,65,0) 72%),radial-gradient(26% 50% at 90% 85%,rgba(0,140,100,0.6) 0%,rgba(0,140,100,0) 70%),radial-gradient(45% 70% at 40% 40%,rgba(20,20,20,1) 0%,rgba(20,20,20,0) 80%);background-size:100% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;display:inline-block;padding:0 0.04em 0.16em;margin-bottom:-0.16em">destinations</span></h1>
+  
+</header>
+
+<div style="padding:120px 5vw 0;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+  <div style="display:flex;gap:4px;padding:4px;border:1px solid #e6e6e6;border-radius:999px;flex-wrap:wrap">
+    <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+      <button onClick="{{ t.select }}" style="display:flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:12px 20px;font-size:15px;font-weight:500;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};transition:background 0.25s, color 0.25s">{{ t.label }}<span style="font-size:13px;opacity:0.6">{{ t.count }}</span></button>
+    </sc-for>
+  </div>
+  <label style="display:flex;align-items:center;gap:10px;border:1px solid #e6e6e6;border-radius:999px;padding:0 20px;width:min(100%,320px)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="2" style="flex-shrink:0"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+    <input value="{{ q }}" onChange="{{ onQ }}" placeholder="Search places or districts" style="flex:1;min-width:0;border:0;outline:0;font-size:15px;padding:14px 0;background:transparent;color:#141414">
+  </label>
+</div>
+
+<section style="padding:40px 5vw 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(max(300px,calc((100% - 80px) / 3)),1fr));gap:80px 40px">
+  <sc-for list="{{ cards }}" as="c" hint-placeholder-count="6">
+    <a href="{{ c.href }}" onClick="{{ c.go }}" style="display:flex;flex-direction:column;gap:14px;color:#141414">
+      <div style="position:relative;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:#f2f2f2">
+        <img src="{{ c.img }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.9s cubic-bezier(.2,.8,.2,1)" style-hover="transform:scale(1.05)">
+        
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:26px;font-weight:700;letter-spacing:-0.03em;line-height:1.1">{{ c.name }}</span>
+          <span style="font-size:17px;font-weight:500;color:#006A4E">{{ c.bn }}</span>
+        </div>
+      </div>
+      <p style="margin:0;font-size:16px;line-height:1.5;color:#5c5c5c;text-wrap:pretty">{{ c.blurb }}</p>
+    </a>
+  </sc-for>
+</section>
+<sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+  <div style="padding:40px 5vw 0;font-size:18px;color:#5c5c5c">Nothing matches “{{ q }}” yet. <button onClick="{{ clearQ }}" style="border:0;background:none;padding:0;font-size:18px;font-weight:700;text-decoration:underline;text-underline-offset:4px;cursor:pointer;color:#141414">Clear search</button></div>
+</sc-if>
+
+<dc-import name="Footer" hint-size="100%,760px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { filter: 'all', q: '' };
+  componentDidMount() {
+    const f = new URLSearchParams(location.search).get('filter');
+    if (f === 'popular' || f === 'gem') this.setState({ filter: f });
+    if (!window.TRIP) this.poll = setInterval(() => { if (window.TRIP) { clearInterval(this.poll); this.forceUpdate(); } }, 30);
+    this.hideBroken = e => { if (e.target && e.target.tagName === 'IMG') e.target.style.visibility = 'hidden'; };
+    document.addEventListener('error', this.hideBroken, true);
+  }
+  componentWillUnmount() { clearInterval(this.poll); document.removeEventListener('error', this.hideBroken, true); }
+  renderVals() {
+    const T = window.TRIP, all = T ? T.DESTS : [], s = this.state;
+    const q = s.q.trim().toLowerCase();
+    const list = all.filter(d => (s.filter === 'all' || d.type === s.filter) && (!q || (d.name + ' ' + d.district + ' ' + d.bn).toLowerCase().includes(q)));
+    const tabs = [['all', 'All'], ['popular', 'Popular'], ['gem', 'Hidden gems']].map(([k, label]) => ({
+      label, count: k === 'all' ? all.length : all.filter(d => d.type === k).length,
+      bg: s.filter === k ? '#141414' : 'transparent', fg: s.filter === k ? '#fff' : '#141414',
+      select: () => this.setState({ filter: k }),
+    }));
+    return {
+      tabs, q: s.q,
+      onQ: e => this.setState({ q: e.target.value }),
+      clearQ: () => this.setState({ q: '' }),
+      empty: !!T && list.length === 0,
+      cards: list.map(d => ({ ...d, isGem: d.type === 'gem', href: 'Destination.dc.html?id=' + d.id, go: () => { try { localStorage.setItem('trip:dest', d.id); } catch (e) {} } })),
+    };
+  }
+}
+</script>
+</body>
+</html>

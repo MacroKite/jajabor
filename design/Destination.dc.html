@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="./trip-data.js"></script>
+<style>
+body{margin:0;background:#fff;color:#141414;font-family:'Satoshi','Hind Siliguri',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#141414;text-decoration:none}a:hover{color:#006A4E}
+*{box-sizing:border-box}
+input,select,textarea,button{font-family:inherit}
+</style>
+</helmet>
+<div style="background:#fff;min-height:100vh;overflow-x:clip">
+
+<div style="position:sticky;top:0;z-index:30;margin-top:0"><nav style="max-width:none;margin:0;padding:14px 5vw;display:flex;align-items:center;justify-content:space-between;gap:16px 24px;flex-wrap:wrap;background:rgba(255,255,255,0.82);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:0;border-radius:0">
+  <a href="TRIP.dc.html" style="display:flex;align-items:center;gap:8px;font-weight:900;font-size:22px;letter-spacing:-0.02em">
+    <span style="width:14px;height:14px;border-radius:50%;background:#F42A41;display:block"></span>TRIP
+  </a>
+  <div style="display:flex;gap:56px;font-size:15px;font-weight:500;flex-wrap:wrap">
+    <a href="Destinations.dc.html" style="color:#006A4E">Destinations</a><a href="Stories.dc.html">Stories</a><a href="About.dc.html">About</a>
+  </div>
+  <a href="{{ shareHref }}" style="background:#141414;color:#fff;padding:12px 22px;border-radius:999px;font-weight:500;font-size:15px">Share your story</a>
+</nav></div>
+
+<header style="padding:56px 5vw 0;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14px;font-weight:500">
+    <a href="Destinations.dc.html" style="color:#5c5c5c;margin-bottom:28px">← All destinations</a>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+    <h1 style="margin:0;font-size:clamp(56px,9vw,148px);line-height:0.92;font-weight:700;letter-spacing:-0.055em">{{ name }}</h1>
+    <span lang="bn" style="font-family:'Hind Siliguri',sans-serif;font-size:clamp(28px,3.4vw,52px);line-height:1;font-weight:600;color:#006A4E">{{ bn }}</span>
+  </div>
+</header>
+
+<section style="margin-top:64px;padding:0 5vw">
+  <div style="position:relative;aspect-ratio:16/7;min-height:320px;border-radius:10px;overflow:hidden;background:#f2f2f2">
+    <sc-if value="{{ img }}" hint-placeholder-val="{{ false }}"><img src="{{ img }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+  </div>
+</section>
+
+<section style="padding:120px 5vw 0">
+  <div style="display:flex;flex-direction:column;gap:24px">
+    <h2 style="margin:0;font-size:clamp(32px,3.4vw,52px);line-height:1;font-weight:700;letter-spacing:-0.04em">About the place</h2>
+    <sc-for list="{{ aboutP }}" as="x" hint-placeholder-count="2"><p style="margin:0;font-size:clamp(20px,1.6vw,23px);line-height:1.7;color:#2a2a2a;text-wrap:pretty">{{ x.p }}</p></sc-for>
+  </div>
+</section>
+
+<section style="padding:120px 5vw 0">
+  <div style="display:flex;flex-direction:column;gap:24px">
+    <h2 style="margin:0;font-size:clamp(32px,3.4vw,52px);line-height:1;font-weight:700;letter-spacing:-0.04em">What to eat</h2>
+    <sc-for list="{{ foodP }}" as="x" hint-placeholder-count="2"><p style="margin:0;font-size:clamp(20px,1.6vw,23px);line-height:1.7;color:#2a2a2a;text-wrap:pretty">{{ x.p }}</p></sc-for>
+  </div>
+</section>
+
+<sc-if value="{{ hasPair }}" hint-placeholder-val="{{ true }}">
+<section style="padding:120px 5vw 0;display:flex;flex-wrap:wrap;gap:20px">
+  <div style="flex:1 1 260px;position:relative;height:clamp(320px,36vw,560px);border-radius:10px;overflow:hidden;background:#f2f2f2">
+    <sc-if value="{{ g1 }}" hint-placeholder-val="{{ false }}"><img src="{{ g1 }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+  </div>
+  <div style="flex:2 1 460px;position:relative;height:clamp(320px,36vw,560px);border-radius:10px;overflow:hidden;background:#f2f2f2">
+    <sc-if value="{{ g2 }}" hint-placeholder-val="{{ false }}"><img src="{{ g2 }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+  </div>
+</section>
+</sc-if>
+
+<section style="padding:120px 5vw 0">
+  <div style="display:flex;flex-direction:column;gap:24px">
+    <h2 style="margin:0;font-size:clamp(32px,3.4vw,52px);line-height:1;font-weight:700;letter-spacing:-0.04em">Where to stay</h2>
+    <sc-for list="{{ stayP }}" as="x" hint-placeholder-count="2"><p style="margin:0;font-size:clamp(20px,1.6vw,23px);line-height:1.7;color:#2a2a2a;text-wrap:pretty">{{ x.p }}</p></sc-for>
+  </div>
+</section>
+
+<section style="padding:120px 5vw 0">
+  <div style="display:flex;flex-direction:column;gap:24px">
+    <h2 style="margin:0;font-size:clamp(32px,3.4vw,52px);line-height:1;font-weight:700;letter-spacing:-0.04em">How to get there</h2>
+    <sc-for list="{{ routeP }}" as="x" hint-placeholder-count="2"><p style="margin:0;font-size:clamp(20px,1.6vw,23px);line-height:1.7;color:#2a2a2a;text-wrap:pretty">{{ x.p }}</p></sc-for>
+  </div>
+</section>
+
+<dc-import name="Footer" hint-size="100%,760px"></dc-import>
+
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {};
+  componentDidMount() {
+    let id = new URLSearchParams(location.search).get('id');
+    if (!id) { try { id = localStorage.getItem('trip:dest'); } catch (e) {} }
+    this.id = id || 'sajek';
+    if (!window.TRIP) this.poll = setInterval(() => { if (window.TRIP) { clearInterval(this.poll); this.forceUpdate(); } }, 30);
+    this.hideBroken = e => { if (e.target && e.target.tagName === 'IMG') e.target.style.visibility = 'hidden'; };
+    document.addEventListener('error', this.hideBroken, true);
+    this.forceUpdate();
+  }
+  componentWillUnmount() { clearInterval(this.poll); document.removeEventListener('error', this.hideBroken, true); }
+  defaultPlace() { return this.dest ? this.dest.id : ''; }
+  renderVals() {
+    const T = window.TRIP;
+    if (!T) return {};
+    const d = T.byId(this.id) || T.byId('sajek');
+    this.dest = d;
+    if (typeof document !== 'undefined') document.title = d.name + ' · TRIP';
+    const revs = T.getStories().filter(r => r.place === d.id).map(T.decorate);
+    const n = revs.length;
+    const others = T.DESTS.filter(x => x.id !== d.id);
+    const more = [...others.filter(x => x.type === d.type), ...others.filter(x => x.type !== d.type)].slice(0, 3);
+    return {
+      ...d,
+      typeLabel: d.type === 'gem' ? 'Hidden gem' : 'Popular',
+      typeDot: d.type === 'gem' ? '#006A4E' : '#F42A41',
+      heroCols: d.gallery.length ? 'minmax(0,2fr) minmax(0,1fr)' : 'minmax(0,1fr)',
+      gallery: d.gallery.slice(0, 2).map(img => ({ img })),
+      facts: [{ k: 'District', v: d.district }, { k: 'Best time', v: d.season }, { k: 'From Dhaka', v: d.distance }],
+      tips: d.tips.map((t, i) => ({ t, n: '0' + (i + 1) })),
+      stories: revs, noStories: n === 0,
+      storyCount: n + (n === 1 ? ' story' : ' stories'),
+      allStoriesHref: 'Stories.dc.html?place=' + d.id,
+      more: more.map(x => ({ ...x, href: 'Destination.dc.html?id=' + x.id })),
+      ...(() => { const A = (T.ARTICLES || {})[d.id] || {}; const sp = k => (A[k] || '').split(/\n\s*\n/).filter(Boolean).map(p => ({ p })); return { aboutP: sp('about'), foodP: sp('food'), stayP: sp('stay'), routeP: sp('route') }; })(),
+      g1: d.gallery[0] || '', g2: d.gallery[1] || '', hasPair: d.gallery.length >= 2,
+      shareHref: 'ShareStory.dc.html?place=' + d.id,
+      ...T.formVals(this),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>About · TRIP</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="./trip-data.js"></script>
+<style>
+body{margin:0;background:#fff;color:#141414;font-family:'Satoshi','Hind Siliguri',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#141414;text-decoration:none}a:hover{color:#006A4E}
+*{box-sizing:border-box}
+input,select,textarea,button{font-family:inherit}
+</style>
+</helmet>
+<div style="background:#fff;min-height:100vh;overflow-x:clip">
+
+<div style="position:sticky;top:0;z-index:30;margin-top:0"><nav style="max-width:none;margin:0;padding:14px 5vw;display:flex;align-items:center;justify-content:space-between;gap:16px 24px;flex-wrap:wrap;background:rgba(255,255,255,0.82);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:0;border-radius:0">
+  <a href="TRIP.dc.html" style="display:flex;align-items:center;gap:8px;font-weight:900;font-size:22px;letter-spacing:-0.02em">
+    <span style="width:14px;height:14px;border-radius:50%;background:#F42A41;display:block"></span>TRIP
+  </a>
+  <div style="display:flex;gap:56px;font-size:15px;font-weight:500;flex-wrap:wrap">
+    <a href="Destinations.dc.html">Destinations</a><a href="Stories.dc.html">Stories</a><a href="About.dc.html" style="color:#006A4E">About</a>
+  </div>
+  <a href="ShareStory.dc.html" style="background:#141414;color:#fff;padding:12px 22px;border-radius:999px;font-weight:500;font-size:15px">Share your story</a>
+</nav></div>
+
+<header style="padding:96px 5vw 0;display:flex;justify-content:space-between;align-items:flex-end;gap:24px 48px;flex-wrap:wrap">
+  <h1 style="margin:0;font-size:clamp(56px,10vw,160px);line-height:0.9;font-weight:700;letter-spacing:-0.055em">About <span style="background-color:#141414;background-image:radial-gradient(38% 60% at 18% 78%,rgba(0,106,78,0.95) 0%,rgba(0,106,78,0) 70%),radial-gradient(30% 55% at 62% 22%,rgba(244,42,65,0.85) 0%,rgba(244,42,65,0) 72%),radial-gradient(26% 50% at 90% 85%,rgba(0,140,100,0.6) 0%,rgba(0,140,100,0) 70%),radial-gradient(45% 70% at 40% 40%,rgba(20,20,20,1) 0%,rgba(20,20,20,0) 80%);background-size:100% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;display:inline-block;padding:0 0.04em 0.16em;margin-bottom:-0.16em">us</span></h1>
+  <p style="margin:0 0 14px;font-size:clamp(18px,1.6vw,22px);line-height:1.35;font-weight:500;max-width:420px;text-wrap:pretty">A free, honest guide to travelling in Bangladesh.</p>
+</header>
+
+<section style="margin-top:64px;padding:0 5vw">
+  <div style="position:relative;aspect-ratio:16/7;min-height:320px;border-radius:10px;overflow:hidden;background:#f2f2f2">
+    <img src="images/about-hero.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block">
+  </div>
+</section>
+
+<section style="padding:120px 5vw 0;display:flex;flex-direction:column;gap:24px">
+  <h2 style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:0.95;font-weight:700;letter-spacing:-0.045em">Who we are</h2>
+  <p style="margin:0;font-size:clamp(20px,1.6vw,23px);line-height:1.7;color:#2a2a2a;text-wrap:pretty">TRIP is a nonprofit organisation run by volunteers who love travelling in Bangladesh. We started because planning a trip here usually means digging through old Facebook posts, outdated blogs and advice that is trying to sell you something. We wanted one clear, honest place where anyone could find out how to get somewhere, what to eat, where to stay and when to go.</p>
+  <p style="margin:0;font-size:clamp(20px,1.6vw,23px);line-height:1.7;color:#2a2a2a;text-wrap:pretty">We don't sell tours, take bookings or earn commissions. Every guide is free to read, and every story is written by a real traveller. Our only goal is to help more people see their own country, and to do it in a way that respects the places and the communities who live there.</p>
+</section>
+
+<section id="contact" style="padding:160px 5vw 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:48px 64px;align-items:stretch;scroll-margin-top:96px">
+  <div style="display:flex;flex-direction:column;gap:20px;padding-top:16px">
+    <h2 style="margin:0;font-size:clamp(40px,4.6vw,68px);line-height:1;font-weight:700;letter-spacing:-0.045em">Get in touch</h2>
+    <p style="margin:0;font-size:clamp(19px,1.6vw,22px);line-height:1.5;color:#5c5c5c;max-width:460px;text-wrap:pretty">Have a question, an idea or a place we should cover? We'd love to hear from you, and every message helps us make TRIP better.</p>
+    <div style="margin-top:auto;padding-top:48px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <span style="width:36px;height:36px;border-radius:8px;background:#f2f2f2;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg></span>
+        <a href="mailto:hello@trip.org.bd" style="font-size:15px;font-weight:500">hello@trip.org.bd</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span style="width:36px;height:36px;border-radius:8px;background:#f2f2f2;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg></span>
+        <span style="font-size:15px;font-weight:500">House 12, Road 4, Dhanmondi, Dhaka 1205</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span style="width:36px;height:36px;border-radius:8px;background:#f2f2f2;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg></span>
+        <a href="tel:+8801700000000" style="font-size:15px;font-weight:500">+880 1700 000000</a>
+      </div>
+    </div>
+  </div>
+  <div style="background:#f4f4f4;border:0;border-radius:14px;padding:clamp(24px,3vw,36px)">
+    <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+      <form onSubmit="{{ onSubmit }}" style="display:flex;flex-direction:column;gap:18px">
+        <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:500">Full name
+          <input value="{{ name }}" onChange="{{ onName }}" placeholder="Enter your full name" style="border:0;border-radius:8px;padding:14px 16px;font-size:15px;font-weight:400;outline-color:#006A4E;color:#141414;background:#fff;width:100%">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:500">Email address
+          <input type="email" value="{{ email }}" onChange="{{ onEmail }}" placeholder="Enter your email address" style="border:0;border-radius:8px;padding:14px 16px;font-size:15px;font-weight:400;outline-color:#006A4E;color:#141414;background:#fff;width:100%">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:500">Message
+          <textarea rows="6" value="{{ message }}" onChange="{{ onMessage }}" placeholder="Write your message here" style="border:0;border-radius:8px;padding:14px 16px;font-size:15px;font-weight:400;outline-color:#006A4E;color:#141414;background:#fff;width:100%;resize:vertical;line-height:1.6"></textarea>
+        </label>
+        <sc-if value="{{ hasErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;font-weight:500;color:#F42A41">{{ err }}</span></sc-if>
+        <button type="submit" style="margin-top:8px;align-self:flex-start;border:0;background:#141414;color:#fff;border-radius:8px;padding:12px 18px;font-size:15px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:10px" style-hover="background:#006A4E">Send message <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+      </form>
+    </sc-if>
+    <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+      <div style="min-height:320px;display:flex;flex-direction:column;justify-content:center;gap:10px">
+        <span style="display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700;letter-spacing:-0.02em"><span style="width:10px;height:10px;border-radius:50%;background:#006A4E"></span>Message sent</span>
+        <span style="font-size:16px;color:#5c5c5c">Thanks, {{ sentName }}. We'll reply to {{ sentEmail }} soon.</span>
+      </div>
+    </sc-if>
+  </div>
+</section>
+
+<dc-import name="Footer" hint-size="100%,760px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { name: '', email: '', message: '', err: '', sent: false };
+  renderVals() {
+    const st = this.state, set = k => e => this.setState({ [k]: e.target.value, err: '' });
+    return {
+      name: st.name, email: st.email, message: st.message,
+      onName: set('name'), onEmail: set('email'), onMessage: set('message'),
+      err: st.err, hasErr: !!st.err, sent: st.sent, notSent: !st.sent,
+      sentName: st.name.trim().split(' ')[0], sentEmail: st.email.trim(),
+      onSubmit: e => {
+        e.preventDefault();
+        const err = !st.name.trim() ? 'Please add your name.' : !/^\S+@\S+\.\S+$/.test(st.email.trim()) ? 'Please add a valid email.' : st.message.trim().length < 10 ? 'Please write a short message.' : '';
+        this.setState(err ? { err } : { sent: true });
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

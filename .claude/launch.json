@@ -1,0 +1,7 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "trip", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev"], "port": 3000 },
+    { "name": "design", "runtimeExecutable": "npx", "runtimeArgs": ["-y", "serve", "-l", "5055", "design"], "port": 5055 }
+  ]
+}

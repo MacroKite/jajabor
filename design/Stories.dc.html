@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Stories · TRIP</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="./trip-data.js"></script>
+<style>
+body{margin:0;background:#fff;color:#141414;font-family:'Satoshi','Hind Siliguri',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#141414;text-decoration:none}a:hover{color:#006A4E}
+*{box-sizing:border-box}
+input,select,textarea,button{font-family:inherit}
+</style>
+</helmet>
+<div style="background:#fff;min-height:100vh;overflow-x:clip">
+
+<div style="position:sticky;top:0;z-index:30;margin-top:0"><nav style="max-width:none;margin:0;padding:14px 5vw;display:flex;align-items:center;justify-content:space-between;gap:16px 24px;flex-wrap:wrap;background:rgba(255,255,255,0.82);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:0;border-radius:0">
+  <a href="TRIP.dc.html" style="display:flex;align-items:center;gap:8px;font-weight:900;font-size:22px;letter-spacing:-0.02em">
+    <span style="width:14px;height:14px;border-radius:50%;background:#F42A41;display:block"></span>TRIP
+  </a>
+  <div style="display:flex;gap:56px;font-size:15px;font-weight:500;flex-wrap:wrap">
+    <a href="Destinations.dc.html">Destinations</a><a href="Stories.dc.html" style="color:#006A4E">Stories</a><a href="About.dc.html">About</a>
+  </div>
+  <a href="{{ shareHref }}" style="background:#141414;color:#fff;padding:12px 22px;border-radius:999px;font-weight:500;font-size:15px">Share your story</a>
+</nav></div>
+
+<sc-if value="{{ notReading }}" hint-placeholder-val="{{ true }}">
+<header style="padding:96px 5vw 0;display:flex;justify-content:space-between;align-items:flex-end;gap:24px 48px;flex-wrap:wrap">
+  <h1 style="margin:0;font-size:clamp(56px,10vw,160px);line-height:0.9;font-weight:700;letter-spacing:-0.055em">All <span style="background-color:#141414;background-image:radial-gradient(38% 60% at 18% 78%,rgba(0,106,78,0.95) 0%,rgba(0,106,78,0) 70%),radial-gradient(30% 55% at 62% 22%,rgba(244,42,65,0.85) 0%,rgba(244,42,65,0) 72%),radial-gradient(26% 50% at 90% 85%,rgba(0,140,100,0.6) 0%,rgba(0,140,100,0) 70%),radial-gradient(45% 70% at 40% 40%,rgba(20,20,20,1) 0%,rgba(20,20,20,0) 80%);background-size:100% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;display:inline-block;padding:0 0.04em 0.16em;margin-bottom:-0.16em">stories</span></h1>
+  <p style="margin:0 0 14px;font-size:clamp(18px,1.6vw,22px);line-height:1.35;font-weight:500;max-width:420px;text-wrap:pretty">Written by travellers, for the next person who goes.</p>
+</header>
+
+<div style="margin:96px 5vw 0;border-bottom:1px solid #e4e4e4;padding:14px 0 28px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+  <span style="font-size:15px;color:#5c5c5c">{{ countLabel }}</span>
+  <div style="position:relative">
+    <button onClick="{{ toggleFilter }}" style="border:1px solid #e2e2e2;background:#fff;border-radius:999px;padding:11px 18px;font-size:15px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:10px;color:#141414" style-hover="border-color:#141414">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>
+      {{ filterLabel }}
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+    </button>
+    <sc-if value="{{ filterOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;right:0;top:calc(100% + 8px);z-index:20;width:260px;background:#fff;border:1px solid #e6e6e6;border-radius:10px;padding:6px;display:flex;flex-direction:column">
+        <sc-for list="{{ placeOptions }}" as="o" hint-placeholder-count="10">
+          <button onClick="{{ o.select }}" style="border:0;background:{{ o.bg }};border-radius:6px;padding:11px 12px;font-size:15px;font-weight:500;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:{{ o.fg }};text-align:left" style-hover="background:#f4f4f4">{{ o.label }}<span style="font-size:13px;color:#8a8a8a">{{ o.count }}</span></button>
+        </sc-for>
+      </div>
+    </sc-if>
+  </div>
+</div>
+
+<section style="padding:0 5vw">
+  <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ items }}" as="r" hint-placeholder-count="4">
+        <article onClick="{{ r.open }}" style="cursor:pointer;border-bottom:{{ r.bb }};padding:56px 0;display:flex;flex-wrap:wrap;align-items:stretch;gap:24px 32px">
+          <div style="flex:0 1 320px;min-width:220px;position:relative;aspect-ratio:3/2;align-self:flex-start;border-radius:10px;overflow:hidden;background:#f2f2f2">
+            <sc-if value="{{ r.img }}" hint-placeholder-val="{{ false }}"><img src="{{ r.img }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.9s cubic-bezier(.2,.8,.2,1)" style-hover="transform:scale(1.05)"></sc-if>
+          </div>
+          <div style="flex:1 1 360px;min-width:0;display:flex;flex-direction:column;gap:20px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+              <h2 style="margin:0;font-size:clamp(26px,2.4vw,36px);line-height:1.02;font-weight:700;letter-spacing:-0.045em;text-wrap:balance">{{ r.title }}</h2>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F42A41" stroke-width="1.6" style="flex-shrink:0;margin-top:2px"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+              
+            </div>
+            <p style="margin:0;font-size:16px;line-height:1.55;color:#3a3a3a;max-width:640px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">{{ r.excerpt }}</p>
+            <div style="margin-top:auto;padding-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;font-size:16px;color:#5c5c5c">
+              <span style="font-weight:700;color:#141414">{{ r.name }}</span>
+              <span style="display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5c5c5c" stroke-width="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>{{ r.placeName }}</span>
+              <span>{{ r.when }}</span>
+            </div>
+          </div>
+        </article>
+      </sc-for>
+  </div>
+</section>
+<sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+  <div style="margin:0 5vw;border:2px dashed #e4e4e4;border-radius:10px;padding:48px;font-size:18px;color:#5c5c5c;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">No stories from {{ placeName }} yet.<a href="{{ shareHref }}" style="border:0;background:#141414;color:#fff;border-radius:10px;padding:14px 22px;font-size:15px;font-weight:700;cursor:pointer">Write the first one</a></div>
+</sc-if>
+
+</sc-if>
+
+<sc-if value="{{ reading }}" hint-placeholder-val="{{ false }}">
+<article style="padding:56px 5vw 0">
+  <button onClick="{{ closeRead }}" style="border:0;background:none;padding:0;font-size:14px;font-weight:500;cursor:pointer;color:#5c5c5c;margin-bottom:40px" style-hover="color:#006A4E">← All stories</button>
+  <h1 style="margin:0;max-width:1100px;font-size:clamp(36px,4.2vw,64px);line-height:0.98;font-weight:700;letter-spacing:-0.05em;text-wrap:balance">{{ story.title }}</h1>
+  <div style="margin:40px 0 56px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;font-size:16px;color:#5c5c5c">
+    <span style="font-weight:700;color:#141414">{{ story.name }}</span>
+    <span style="display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5c5c5c" stroke-width="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>{{ story.placeName }}</span>
+    <span>{{ story.when }}</span>
+  </div>
+  <div style="position:relative;aspect-ratio:16/8;min-height:300px;border-radius:10px;overflow:hidden;background:#f2f2f2">
+    <sc-if value="{{ story.img }}" hint-placeholder-val="{{ false }}"><img src="{{ story.img }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+  </div>
+  <div style="margin-top:64px;display:flex;flex-direction:column;gap:1.2em">
+    <sc-for list="{{ story.paras }}" as="x" hint-placeholder-count="4">
+      <p style="margin:0;font-size:clamp(20px,1.6vw,23px);line-height:1.7;color:#2a2a2a;text-wrap:pretty">{{ x.p }}</p>
+    </sc-for>
+  </div>
+<div style="margin-top:80px;display:flex;flex-direction:column;gap:16px">
+    <span style="font-size:18px;font-weight:500;color:#5c5c5c">Share this story</span>
+    <div style="display:flex;gap:24px;align-items:center">
+      <button onClick="{{ shareFb }}" aria-label="Share" style="border:0;background:none;padding:0;cursor:pointer;display:flex;transition:opacity 0.2s" style-hover="opacity:0.7"><svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#141414"></circle><path fill="#fff" d="M13.2 19v-6h2l.3-2.4h-2.3V9.1c0-.7.2-1.2 1.2-1.2h1.2V5.8c-.2 0-1-.1-1.8-.1-1.8 0-3 1.1-3 3.1v1.8h-2V13h2v6z"></path></svg></button>
+      <button onClick="{{ shareX }}" aria-label="Share" style="border:0;background:none;padding:0;cursor:pointer;display:flex;transition:opacity 0.2s" style-hover="opacity:0.7"><svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#141414"></circle><path fill="#fff" d="M15.6 6.5h1.8l-4 4.5 4.7 6.5h-3.7l-2.9-3.8-3.3 3.8H6.4l4.2-4.9-4.5-6.1h3.8l2.6 3.5zm-.6 9.9h1l-6.5-8.9H8.4z"></path></svg></button>
+      <button onClick="{{ sharePin }}" aria-label="Share" style="border:0;background:none;padding:0;cursor:pointer;display:flex;transition:opacity 0.2s" style-hover="opacity:0.7"><svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#141414"></circle><path fill="#fff" d="M12.2 5.2c-3.8 0-5.7 2.7-5.7 5 0 1.4.5 2.6 1.6 3 .2.1.3 0 .4-.2l.2-.6c0-.2 0-.3-.1-.4-.3-.4-.5-.9-.5-1.6 0-2.1 1.6-4 4.1-4 2.2 0 3.5 1.4 3.5 3.2 0 2.4-1.1 4.4-2.6 4.4-.9 0-1.5-.7-1.3-1.6.2-1 .7-2.2.7-3 0-.7-.4-1.3-1.2-1.3-.9 0-1.7 1-1.7 2.2 0 .8.3 1.3.3 1.3l-1.1 4.6c-.3 1.3-.1 3-.1 3.2 0 .1.1.1.2 0 .1-.1 1.2-1.5 1.5-2.8l.6-2.3c.3.6 1.2 1.1 2.1 1.1 2.8 0 4.7-2.6 4.7-6 0-2.6-2.2-5.1-5.6-5.1z"></path></svg></button>
+      <button onClick="{{ shareWa }}" aria-label="Share" style="border:0;background:none;padding:0;cursor:pointer;display:flex;transition:opacity 0.2s" style-hover="opacity:0.7"><svg width="34" height="34" viewBox="0 0 24 24"><path fill="#141414" d="M12 .5A11.5 11.5 0 0 0 2.1 17.8L.5 23.5l5.9-1.5A11.5 11.5 0 1 0 12 .5z"></path><path fill="#fff" d="M8.6 6.4c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.3 1.4 3.5c.2.2 2.4 3.8 5.9 5.2 2.9 1.1 3.5.9 4.1.9.6-.1 2-.8 2.3-1.6.3-.8.3-1.5.2-1.6-.1-.1-.3-.2-.7-.4l-2.3-1.1c-.3-.1-.5-.2-.8.2l-1 1.3c-.2.2-.4.2-.7.1-.4-.2-1.5-.5-2.8-1.7-1-.9-1.7-2-1.9-2.4-.2-.4 0-.5.2-.7l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4 0-.6z"></path></svg></button>
+      <button onClick="{{ shareCopy }}" aria-label="Copy link" style="border:0;background:none;padding:0;cursor:pointer;display:flex;align-items:center;gap:10px;transition:opacity 0.2s" style-hover="opacity:0.7"><svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#141414"></circle><path fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" d="M10.6 13.4a3 3 0 0 0 4.2 0l2-2a3 3 0 0 0-4.2-4.2l-.7.7M13.4 10.6a3 3 0 0 0-4.2 0l-2 2a3 3 0 0 0 4.2 4.2l.7-.7"></path></svg><sc-if value="{{ copiedStory }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;font-weight:500;color:#006A4E">Link copied</span></sc-if></button>
+    </div>
+  </div>
+</article>
+</sc-if>
+
+<dc-import name="Footer" hint-size="100%,760px"></dc-import>
+
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { place: 'all', readId: null };
+  componentDidMount() {
+    const p = new URLSearchParams(location.search), up = {};
+    if (p.get('place')) up.place = p.get('place');
+    if (p.get('story')) up.readId = p.get('story');
+    const w = p.get('write');
+    if (w) { location.replace('ShareStory.dc.html' + (w !== '1' ? '?place=' + w : '')); return; }
+    if (Object.keys(up).length) this.setState(up);
+    if (!window.TRIP) this.poll = setInterval(() => { if (window.TRIP) { clearInterval(this.poll); this.forceUpdate(); } }, 30);
+    this.onKey = e => { if (e.key === 'Escape') this.setState(this.state.modalOpen ? { modalOpen: false } : this.state.filterOpen ? { filterOpen: false } : { readId: null }); };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { clearInterval(this.poll); window.removeEventListener('keydown', this.onKey); }
+  defaultPlace() { return this.state.place !== 'all' ? this.state.place : ''; }
+  onPosted(id) { this.setState({ place: 'all', readId: id }); }
+  open(id) { this.setState({ readId: id, filterOpen: false }); window.scrollTo(0, 0); }
+  renderVals() {
+    const T = window.TRIP;
+    if (!T) return { groups: [], placeOptions: [], shareHref: 'ShareStory.dc.html' };
+    const s = this.state, all = T.getStories().map(T.decorate);
+    const list = s.place === 'all' ? all : all.filter(r => r.place === s.place);
+    const n = list.length, d = T.byId(s.place);
+    const chip = (key, label, count) => ({ label, count, bg: s.place === key ? '#141414' : '#fff', fg: s.place === key ? '#fff' : '#141414', border: s.place === key ? '#141414' : '#e2e2e2', select: () => this.setState({ place: key }) });
+    const ri = all.findIndex(r => r.id === s.readId);
+    const story = ri >= 0 ? all[ri] : null, next = all[(ri + 1) % all.length] || {};
+    const WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const base = location.href.split('?')[0].split('#')[0];
+    const share = r => {
+      const url = base + '?story=' + r.id, txt = r.title + ' | TRIP';
+      const go = u => e => { e.stopPropagation(); window.open(u, '_blank', 'noopener'); };
+      return [
+        { label: 'Facebook', go: go('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url)) },
+        { label: 'WhatsApp', go: go('https://wa.me/?text=' + encodeURIComponent(txt + ' ' + url)) },
+        { label: 'X', go: go('https://twitter.com/intent/tweet?text=' + encodeURIComponent(txt) + '&url=' + encodeURIComponent(url)) },
+        { label: this.state.copied === r.id ? 'Copied' : 'Copy link', go: e => { e.stopPropagation(); try { navigator.clipboard.writeText(url); } catch (err) {} this.setState({ copied: r.id }); clearTimeout(this._cp); this._cp = setTimeout(() => this.setState({ copied: null }), 1600); } },
+      ];
+    };
+    const groups = [];
+    list.forEach(r => {
+      const dt = new Date(r.date + 'T00:00:00'), key = MN[dt.getMonth()] + ' ' + dt.getFullYear();
+      let g = groups[groups.length - 1];
+      if (!g || g.label !== key) groups.push(g = { label: key, items: [] });
+      const dd = T.byId(r.place) || {};
+      const ex = r.excerpt.length > 150 ? r.excerpt.slice(0, r.excerpt.lastIndexOf(' ', 150)) + '…' : r.excerpt;
+      g.items.push({ ...r, excerpt: ex, img: r.img || '', wd: WD[dt.getDay()], dd: String(dt.getDate()).padStart(2, '0'), shares: share(r), open: () => this.open(r.id) });
+    });
+    const opt = (key, label, count) => ({ label, count, bg: s.place === key ? '#f4f4f4' : '#fff', fg: '#141414', select: () => this.setState({ place: key, filterOpen: false }) });
+    return {
+      items: groups.flatMap(g => g.items).map((r, i, a) => ({ ...r, bb: i === a.length - 1 ? '0' : '1px solid #e4e4e4' })),
+      filterOpen: !!s.filterOpen,
+      toggleFilter: () => this.setState(st => ({ filterOpen: !st.filterOpen })),
+      filterLabel: d ? d.name : 'All places',
+      placeOptions: [opt('all', 'All places', all.length), ...T.DESTS.map(x => opt(x.id, x.name, all.filter(r => r.place === x.id).length))],
+      empty: n === 0, placeName: d ? d.name : 'this place',
+      countLabel: n + (n === 1 ? ' story' : ' stories') + (d ? ' from ' + d.name : ''),
+      reading: !!story, story: story || {}, next,
+      readerRef: el => { this.readerEl = el; },
+      closeRead: () => { this.setState({ readId: null }); window.scrollTo(0, 0); },
+      notReading: !story,
+      ...(() => { const url = location.href.split('?')[0].split('#')[0] + '?story=' + (story ? story.id : ''), txt = (story ? story.title : '') + ' | TRIP', o = u => () => window.open(u, '_blank', 'noopener'), E = encodeURIComponent;
+        return { shareFb: o('https://www.facebook.com/sharer/sharer.php?u=' + E(url)), shareX: o('https://twitter.com/intent/tweet?text=' + E(txt) + '&url=' + E(url)), sharePin: o('https://pinterest.com/pin/create/button/?url=' + E(url) + '&description=' + E(txt) + (story && story.img && story.img.startsWith('http') ? '&media=' + E(story.img) : '')), shareWa: o('https://wa.me/?text=' + E(txt + ' ' + url)), copiedStory: !!this.state.copiedStory, shareCopy: () => { try { navigator.clipboard.writeText(url); } catch (err) {} this.setState({ copiedStory: true }); clearTimeout(this._cs); this._cs = setTimeout(() => this.setState({ copiedStory: false }), 1800); } }; })(),
+      nextStory: () => this.open(next.id),
+      shareHref: 'ShareStory.dc.html' + (s.place !== 'all' ? '?place=' + s.place : ''),
+      ...T.formVals(this),
+    };
+  }
+}
+</script>
+</body>
+</html>

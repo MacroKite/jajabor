@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Share your story · TRIP</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="./trip-data.js"></script>
+<style>
+body{margin:0;background:#fff;color:#141414;font-family:'Satoshi','Hind Siliguri',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#141414;text-decoration:none}a:hover{color:#006A4E}
+*{box-sizing:border-box}
+input,select,textarea,button{font-family:inherit}
+</style>
+</helmet>
+<div style="background:#fff;min-height:100vh;overflow-x:clip">
+
+<div style="position:sticky;top:0;z-index:30;margin-top:0"><nav style="max-width:none;margin:0;padding:14px 5vw;display:flex;align-items:center;justify-content:space-between;gap:16px 24px;flex-wrap:wrap;background:rgba(255,255,255,0.82);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:0;border-radius:0">
+  <a href="TRIP.dc.html" style="display:flex;align-items:center;gap:8px;font-weight:900;font-size:22px;letter-spacing:-0.02em">
+    <span style="width:14px;height:14px;border-radius:50%;background:#F42A41;display:block"></span>TRIP
+  </a>
+  <div style="display:flex;gap:56px;font-size:15px;font-weight:500;flex-wrap:wrap">
+    <a href="Destinations.dc.html">Destinations</a><a href="Stories.dc.html">Stories</a><a href="About.dc.html">About</a>
+  </div>
+  <a href="ShareStory.dc.html" style="background:#141414;color:#fff;padding:12px 22px;border-radius:999px;font-weight:500;font-size:15px">Share your story</a>
+</nav></div>
+
+<header style="padding:96px 5vw 0;display:flex;justify-content:space-between;align-items:flex-end;gap:24px 48px;flex-wrap:wrap">
+  <h1 style="margin:0;font-size:clamp(56px,10vw,160px);line-height:0.9;font-weight:700;letter-spacing:-0.055em">Share your <span style="background-color:#141414;background-image:radial-gradient(38% 60% at 18% 78%,rgba(0,106,78,0.95) 0%,rgba(0,106,78,0) 70%),radial-gradient(30% 55% at 62% 22%,rgba(244,42,65,0.85) 0%,rgba(244,42,65,0) 72%),radial-gradient(26% 50% at 90% 85%,rgba(0,140,100,0.6) 0%,rgba(0,140,100,0) 70%),radial-gradient(45% 70% at 40% 40%,rgba(20,20,20,1) 0%,rgba(20,20,20,0) 80%);background-size:100% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;display:inline-block;padding:0 0.04em 0.16em;margin-bottom:-0.16em">story</span></h1>
+  
+</header>
+
+<section style="padding:96px 5vw 0">
+  <form onSubmit="{{ onSubmit }}" style="display:flex;flex-direction:column;gap:24px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px 20px">
+        <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:500">Where did you go?
+        <select value="{{ f.place }}" onChange="{{ onF.place }}" style="border:1px solid #e2e2e2;border-radius:10px;padding:16px 52px 16px 18px;font-size:16px;appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23141414' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 20px center;color:#141414;outline-color:#006A4E">
+          <option value="">Choose a place</option>
+          <sc-for list="{{ placeOpts }}" as="o" hint-placeholder-count="0"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
+        </select>
+      </label>
+        <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:500">Title
+        <input value="{{ f.title }}" onChange="{{ onF.title }}" placeholder="Two days in Sajek on ৳5,000" style="border:1px solid #e2e2e2;border-radius:10px;background:#fff;padding:16px 18px;font-size:16px;font-weight:500;outline-color:#006A4E">
+      </label>
+      </div>
+      <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:500">Your story
+        <textarea rows="14" value="{{ f.text }}" onChange="{{ onF.text }}" placeholder="Start from the beginning. Leave an empty line between paragraphs." style="border:1px solid #e2e2e2;border-radius:10px;background:#fff;padding:18px 20px;font-size:17px;line-height:1.65;resize:vertical;outline-color:#006A4E;font-weight:400;min-height:280px"></textarea>
+        <span style="font-size:12px;font-weight:500;color:{{ wordColor }}">{{ wordCount }}</span>
+      </label>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px 20px">
+        <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:500">Your name
+          <input value="{{ f.name }}" onChange="{{ onF.name }}" placeholder="Nusrat Jahan" style="border:1px solid #e2e2e2;border-radius:10px;background:#fff;padding:16px 18px;font-size:16px;outline-color:#006A4E;font-weight:400">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:500">Where you're from
+          <input value="{{ f.from }}" onChange="{{ onF.from }}" placeholder="Dhaka" style="border:1px solid #e2e2e2;border-radius:10px;background:#fff;padding:16px 18px;font-size:16px;outline-color:#006A4E;font-weight:400">
+        </label>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:500">Photo
+        <label style="position:relative;display:flex;align-items:center;gap:16px;border:1.5px dashed #d0d0d0;border-radius:10px;cursor:pointer;background:#fafafa;padding:14px;max-width:520px">
+          <span style="position:relative;width:96px;height:64px;border-radius:8px;overflow:hidden;background:#eee;flex-shrink:0;display:flex;align-items:center;justify-content:center">
+            <sc-if value="{{ hasImage }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;background-size:cover;background-position:center;background-image:{{ imageBg }}"></span></sc-if>
+            <sc-if value="{{ noImage }}" hint-placeholder-val="{{ true }}"><span style="font-size:24px;line-height:1;color:#141414">+</span></sc-if>
+          </span>
+          <span style="display:flex;flex-direction:column;gap:4px">
+            <span style="font-size:15px;font-weight:500;color:#141414">{{ photoLabel }}</span>
+            <span style="font-size:13px;font-weight:400;color:#8a8a8a">JPG or PNG, one photo from your trip</span>
+          </span>
+          <input type="file" accept="image/*" onChange="{{ onImage }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer">
+        </label>
+      </div>
+      <sc-if value="{{ hasErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;font-weight:500;color:#F42A41">{{ formErr }}</span></sc-if>
+      <button type="submit" style="border:0;background:#141414;color:#fff;border-radius:10px;padding:20px;font-size:16px;font-weight:700;cursor:pointer" style-hover="background:#006A4E">Publish story</button>
+    </form>
+</section>
+
+<dc-import name="Footer" hint-size="100%,760px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { form: null };
+  componentDidMount() {
+    this.place = new URLSearchParams(location.search).get('place') || '';
+    this.setState({ form: { place: this.place, image: '', title: '', text: '', name: '', from: '', visited: '', spent: '' } });
+    if (!window.TRIP) this.poll = setInterval(() => { if (window.TRIP) { clearInterval(this.poll); this.forceUpdate(); } }, 30);
+  }
+  componentWillUnmount() { clearInterval(this.poll); }
+  defaultPlace() { return this.place || ''; }
+  onPosted(id) { location.href = 'Stories.dc.html?story=' + id; }
+  renderVals() {
+    const T = window.TRIP;
+    if (!T) return { placeOpts: [], f: {}, onF: {} };
+    const v = T.formVals(this);
+    return { ...v, photoLabel: v.f.image ? 'Photo added · click to change' : 'Add a photo', imageBg: v.f.image ? 'url(' + v.f.image + ')' : 'none' };
+  }
+}
+</script>
+</body>
+</html>
