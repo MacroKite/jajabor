@@ -20,8 +20,9 @@ The old prototype URLs (`TRIP.dc.html`, `Destination.dc.html?id=…`, `Stories.d
 
 ## Data
 
-- **Destinations** and their guides are in [`lib/data.ts`](lib/data.ts).
-- **Stories** and **contact messages** are stored in MongoDB, in the `stories` and `messages` collections. The Mongoose models are in [`models/`](models/), the connection is in [`lib/mongodb.ts`](lib/mongodb.ts), and the queries are in [`lib/db.ts`](lib/db.ts). The six starter stories are added on first use if the `stories` collection is empty, so there is no separate seed step.
+- **Destinations** and their guides are in [`lib/data.ts`](lib/data.ts). They change rarely, so they stay in code: the pages are prerendered, and every edit is reviewed in git. The home page reads from the same list.
+- **Destination photos** are on Cloudinary under `trip/places/` (copied from Wikimedia Commons, CC BY-SA; each image's original page is in its `source` context field). [`lib/images.ts`](lib/images.ts) builds the URLs: `photo('sajek-valley-01', 900)` gives a 900px-wide WebP/AVIF. To add a photo, upload it to `trip/places/` in the Cloudinary Media Library and use its name with `photo()`.
+- **Stories** and **contact messages** are stored in MongoDB, in the `stories` and `messages` collections. The Mongoose models are in [`models/`](models/), the connection is in [`lib/mongodb.ts`](lib/mongodb.ts), and the queries are in [`lib/db.ts`](lib/db.ts). The home page features the newest published story.
 - **Story photos** are stored on Cloudinary, in the `trip/stories` folder, named after the story id ([`lib/cloudinary.ts`](lib/cloudinary.ts)). Each story keeps the photo's `imageUrl` and `imagePublicId`. The browser shrinks each photo to at most 1600px wide before upload (usually 200–600 KB); the server checks it is a real JPG, PNG or WebP under 3 MB, then uploads it. Cloudinary serves it as WebP or AVIF where the browser supports it.
 - New stories go live immediately. To hide one (in `mongosh` or MongoDB Compass):
   ```js
@@ -39,7 +40,7 @@ The old prototype URLs (`TRIP.dc.html`, `Destination.dc.html?id=…`, `Stories.d
 2. Create a free cluster on [MongoDB Atlas](https://www.mongodb.com/atlas). Under **Network Access**, allow `0.0.0.0/0` (Vercel has no fixed IP addresses), and create a database user.
 3. Create a free [Cloudinary](https://cloudinary.com) account.
 4. In the Vercel project, under **Settings → Environment Variables**, set `MONGODB_URI` to the Atlas connection string (with `/trip` as the database name), and `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET` from the Cloudinary dashboard.
-5. Redeploy. The first request adds the starter stories.
+5. Redeploy.
 6. Optional: set `NEXT_PUBLIC_SITE_URL` (e.g. `https://trip.org.bd`) once you have a custom domain. It is used in the sitemap and in share previews.
 
 ## Local development
@@ -50,4 +51,4 @@ cp .env.example .env.local   # points at a local MongoDB: mongodb://127.0.0.1:27
 npm run dev
 ```
 
-Without `MONGODB_URI`, the site runs read-only on the starter stories, and publishing a story or sending a message returns a friendly error. Publishing a story also needs the three `CLOUDINARY_*` variables.
+Without `MONGODB_URI`, the site shows no stories, and publishing a story or sending a message returns a friendly error. Publishing a story also needs the three `CLOUDINARY_*` variables.

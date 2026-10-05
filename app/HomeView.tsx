@@ -4,24 +4,13 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
-import { W, type Story } from '@/lib/data';
+import { DESTS, type Destination, type Story } from '@/lib/data';
+import { photo } from '@/lib/images';
 import { cut, decorate } from '@/lib/stories';
 
-type Item = { id: string; name: string; bn: string; blurb: string; region?: string; img: string };
+const POPULAR = DESTS.filter(d => d.type === 'popular');
+const GEMS = DESTS.filter(d => d.type === 'gem');
 
-const POPULAR: Item[] = [
-  { id: 'coxs-bazar', blurb: 'The longest natural sea beach in the world, with 120 km of sand along the Bay of Bengal.', name: "Cox's Bazar", bn: 'কক্সবাজার', region: 'Chattogram · 120 km beach', img: W("Cox's_Bazar_sea_beach.jpg") },
-  { id: 'sajek', blurb: 'A hilltop village in Rangamati where the clouds drift below you at dawn.', name: 'Sajek Valley', bn: 'সাজেক ভ্যালি', region: 'Rangamati · above the clouds', img: W('Sajek_Valley_Bangladesh.jpg') },
-  { id: 'sundarbans', blurb: 'The largest mangrove forest on earth, and home of the Royal Bengal tiger.', name: 'Sundarbans', bn: 'সুন্দরবন', region: 'Khulna · mangrove forest', img: W('Sundarbans_river.jpg') },
-  { id: 'srimangal', blurb: 'The tea capital of Bangladesh, with rolling gardens and the Lawachara rainforest.', name: 'Srimangal', bn: 'শ্রীমঙ্গল', region: 'Moulvibazar · tea country', img: W('Srimangal_Tea_garden.jpg') },
-  { id: 'saint-martins', blurb: "Bangladesh's only coral island, with clear blue water and quiet nights.", name: "Saint Martin's", bn: 'সেন্টমার্টিন', region: 'Teknaf · coral island', img: W("Saint_Martin's_Island.JPG") },
-];
-const GEMS: Item[] = [
-  { id: 'ratargul', blurb: 'A freshwater swamp forest you explore by small boat during the monsoon.', name: 'Ratargul', bn: 'রাতারগুল', img: W('Ratargul_0315.jpg') },
-  { id: 'chera-dwip', blurb: "The country's southernmost tip. Coral rocks and open sea, reachable at low tide.", name: 'Chera Dwip', bn: 'ছেঁড়া দ্বীপ', img: W('St_Martin_Island_Chera_Dwip.JPG') },
-  { id: 'nilgiri', blurb: 'One of the highest points in Bandarban, where clouds touch the hilltop.', name: 'Nilgiri', bn: 'নীলগিরি', img: W('Nilgiri,_Bandarban,_Bangladesh_20.jpg') },
-  { id: 'madhabpur', blurb: 'A quiet lake hidden among tea hills, covered in blue water lilies in summer.', name: 'Madhabpur Lake', bn: 'মাধবপুর লেক', img: W('Nymphaea_nouchali,_Madhabpur_Tea_Garden,_Srimangal.jpg') },
-];
 const FAQS = [
   { q: 'Who runs TRIP?', a: 'TRIP is a nonprofit run by volunteers. We don’t sell trips, take bookings or earn commissions.' },
   { q: 'Where do the costs come from?', a: 'Recent traveller reports and local operators, checked weekly and shown in Taka.' },
@@ -29,38 +18,39 @@ const FAQS = [
   { q: 'When is the best time to travel?', a: 'October to March for most places. Monsoon (June–September) is best for haors, waterfalls and tea gardens.' },
   { q: 'Do I need permits?', a: 'Some places do — like the Sundarbans and parts of Bandarban. Each guide lists what you need.' },
 ];
+// [photo id, label, column span, row span]
 const MOSAIC: [string, string, number, number][] = [
-  ["A_dusk_at_Cox's_Bazar_sea_beach.jpg", "Cox's Bazar", 2, 1],
-  ['Sajek_Valley_01.jpg', 'Sajek', 1, 1],
-  ['Ratargul_Swamp_Forest,_Sylhet..jpg', 'Ratargul', 1, 1],
-  ['Blue_waters_of_Saint_Martin_Island_,_Bangladesh.jpg', "Saint Martin's", 1, 2],
-  ['Boat,_trees_and_water_in_Sundarbans.jpg', 'Sundarbans', 1, 1],
-  ['Tea_Garden_Srimongol_Sylhet_Bangladesh_2.JPG', 'Srimangal', 1, 1],
-  ['Nilgiri,_Bandarban,_Bangladesh_20.jpg', 'Nilgiri', 1, 1],
-  ["Cox's_Bazar_sea_beach.jpg", 'Inani', 2, 1],
-  ['Sajek_Valley_Bangladesh.jpg', 'Ruilui Para', 1, 1],
-  ['Sundarbans_river.jpg', 'Katka', 1, 2],
-  ['Srimangal_Tea_garden.jpg', 'Lawachara', 1, 1],
-  ["Saint_Martin's_Island.JPG", 'Chera Dwip', 1, 1],
-  ['Ratargul_0315.jpg', 'Gowainghat', 2, 1],
-  ['Nymphaea_nouchali,_Madhabpur_Tea_Garden,_Srimangal.jpg', 'Madhabpur Lake', 1, 1],
-  ['Runmoy,_Sajek_Valley_04.jpg', 'Konglak Hill', 1, 1],
-  ['River_in_Sundarban.jpg', 'Mongla', 1, 1],
-  ['Amazing_evening_view_of_Saint_Martin_Island,_Bangladesh.jpg', 'Teknaf', 2, 1],
-  ["Cox's_Bazar_sea_beach--In_between_day_and_night.jpg", 'Himchari', 1, 1],
+  ['a-dusk-at-coxs-bazar-sea-beach', "Cox's Bazar", 2, 1],
+  ['sajek-valley-01', 'Sajek', 1, 1],
+  ['ratargul-swamp-forest-sylhet', 'Ratargul', 1, 1],
+  ['blue-waters-of-saint-martin-island-bangladesh', "Saint Martin's", 1, 2],
+  ['boat-trees-and-water-in-sundarbans', 'Sundarbans', 1, 1],
+  ['tea-garden-srimongol-sylhet-bangladesh-2', 'Srimangal', 1, 1],
+  ['nilgiri-bandarban-bangladesh-20', 'Nilgiri', 1, 1],
+  ['coxs-bazar-sea-beach', 'Inani', 2, 1],
+  ['sajek-valley-bangladesh', 'Ruilui Para', 1, 1],
+  ['sundarbans-river', 'Katka', 1, 2],
+  ['srimangal-tea-garden', 'Lawachara', 1, 1],
+  ['saint-martins-island', 'Chera Dwip', 1, 1],
+  ['ratargul-0315', 'Gowainghat', 2, 1],
+  ['nymphaea-nouchali-madhabpur-tea-garden-srimangal', 'Madhabpur Lake', 1, 1],
+  ['runmoy-sajek-valley-04', 'Konglak Hill', 1, 1],
+  ['river-in-sundarban', 'Mongla', 1, 1],
+  ['amazing-evening-view-of-saint-martin-island-bangladesh', 'Teknaf', 2, 1],
+  ['coxs-bazar-sea-beach-in-between-day-and-night', 'Himchari', 1, 1],
 ];
 
 type Thumb = { img: string; left: string; top: string; w: string; ar: string; sp: number; d: number };
 const THUMBS_P: Thumb[] = [
-  { img: W("Blue_waters_of_Saint_Martin_Island_,_Bangladesh.jpg", 600), left: '13%', top: '32%', w: 'clamp(120px,12vw,210px)', ar: '3/4', sp: 0.9, d: 0 },
-  { img: W('Ratargul_0315.jpg', 600), left: '24%', top: '74%', w: 'clamp(90px,8.5vw,150px)', ar: '1/1', sp: 1.3, d: 0.12 },
-  { img: W('Sajek_Valley_01.jpg', 600), left: '87%', top: '32%', w: 'clamp(120px,12vw,210px)', ar: '3/4', sp: 0.9, d: 0.06 },
-  { img: W('Tea_Garden_Srimongol_Sylhet_Bangladesh_2.JPG', 600), left: '76%', top: '74%', w: 'clamp(90px,8.5vw,150px)', ar: '1/1', sp: 1.3, d: 0.18 },
-  { img: W("A_dusk_at_Cox's_Bazar_sea_beach.jpg", 600), left: '50%', top: '15%', w: 'clamp(80px,7vw,120px)', ar: '4/3', sp: 0.6, d: 0.24 },
+  { img: photo('blue-waters-of-saint-martin-island-bangladesh', 600), left: '13%', top: '32%', w: 'clamp(120px,12vw,210px)', ar: '3/4', sp: 0.9, d: 0 },
+  { img: photo('ratargul-0315', 600), left: '24%', top: '74%', w: 'clamp(90px,8.5vw,150px)', ar: '1/1', sp: 1.3, d: 0.12 },
+  { img: photo('sajek-valley-01', 600), left: '87%', top: '32%', w: 'clamp(120px,12vw,210px)', ar: '3/4', sp: 0.9, d: 0.06 },
+  { img: photo('tea-garden-srimongol-sylhet-bangladesh-2', 600), left: '76%', top: '74%', w: 'clamp(90px,8.5vw,150px)', ar: '1/1', sp: 1.3, d: 0.18 },
+  { img: photo('a-dusk-at-coxs-bazar-sea-beach', 600), left: '50%', top: '15%', w: 'clamp(80px,7vw,120px)', ar: '4/3', sp: 0.6, d: 0.24 },
 ];
 
 // Scroll-driven sequence: intro headline blurs in and out, then places advance with progress t (in viewport heights).
-function sequence(t: number, items: Item[], thumbs: Thumb[], slow = false) {
+function sequence(t: number, items: Destination[], thumbs: Thumb[], slow = false) {
   const X = 1, D = slow ? 1.1 : 0, te = t - D;
   const cl = (x: number) => Math.max(0, Math.min(1, x)), ez = (x: number) => 1 - Math.pow(1 - x, 3);
   const n = items.length, idx = Math.max(0, Math.min(n - 1, Math.floor((te - 1 - 0.5 * X) / 0.9)));
@@ -130,13 +120,14 @@ export default function HomeView({ stories }: { stories: Story[] }) {
     const el = document.getElementById('popular');
     if (!el) return;
     const q = query.trim().toLowerCase();
-    const match = q ? POPULAR.findIndex(p => p.name.toLowerCase().includes(q) || p.region!.toLowerCase().includes(q)) : -1;
+    const match = q ? POPULAR.findIndex(p => (p.name + ' ' + p.district + ' ' + p.bn).toLowerCase().includes(q)) : -1;
     window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY + (1.7 + Math.max(0, match) * 0.9) * window.innerHeight, behavior: 'smooth' });
   };
 
   const loved = sequence(t, POPULAR, THUMBS_P);
   const gs = sequence(tg, GEMS, [], true);
   const latest = stories.map(decorate);
+  const newest = latest[0]; // stories arrive newest first
   const hi = Math.min(hs, Math.max(0, latest.length - 1));
 
   const places = (s: Seq) => (
@@ -185,10 +176,10 @@ export default function HomeView({ stories }: { stories: Story[] }) {
       </header>
 
       <section className="mt-18 grid h-screen min-h-[560px] w-full grid-flow-dense grid-cols-6 grid-rows-4 gap-1 p-1">
-        {MOSAIC.map(([file, label, c, r]) => (
+        {MOSAIC.map(([id, label, c, r]) => (
           <div key={label} className={`relative cursor-pointer overflow-hidden rounded-md bg-ink ${c === 2 ? 'col-span-2' : 'col-span-1'} ${r === 2 ? 'row-span-2' : 'row-span-1'}`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={W(file, 900)} alt={label} loading="lazy" className="absolute inset-0 block size-full object-cover" />
+            <img src={photo(id, 900)} alt={label} loading="lazy" className="absolute inset-0 block size-full object-cover" />
             <div className="absolute inset-0 bg-[rgba(12,12,12,0.55)] [transition:background_0.35s_ease] hover:bg-[rgba(12,12,12,0)]"></div>
             <span className="pointer-events-none absolute bottom-2.5 left-3 text-[14px] font-bold text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.45)]">{label}</span>
           </div>
@@ -211,16 +202,18 @@ export default function HomeView({ stories }: { stories: Story[] }) {
           <h2 className="m-0 max-w-[900px] text-[clamp(40px,6vw,84px)] leading-[1.02] font-medium tracking-[-0.045em]">Stop digging <span aria-label="Facebook" className="mx-[0.04em] -mt-[0.12em] inline-flex h-[0.78em] w-[1.6em] items-center justify-center rounded-full bg-frame align-middle"><span className="translate-y-[0.04em] font-[family-name:Arial,Helvetica,sans-serif] text-[0.62em] leading-none font-black tracking-[0] text-[#1877F2]">f</span></span> through<br />old Facebook posts</h2>
           <p className="mt-6 mb-0 max-w-[440px] text-[18px] leading-normal text-pretty text-[#6b6b6b]">One clear page per place with <b className="font-bold text-ink">real costs, routes &amp; seasons</b>&nbsp;-&nbsp;checked every week.</p>
           <Link href="/stories" className={`${PILL} mt-7`}>Browse all stories <Arrow /></Link>
-          <div className="relative mt-11 aspect-[16/10.5] w-[min(100%,460px)] overflow-hidden rounded-[10px] bg-ink text-left">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={W('Runmoy,_Sajek_Valley_04.jpg', 1000)} alt="Runmoy, Sajek Valley" className="absolute inset-0 size-full object-cover" />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_40%,rgba(0,0,0,0.7)_100%)]"></div>
-            <Link href="/stories/s1" className="absolute top-3.5 right-3.5 rounded-full bg-white/85 px-3.5 py-2 text-[13px] font-medium text-ink backdrop-blur-[8px]">Read story →</Link>
-            <div className="absolute right-5 bottom-4.5 left-5 text-white">
-              <div className="text-[21px] font-medium tracking-[-0.02em]">How we did Sajek for ৳4,800</div>
-              <div className="mt-1.5 text-[13px] opacity-85">A story by Nusrat Jahan · 4 min read</div>
+          {newest && (
+            <div className="relative mt-11 aspect-[16/10.5] w-[min(100%,460px)] overflow-hidden rounded-[10px] bg-ink text-left">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {newest.img && <img src={newest.img} alt={newest.title} className="absolute inset-0 size-full object-cover" />}
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_40%,rgba(0,0,0,0.7)_100%)]"></div>
+              <Link href={newest.href} className="absolute top-3.5 right-3.5 rounded-full bg-white/85 px-3.5 py-2 text-[13px] font-medium text-ink backdrop-blur-[8px]">Read story →</Link>
+              <div className="absolute right-5 bottom-4.5 left-5 text-white">
+                <div className="line-clamp-2 text-[21px] font-medium tracking-[-0.02em]">{newest.title}</div>
+                <div className="mt-1.5 truncate text-[13px] opacity-85">A story by {newest.name} · {newest.readTime}</div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
