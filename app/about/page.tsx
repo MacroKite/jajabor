@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: 'TRIP is a nonprofit run by volunteers: a free, honest guide to travelling in Bangladesh.',
 };
 
-const P = 'm-0 text-[clamp(20px,1.6vw,23px)] leading-[1.7] text-pretty text-[#2a2a2a]';
+const P = 'm-0 text-[17px] tablet:text-[19px] desktop:text-[clamp(20px,1.6vw,23px)] leading-[1.7] text-pretty text-[#2a2a2a]';
 const ICON = 'flex size-9 shrink-0 items-center justify-center rounded-lg bg-frame';
 const ROW = 'flex items-center gap-3.5';
 const TXT = 'text-[15px] font-medium';
@@ -18,25 +18,25 @@ export default function Page() {
     <div className="min-h-screen overflow-x-clip bg-white">
       <Nav active="about" />
 
-      <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-24">
-        <h1 className="m-0 text-[clamp(56px,10vw,160px)] leading-[0.9] font-bold tracking-[-0.055em]">About <span className="mesh-word">us</span></h1>
+      <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
+        <h1 className="m-0 text-[clamp(44px,10vw,160px)] leading-[0.9] font-bold tracking-[-0.055em]">About <span className="mesh-word">us</span></h1>
         <p className="m-0 mb-3.5 max-w-[420px] text-[clamp(18px,1.6vw,22px)] leading-[1.35] font-medium text-pretty">A free, honest guide to travelling in Bangladesh.</p>
       </header>
 
-      <section className="mt-16 px-[5vw]">
-        <div className="relative aspect-[16/7] min-h-80 overflow-hidden rounded-[10px] bg-frame">
+      <section className="mt-8 px-[5vw] tablet:mt-12 desktop:mt-16">
+        <div className="relative aspect-[4/3] tablet:aspect-[16/7] tablet:min-h-80 overflow-hidden rounded-[10px] bg-frame">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/about-hero.jpg" alt="" className="absolute inset-0 block size-full object-cover" />
         </div>
       </section>
 
-      <section className="flex flex-col gap-6 px-[5vw] pt-30">
+      <section className="flex flex-col gap-6 px-[5vw] pt-14 tablet:pt-20 desktop:pt-30">
         <h2 className="m-0 text-[clamp(36px,4.4vw,64px)] leading-[0.95] font-bold tracking-[-0.045em]">Who we are</h2>
         <p className={P}>TRIP is a nonprofit organisation run by volunteers who love travelling in Bangladesh. We started because planning a trip here usually means digging through old Facebook posts, outdated blogs and advice that is trying to sell you something. We wanted one clear, honest place where anyone could find out how to get somewhere, what to eat, where to stay and when to go.</p>
         <p className={P}>We don&apos;t sell tours, take bookings or earn commissions. Every guide is free to read, and every story is written by a real traveller. Our only goal is to help more people see their own country, and to do it in a way that respects the places and the communities who live there.</p>
       </section>
 
-      <section id="contact" className="grid scroll-mt-24 grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-stretch gap-x-16 gap-y-12 px-[5vw] pt-40">
+      <section id="contact" className="grid scroll-mt-24 grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-stretch gap-x-16 gap-y-12 px-[5vw] pt-20 tablet:pt-28 desktop:pt-40">
         <div className="flex flex-col gap-5 pt-4">
           <h2 className="m-0 text-[clamp(40px,4.6vw,68px)] leading-none font-bold tracking-[-0.045em]">Get in touch</h2>
           <p className="m-0 max-w-[460px] text-[clamp(19px,1.6vw,22px)] leading-normal text-pretty text-muted">Have a question, an idea or a place we should cover? We&apos;d love to hear from you, and every message helps us make TRIP better.</p>

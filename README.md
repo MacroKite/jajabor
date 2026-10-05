@@ -18,6 +18,10 @@ Built with Next.js (App Router), Tailwind CSS and MongoDB (Mongoose). The origin
 
 The old prototype URLs (`TRIP.dc.html`, `Destination.dc.html?id=…`, `Stories.dc.html?story=…` and so on) redirect to these.
 
+## Layouts
+
+Styling is Tailwind CSS v4 with three layouts, set in [`app/globals.css`](app/globals.css): **phone** is the default (no prefix), `tablet:` applies from 768px and `desktop:` from 1024px. Tailwind's other breakpoints (`sm:`, `md:`, `lg:`, …) are turned off. On phones the nav collapses into a full-screen menu.
+
 ## Data
 
 - **Destinations** and their guides are in [`lib/data.ts`](lib/data.ts). They change rarely, so they stay in code: the pages are prerendered, and every edit is reviewed in git. The home page reads from the same list.

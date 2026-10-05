@@ -86,7 +86,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="relative mt-[200px] w-full overflow-hidden bg-white font-sans">
+    <footer className="relative mt-24 w-full tablet:mt-36 desktop:mt-[200px] overflow-hidden bg-white font-sans">
       <div ref={scene} aria-hidden="true" className="relative h-[clamp(280px,34vw,520px)]">
         <svg ref={birds} viewBox="0 0 120 40" className="absolute top-[14%] left-0 w-[clamp(70px,7vw,120px)] overflow-visible opacity-55">
           {BIRDS.map(d => <path key={d} d={d} suppressHydrationWarning fill="none" stroke="#1f4f3d" strokeWidth="1.4" strokeLinecap="round"></path>)}
@@ -100,8 +100,8 @@ export default function Footer() {
       </div>
 
       <div className="relative -mt-px bg-[#0b2a20] px-[5vw] pt-6 pb-8 text-white">
-        <div ref={content} className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,200px),1fr))] gap-x-10 gap-y-12 pb-14">
-          <div data-rv="1" className="flex flex-col gap-4.5">
+        <div ref={content} className="grid grid-cols-2 gap-x-6 gap-y-10 pb-10 tablet:grid-cols-4 tablet:gap-x-10 tablet:gap-y-12 tablet:pb-14">
+          <div data-rv="1" className="col-span-2 flex flex-col gap-4.5 tablet:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 text-[40px] leading-none font-black tracking-[-0.05em] text-white">
               <span className="block size-3.5 rounded-full bg-bd-red"></span>TRIP
             </Link>
@@ -119,7 +119,7 @@ export default function Footer() {
             <Link href="/about#contact" className={LINK}>Suggest a place</Link>
             <Link href="/about#contact" className={LINK}>Contact us</Link>
           </div>
-          <div data-rv="1" className="flex flex-col gap-3.5">
+          <div data-rv="1" className="col-span-2 flex flex-col gap-3.5 tablet:col-span-1">
             <span className={HEAD}>Contact</span>
             <a href="mailto:hello@trip.org.bd" className={LINK}>hello@trip.org.bd</a>
             <a href="tel:+8801700000000" className={LINK}>+880 1700 000000</a>

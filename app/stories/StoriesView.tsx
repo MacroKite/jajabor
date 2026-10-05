@@ -40,12 +40,12 @@ export default function StoriesView({ stories, initialPlace }: { stories: Story[
     <div className="min-h-screen overflow-x-clip bg-white">
       <Nav active="stories" shareHref={shareHref} />
 
-      <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-24">
-        <h1 className="m-0 text-[clamp(56px,10vw,160px)] leading-[0.9] font-bold tracking-[-0.055em]">All <span className="mesh-word">stories</span></h1>
+      <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
+        <h1 className="m-0 text-[clamp(44px,10vw,160px)] leading-[0.9] font-bold tracking-[-0.055em]">All <span className="mesh-word">stories</span></h1>
         <p className="m-0 mb-3.5 max-w-[420px] text-[clamp(18px,1.6vw,22px)] leading-[1.35] font-medium text-pretty">Written by travellers, for the next person who goes.</p>
       </header>
 
-      <div className="mx-[5vw] mt-24 flex flex-wrap items-center justify-between gap-4 border-b border-[#e4e4e4] pt-3.5 pb-7">
+      <div className="mx-[5vw] mt-12 tablet:mt-16 desktop:mt-24 flex flex-wrap items-center justify-between gap-4 border-b border-[#e4e4e4] pt-3.5 pb-7">
         <span className="text-[15px] text-muted">{n + (n === 1 ? ' story' : ' stories') + (d ? ' from ' + d.name : '')}</span>
         <div ref={filterEl} className="relative">
           <button aria-haspopup="listbox" aria-expanded={filterOpen} onClick={() => setFilterOpen(o => !o)} className="flex cursor-pointer items-center gap-2.5 rounded-full border border-[#e2e2e2] bg-white px-4.5 py-[11px] text-[15px] font-medium text-ink hover:border-ink">
@@ -68,8 +68,8 @@ export default function StoriesView({ stories, initialPlace }: { stories: Story[
       <section className="px-[5vw]">
         <div className="flex flex-col">
           {list.map(r => (
-            <Link key={r.id} href={r.href} className="flex cursor-pointer flex-wrap items-stretch gap-x-8 gap-y-6 border-b border-[#e4e4e4] py-14 text-ink last:border-b-0">
-              <div className="relative aspect-[3/2] min-w-[220px] flex-[0_1_320px] self-start overflow-hidden rounded-[10px] bg-frame">
+            <Link key={r.id} href={r.href} className="flex cursor-pointer flex-wrap items-stretch gap-x-8 gap-y-6 border-b border-[#e4e4e4] py-8 text-ink tablet:py-14 last:border-b-0">
+              <div className="relative aspect-[16/11] min-w-[220px] flex-[1_1_100%] tablet:flex-[0_1_320px] self-start overflow-hidden rounded-[10px] bg-frame">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {r.img && <img src={r.img} alt="" loading="lazy" className="absolute inset-0 block size-full object-cover transition-transform duration-900 ease-glide hover:scale-105" />}
               </div>

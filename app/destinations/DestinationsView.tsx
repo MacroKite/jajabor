@@ -23,11 +23,11 @@ export default function DestinationsView({ initialFilter }: { initialFilter: Fil
     <div className="min-h-screen overflow-x-clip bg-white">
       <Nav active="destinations" />
 
-      <header className="flex flex-col gap-7 px-[5vw] pt-22">
-        <h1 className="m-0 text-[clamp(56px,10vw,160px)] leading-[0.92] font-bold tracking-[-0.055em]">All <span className="mesh-word">destinations</span></h1>
+      <header className="flex flex-col gap-7 px-[5vw] pt-10 tablet:pt-16 desktop:pt-22">
+        <h1 className="m-0 text-[clamp(44px,10vw,160px)] leading-[0.92] font-bold tracking-[-0.055em]">All <span className="mesh-word">destinations</span></h1>
       </header>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 px-[5vw] pt-30">
+      <div className="flex flex-wrap items-center justify-between gap-4 px-[5vw] pt-14 tablet:pt-20 desktop:pt-30">
         <div role="tablist" className="flex flex-wrap gap-1 rounded-full border border-[#e6e6e6] p-1">
           {tabs.map(([k, label]) => {
             const on = filter === k;
@@ -38,13 +38,13 @@ export default function DestinationsView({ initialFilter }: { initialFilter: Fil
             );
           })}
         </div>
-        <label className="flex w-[min(100%,320px)] items-center gap-2.5 rounded-full border border-[#e6e6e6] px-5">
+        <label className="flex w-full tablet:w-[min(100%,320px)] items-center gap-2.5 rounded-full border border-[#e6e6e6] px-5">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#141414" strokeWidth="2" className="shrink-0"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
           <input aria-label="Search places or districts" value={q} onChange={e => setQ(e.target.value)} placeholder="Search places or districts" className="min-w-0 flex-1 bg-transparent py-3.5 text-[15px] text-ink outline-0" />
         </label>
       </div>
 
-      <section className="grid grid-cols-[repeat(auto-fill,minmax(max(300px,calc((100%_-_80px)_/_3)),1fr))] gap-x-10 gap-y-20 px-[5vw] pt-10">
+      <section className="grid grid-cols-[repeat(auto-fill,minmax(max(300px,calc((100%_-_80px)_/_3)),1fr))] gap-x-6 gap-y-12 tablet:gap-x-10 desktop:gap-y-20 px-[5vw] pt-10">
         {list.map(c => (
           <Link key={c.id} href={'/destinations/' + c.id} className="flex flex-col gap-3.5 text-ink">
             <div className="relative aspect-[4/3] overflow-hidden rounded-[10px] bg-frame">

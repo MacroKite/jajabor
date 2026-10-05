@@ -78,11 +78,11 @@ export default function ShareView({ defaultPlace }: { defaultPlace: string }) {
     <div className="min-h-screen overflow-x-clip bg-white">
       <Nav />
 
-      <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-24">
-        <h1 className="m-0 text-[clamp(56px,10vw,160px)] leading-[0.9] font-bold tracking-[-0.055em]">Share your <span className="mesh-word">story</span></h1>
+      <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
+        <h1 className="m-0 text-[clamp(44px,10vw,160px)] leading-[0.9] font-bold tracking-[-0.055em]">Share your <span className="mesh-word">story</span></h1>
       </header>
 
-      <section className="px-[5vw] pt-24">
+      <section className="px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
         <form onSubmit={onSubmit} noValidate className="flex flex-col gap-6">
           <div className={GRID}>
             <label className={LABEL}>Where did you go?

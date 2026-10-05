@@ -21,7 +21,7 @@ export default function ShareButtons({ path, title, img }: { path: string; title
   };
 
   return (
-    <div className="mt-20 flex flex-col gap-4">
+    <div className="mt-14 flex flex-col gap-4 tablet:mt-20">
       <span className="text-[18px] font-medium text-muted">Share this story</span>
       <div className="flex items-center gap-6">
         <button onClick={() => open('https://www.facebook.com/sharer/sharer.php?u=' + E(url()))} aria-label="Share on Facebook" className={BTN}><svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#141414"></circle><path fill="#fff" d="M13.2 19v-6h2l.3-2.4h-2.3V9.1c0-.7.2-1.2 1.2-1.2h1.2V5.8c-.2 0-1-.1-1.8-.1-1.8 0-3 1.1-3 3.1v1.8h-2V13h2v6z"></path></svg></button>
