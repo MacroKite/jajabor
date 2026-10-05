@@ -23,6 +23,7 @@ export type Story = {
   from: string;
   date: string; // YYYY-MM-DD
   image?: string; // URL of the traveller's photo, if they uploaded one
+  authorId?: string; // account that wrote it; starter stories have none
 };
 
 export const DESTS: Destination[] = [

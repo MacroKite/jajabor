@@ -45,6 +45,7 @@ Visitors can read everything without an account; **publishing a story needs one*
 - Users, sessions and linked accounts are stored in MongoDB, in the `user`, `session` and `account` collections. Passwords are hashed by Better Auth.
 - Signing in with Google using the same email as an existing password account links the two.
 - `/share` redirects to `/login` and back; `/api/stories` rejects requests without a session. Each new story stores its author's `userId`.
+- Authors can **edit** (`/stories/<id>/edit`, `PATCH /api/stories/<id>`) and **delete** (`DELETE /api/stories/<id>`) their own stories; the buttons appear on the story page for the author only. Deleting also removes the photo from Cloudinary. Starter stories have no author, so they can't be changed from the site.
 - Not set up yet: email verification and password reset (both need an email service such as Resend).
 
 **Google setup:** in Google Cloud Console, create an OAuth client ID (Web application) and add `http://localhost:3000/api/auth/callback/google` and `https://<your-domain>/api/auth/callback/google` as authorized redirect URIs. While the OAuth consent screen is in "Testing", only listed test users can sign in; publish it before launch.

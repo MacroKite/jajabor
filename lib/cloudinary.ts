@@ -9,12 +9,14 @@ const FOLDER = 'trip/stories';
 
 // Uploads a validated photo and returns a delivery URL that serves WebP/AVIF
 // at an automatic quality to browsers that support them.
-export async function uploadStoryImage(storyId: string, image: { mime: string; base64: string }): Promise<{ publicId: string; url: string }> {
+// Pass replace=true when the author changes their photo; the story keeps the same public id.
+export async function uploadStoryImage(storyId: string, image: { mime: string; base64: string }, replace = false): Promise<{ publicId: string; url: string }> {
   const r = await cloudinary.uploader.upload(`data:${image.mime};base64,${image.base64}`, {
     folder: FOLDER,
     public_id: storyId,
     resource_type: 'image',
-    overwrite: false,
+    overwrite: replace,
+    invalidate: replace,
   });
   return {
     publicId: r.public_id,

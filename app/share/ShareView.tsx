@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Nav from '@/components/Nav';
@@ -32,9 +33,14 @@ function resize(file: File): Promise<string> {
   });
 }
 
-export default function ShareView({ defaultPlace, defaultName }: { defaultPlace: string; defaultName: string }) {
+export type StoryDraft = { place: string; title: string; text: string; name: string; from: string; image: string };
+
+// Writes a new story, or edits one when `storyId` is given. When editing, `initial.image` is the
+// current photo's URL; only a newly chosen photo (a data: URL) is sent to the server.
+export default function ShareView({ initial, storyId }: { initial: StoryDraft; storyId?: string }) {
   const router = useRouter();
-  const [f, setF] = useState({ place: defaultPlace, image: '', title: '', text: '', name: defaultName, from: '', website: '' });
+  const editing = !!storyId;
+  const [f, setF] = useState({ ...initial, website: '' });
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   const n = wc(f.text);
@@ -60,14 +66,16 @@ export default function ShareView({ defaultPlace, defaultName }: { defaultPlace:
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (busy) return;
-    const msg = !f.place ? 'Pick the place your story is about.' : !f.image ? 'Add a photo from your trip.' : !f.title.trim() ? 'Give your story a title.' : n < MIN_WORDS ? `Your story needs at least ${MIN_WORDS} words. You have ${n}.` : !f.name.trim() ? 'Add your name.' : '';
+    const msg = !f.place ? 'Pick the place your story is about.' : !editing && !f.image ? 'Add a photo from your trip.' : !f.title.trim() ? 'Give your story a title.' : n < MIN_WORDS ? `Your story needs at least ${MIN_WORDS} words. You have ${n}.` : !f.name.trim() ? 'Add your name.' : '';
     if (msg) return setErr(msg);
     setBusy(true);
     try {
-      const res = await fetch('/api/stories', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(f) });
+      const body = { ...f, image: f.image.startsWith('data:') ? f.image : undefined };
+      const res = await fetch(editing ? '/api/stories/' + encodeURIComponent(storyId) : '/api/stories', { method: editing ? 'PATCH' : 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) { setErr(data.error || (res.status === 413 ? 'Your photo is too large. Please try a smaller one.' : 'Could not publish your story. Please try again.')); setBusy(false); return; }
+      if (!res.ok) { setErr(data.error || (res.status === 413 ? 'Your photo is too large. Please try a smaller one.' : editing ? 'Could not save your changes. Please try again.' : 'Could not publish your story. Please try again.')); setBusy(false); return; }
       router.push('/stories/' + data.id);
+      router.refresh();
     } catch {
       setErr('Could not reach the server. Check your connection and try again.');
       setBusy(false);
@@ -79,7 +87,7 @@ export default function ShareView({ defaultPlace, defaultName }: { defaultPlace:
       <Nav />
 
       <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
-        <h1 className="m-0 text-[clamp(44px,10vw,160px)] leading-[0.9] font-bold tracking-[-0.055em]">Share your <span className="mesh-word">story</span></h1>
+        <h1 className="m-0 text-[clamp(44px,10vw,160px)] leading-[0.9] font-bold tracking-[-0.055em]">{editing ? 'Edit your' : 'Share your'} <span className="mesh-word">story</span></h1>
       </header>
 
       <section className="px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
@@ -115,7 +123,7 @@ export default function ShareView({ defaultPlace, defaultName }: { defaultPlace:
                   : <span className="text-[24px] leading-none text-ink">+</span>}
               </span>
               <span className="flex flex-col gap-1">
-                <span className="text-[15px] font-medium text-ink">{f.image ? 'Photo added · click to change' : 'Add a photo'}</span>
+                <span className="text-[15px] font-medium text-ink">{f.image.startsWith('data:') ? 'New photo added · click to change' : f.image ? 'Current photo · click to change' : 'Add a photo'}</span>
                 <span className="text-[13px] font-normal text-faint">JPG or PNG, one photo from your trip</span>
               </span>
               <input type="file" accept="image/*" aria-label="Add a photo" onChange={onImage} className="absolute inset-0 size-full cursor-pointer opacity-0" />
@@ -125,7 +133,10 @@ export default function ShareView({ defaultPlace, defaultName }: { defaultPlace:
             <input tabIndex={-1} autoComplete="off" value={f.website} onChange={set('website')} />
           </label>
           {err && <span role="alert" className="text-[14px] font-medium text-bd-red">{err}</span>}
-          <button type="submit" disabled={busy} className={`rounded-[10px] bg-ink p-5 text-[16px] font-bold text-white hover:bg-bd-green ${busy ? 'cursor-wait' : 'cursor-pointer'}`}>{busy ? 'Publishing…' : 'Publish story'}</button>
+          <div className="flex flex-col gap-3 tablet:flex-row">
+            <button type="submit" disabled={busy} className={`flex-1 rounded-[10px] bg-ink p-5 text-[16px] font-bold text-white hover:bg-bd-green ${busy ? 'cursor-wait' : 'cursor-pointer'}`}>{busy ? (editing ? 'Saving…' : 'Publishing…') : editing ? 'Save changes' : 'Publish story'}</button>
+            {editing && <Link href={'/stories/' + storyId} className="rounded-[10px] border border-[#e2e2e2] p-5 text-center text-[16px] font-bold tablet:px-10">Cancel</Link>}
+          </div>
         </form>
       </section>
 

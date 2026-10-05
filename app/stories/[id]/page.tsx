@@ -7,6 +7,7 @@ import { getStory } from '@/lib/db';
 import { decorate } from '@/lib/stories';
 import { siteUrl } from '@/lib/site';
 import ShareButtons from './ShareButtons';
+import StoryOwnerActions from './StoryOwnerActions';
 
 export const revalidate = 300;
 
@@ -40,6 +41,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           <span className="flex items-center gap-1.5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5c5c5c" strokeWidth="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>{story.placeName}</span>
           <span>{story.when}</span>
         </div>
+        <StoryOwnerActions id={story.id} authorId={story.authorId} />
         <div className="relative aspect-[16/11] overflow-hidden rounded-[10px] bg-frame">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           {story.img && <img src={story.img} alt={story.title} className="absolute inset-0 block size-full object-cover" />}
