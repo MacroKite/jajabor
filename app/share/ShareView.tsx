@@ -32,9 +32,9 @@ function resize(file: File): Promise<string> {
   });
 }
 
-export default function ShareView({ defaultPlace }: { defaultPlace: string }) {
+export default function ShareView({ defaultPlace, defaultName }: { defaultPlace: string; defaultName: string }) {
   const router = useRouter();
-  const [f, setF] = useState({ place: defaultPlace, image: '', title: '', text: '', name: '', from: '', website: '' });
+  const [f, setF] = useState({ place: defaultPlace, image: '', title: '', text: '', name: defaultName, from: '', website: '' });
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   const n = wc(f.text);

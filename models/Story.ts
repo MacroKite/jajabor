@@ -1,4 +1,4 @@
-import { Schema, model, models, type InferSchemaType, type Model } from 'mongoose';
+import { Schema, deleteModel, model, models, type InferSchemaType, type Model } from 'mongoose';
 
 const StorySchema = new Schema(
   {
@@ -13,6 +13,8 @@ const StorySchema = new Schema(
     // The traveller's photo, stored on Cloudinary.
     imageUrl: { type: String },
     imagePublicId: { type: String },
+    // The account that wrote it (Better Auth user id); starter stories have none.
+    userId: { type: String, index: true },
     status: { type: String, required: true, enum: ['pending', 'published', 'rejected'], default: 'published' },
   },
   { timestamps: { createdAt: true, updatedAt: false }, versionKey: false },
@@ -22,5 +24,6 @@ StorySchema.index({ status: 1, date: -1, createdAt: -1 });
 
 export type StoryDoc = InferSchemaType<typeof StorySchema>;
 
-// `models.Story` avoids "Cannot overwrite model" errors when Next hot-reloads.
-export const Story: Model<StoryDoc> = models.Story || model<StoryDoc>('Story', StorySchema);
+// Next re-runs this file on hot reload; replace the cached model so schema edits take effect.
+if (models.Story) deleteModel('Story');
+export const Story: Model<StoryDoc> = model<StoryDoc>('Story', StorySchema);

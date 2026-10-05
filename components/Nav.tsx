@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { authClient } from '@/lib/auth-client';
 
 const LINKS = [
   { key: 'destinations', href: '/destinations', label: 'Destinations' },
@@ -10,9 +11,24 @@ const LINKS = [
   { key: 'about', href: '/about', label: 'About' },
 ] as const;
 
+type User = { name: string; email: string; image?: string | null };
+
+function Avatar({ user, size = 'size-9' }: { user: User; size?: string }) {
+  return user.image
+    // eslint-disable-next-line @next/next/no-img-element
+    ? <img src={user.image} alt="" referrerPolicy="no-referrer" className={`${size} rounded-full object-cover`} />
+    : <span className={`${size} flex items-center justify-center rounded-full bg-bd-green text-[15px] font-bold text-white`}>{(user.name || user.email).trim()[0]?.toUpperCase()}</span>;
+}
+
 export default function Nav({ active, home, shareHref = '/share' }: { active?: 'destinations' | 'stories' | 'about'; home?: boolean; shareHref?: string }) {
   const [open, setOpen] = useState(false);
+  const [userMenu, setUserMenu] = useState(false);
+  const userEl = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user as User | undefined;
+  const loginHref = pathname && pathname !== '/' && !pathname.startsWith('/login') && !pathname.startsWith('/signup') ? `/login?next=${encodeURIComponent(pathname)}` : '/login';
 
   // Close the phone menu on navigation, on Escape, and when the screen grows past phone size.
   useEffect(() => setOpen(false), [pathname]);
@@ -31,7 +47,23 @@ export default function Nav({ active, home, shareHref = '/share' }: { active?: '
     };
   }, [open]);
 
+  // Close the account menu on outside click or Escape.
+  useEffect(() => {
+    if (!userMenu) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setUserMenu(false); };
+    const onDown = (e: MouseEvent) => { if (userEl.current && !userEl.current.contains(e.target as Node)) setUserMenu(false); };
+    window.addEventListener('keydown', onKey);
+    document.addEventListener('mousedown', onDown);
+    return () => { window.removeEventListener('keydown', onKey); document.removeEventListener('mousedown', onDown); };
+  }, [userMenu]);
+
   const close = () => setOpen(false);
+  const signOut = async () => {
+    setUserMenu(false);
+    setOpen(false);
+    await authClient.signOut();
+    router.refresh();
+  };
 
   return (
     <div className="sticky top-0 z-30">
@@ -42,7 +74,28 @@ export default function Nav({ active, home, shareHref = '/share' }: { active?: '
         <div className="hidden gap-8 text-[15px] font-medium tablet:flex desktop:gap-14">
           {LINKS.map(l => <Link key={l.key} href={l.href} className={active === l.key ? 'text-bd-green' : undefined}>{l.label}</Link>)}
         </div>
-        <Link href={shareHref} className="hidden rounded-full bg-ink px-5.5 py-3 text-[15px] font-medium text-white tablet:block">Share your story</Link>
+        <div className="hidden items-center gap-4 tablet:flex desktop:gap-5">
+          {/* Reserve the space while the session loads, so the nav doesn't jump. */}
+          {isPending ? <span className="size-9" aria-hidden="true"></span> : user ? (
+            <div ref={userEl} className="relative">
+              <button type="button" onClick={() => setUserMenu(o => !o)} aria-haspopup="menu" aria-expanded={userMenu} aria-label="Account menu" className="flex cursor-pointer rounded-full outline-offset-2">
+                <Avatar user={user} />
+              </button>
+              {userMenu && (
+                <div role="menu" className="absolute top-[calc(100%+10px)] right-0 z-20 flex w-64 flex-col rounded-[10px] border border-[#e6e6e6] bg-white p-1.5">
+                  <div className="flex flex-col gap-0.5 border-b border-[#ececec] px-3 pt-2 pb-3">
+                    <span className="truncate text-[15px] font-bold">{user.name}</span>
+                    <span className="truncate text-[13px] text-muted">{user.email}</span>
+                  </div>
+                  <button type="button" role="menuitem" onClick={signOut} className="mt-1 cursor-pointer rounded-md px-3 py-2.5 text-left text-[15px] font-medium hover:bg-[#f4f4f4]">Log out</button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link href={loginHref} className="text-[15px] font-medium">Log in</Link>
+          )}
+          <Link href={shareHref} className="rounded-full bg-ink px-5.5 py-3 text-[15px] font-medium text-white">Share your story</Link>
+        </div>
         <button
           type="button"
           onClick={() => setOpen(o => !o)}
@@ -60,7 +113,7 @@ export default function Nav({ active, home, shareHref = '/share' }: { active?: '
       <div
         id="mobile-menu"
         inert={!open}
-        className={`fixed inset-x-0 top-16 bottom-0 flex flex-col bg-white px-[5vw] pt-6 pb-[max(24px,env(safe-area-inset-bottom))] transition-[opacity,translate] duration-250 tablet:hidden ${open ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'}`}
+        className={`fixed inset-x-0 top-16 bottom-0 flex flex-col overflow-y-auto bg-white px-[5vw] pt-6 pb-[max(24px,env(safe-area-inset-bottom))] transition-[opacity,translate] duration-250 tablet:hidden ${open ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'}`}
       >
         <div className="flex flex-col">
           {LINKS.map(l => (
@@ -71,7 +124,19 @@ export default function Nav({ active, home, shareHref = '/share' }: { active?: '
           ))}
         </div>
         <Link href={shareHref} onClick={close} className="mt-8 rounded-full bg-ink py-4 text-center text-[16px] font-bold text-white hover:bg-bd-green hover:text-white">Share your story</Link>
-        <a href="mailto:hello@trip.org.bd" className="mt-auto text-center text-[14px] text-muted">hello@trip.org.bd</a>
+        {!isPending && (user ? (
+          <div className="mt-6 flex items-center gap-3 rounded-[10px] bg-[#f4f4f4] p-3">
+            <Avatar user={user} size="size-10" />
+            <div className="flex min-w-0 flex-1 flex-col">
+              <span className="truncate text-[15px] font-bold">{user.name}</span>
+              <span className="truncate text-[13px] text-muted">{user.email}</span>
+            </div>
+            <button type="button" onClick={signOut} className="shrink-0 cursor-pointer rounded-full border border-[#d9d9d9] bg-white px-4 py-2 text-[14px] font-medium">Log out</button>
+          </div>
+        ) : (
+          <Link href={loginHref} onClick={close} className="mt-3 rounded-full border border-[#e2e2e2] py-4 text-center text-[16px] font-bold">Log in</Link>
+        ))}
+        <a href="mailto:hello@trip.org.bd" className="mt-auto pt-6 text-center text-[14px] text-muted">hello@trip.org.bd</a>
       </div>
     </div>
   );

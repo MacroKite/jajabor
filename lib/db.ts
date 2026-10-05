@@ -29,7 +29,7 @@ export async function getStory(id: string): Promise<Story | null> {
   return row ? toStory(row) : null;
 }
 
-export async function insertStory(s: Story, image: { mime: string; base64: string }): Promise<void> {
+export async function insertStory(s: Story, image: { mime: string; base64: string }, userId: string): Promise<void> {
   if (!hasDatabase) throw new Error('MONGODB_URI is not set');
   await connect();
   // Upload the photo first, so a story never goes live without it.
@@ -37,7 +37,7 @@ export async function insertStory(s: Story, image: { mime: string; base64: strin
   try {
     await StoryModel.create({
       _id: s.id, place: s.place, title: s.title, body: s.text, name: s.name, hometown: s.from, date: s.date,
-      imageUrl: img.url, imagePublicId: img.publicId,
+      imageUrl: img.url, imagePublicId: img.publicId, userId,
     });
   } catch (e) {
     await deleteImage(img.publicId).catch(() => {});

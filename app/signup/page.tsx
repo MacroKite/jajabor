@@ -1,0 +1,25 @@
+import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
+import Nav from '@/components/Nav';
+import Footer from '@/components/Footer';
+import AuthForm from '@/components/AuthForm';
+import { getSession, safeNext } from '@/lib/auth';
+
+export const metadata: Metadata = { title: 'Create an account', robots: { index: false } };
+
+export default async function Page({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
+  const next = safeNext((await searchParams).next);
+  if (await getSession()) redirect(next);
+
+  return (
+    <div className="min-h-screen overflow-x-clip bg-white">
+      <Nav />
+      <section className="flex flex-col items-center px-[5vw] pt-12 tablet:pt-20 desktop:pt-24">
+        <h1 className="m-0 text-center text-[clamp(40px,7vw,96px)] leading-[0.95] font-bold tracking-[-0.05em]">Join <span className="mesh-word">TRIP</span></h1>
+        <p className="mt-4 mb-10 max-w-[420px] text-center text-[16px] text-muted tablet:mb-12 tablet:text-[18px]">Create a free account to share your travel stories.</p>
+        <AuthForm mode="signup" next={next} />
+      </section>
+      <Footer />
+    </div>
+  );
+}

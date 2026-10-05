@@ -38,12 +38,23 @@ Styling is Tailwind CSS v4 with three layouts, set in [`app/globals.css`](app/gl
   db.messages.find().sort({ createdAt: -1 })
   ```
 
+## Accounts
+
+Visitors can read everything without an account; **publishing a story needs one**. Sign-in uses [Better Auth](https://www.better-auth.com) ([`lib/auth.ts`](lib/auth.ts)) with Google or email and password, at `/login` and `/signup`.
+
+- Users, sessions and linked accounts are stored in MongoDB, in the `user`, `session` and `account` collections. Passwords are hashed by Better Auth.
+- Signing in with Google using the same email as an existing password account links the two.
+- `/share` redirects to `/login` and back; `/api/stories` rejects requests without a session. Each new story stores its author's `userId`.
+- Not set up yet: email verification and password reset (both need an email service such as Resend).
+
+**Google setup:** in Google Cloud Console, create an OAuth client ID (Web application) and add `http://localhost:3000/api/auth/callback/google` and `https://<your-domain>/api/auth/callback/google` as authorized redirect URIs. While the OAuth consent screen is in "Testing", only listed test users can sign in; publish it before launch.
+
 ## Deploy to Vercel
 
 1. Push this folder to a GitHub repository, then import it at [vercel.com/new](https://vercel.com/new). Vercel detects Next.js, so no settings are needed.
 2. Create a free cluster on [MongoDB Atlas](https://www.mongodb.com/atlas). Under **Network Access**, allow `0.0.0.0/0` (Vercel has no fixed IP addresses), and create a database user.
 3. Create a free [Cloudinary](https://cloudinary.com) account.
-4. In the Vercel project, under **Settings → Environment Variables**, set `MONGODB_URI` to the Atlas connection string (with `/trip` as the database name), and `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET` from the Cloudinary dashboard.
+4. In the Vercel project, under **Settings → Environment Variables**, set `MONGODB_URI` to the Atlas connection string (with `/trip` as the database name), `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET` from the Cloudinary dashboard, and `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (your site URL, e.g. `https://trip.org.bd`), `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET`.
 5. Redeploy.
 6. Optional: set `NEXT_PUBLIC_SITE_URL` (e.g. `https://trip.org.bd`) once you have a custom domain. It is used in the sitemap and in share previews.
 
