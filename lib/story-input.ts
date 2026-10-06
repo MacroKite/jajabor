@@ -8,7 +8,8 @@ const str = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice
 // Vercel caps request bodies at 4.5 MB; the browser resizes photos well below this.
 const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
 
-function parseImage(v: unknown): StoryImageInput | null {
+// Checks a data: URL photo is a real JPG, PNG or WebP under the size limit.
+export function parseImage(v: unknown): StoryImageInput | null {
   if (typeof v !== 'string') return null;
   const m = v.match(/^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/);
   if (!m) return null;

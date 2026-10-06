@@ -5,31 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Nav from '@/components/Nav';
 import { MIN_WORDS, wc } from '@/lib/stories';
+import { resizePhoto } from '@/lib/resize-photo';
 
 const LABEL = 'flex flex-col gap-2 text-[14px] font-medium';
 const FIELD = 'rounded-[10px] border border-[#e2e2e2] bg-white px-4.5 py-4 text-[16px] outline-bd-green';
 const GRID = 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))] gap-x-5 gap-y-4';
-
-// Shrinks the photo in the browser (max 1600px wide, JPEG) before upload, like the prototype.
-function resize(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const rd = new FileReader();
-    rd.onerror = () => reject(new Error('read'));
-    rd.onload = () => {
-      const im = new Image();
-      im.onerror = () => reject(new Error('decode'));
-      im.onload = () => {
-        const sc = Math.min(1, 1600 / im.width), cv = document.createElement('canvas');
-        cv.width = Math.round(im.width * sc);
-        cv.height = Math.round(im.height * sc);
-        cv.getContext('2d')!.drawImage(im, 0, 0, cv.width, cv.height);
-        resolve(cv.toDataURL('image/jpeg', 0.8));
-      };
-      im.src = rd.result as string;
-    };
-    rd.readAsDataURL(file);
-  });
-}
 
 export type StoryDraft = { place: string; title: string; text: string; from: string; image: string };
 
@@ -54,7 +34,7 @@ export default function ShareView({ initial, places, authorName, storyId }: { in
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      const image = await resize(file);
+      const image = await resizePhoto(file);
       setF(st => ({ ...st, image }));
       setErr('');
     } catch {

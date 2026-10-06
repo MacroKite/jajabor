@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
+import Avatar from '@/components/Avatar';
 
 const LINKS = [
   { key: 'destinations', href: '/destinations', label: 'Destinations' },
@@ -12,13 +13,6 @@ const LINKS = [
 ] as const;
 
 type User = { name: string; email: string; image?: string | null };
-
-function Avatar({ user, size = 'size-9' }: { user: User; size?: string }) {
-  return user.image
-    // eslint-disable-next-line @next/next/no-img-element
-    ? <img src={user.image} alt="" referrerPolicy="no-referrer" className={`${size} rounded-full object-cover`} />
-    : <span className={`${size} flex items-center justify-center rounded-full bg-bd-green text-[15px] font-bold text-white`}>{(user.name || user.email).trim()[0]?.toUpperCase()}</span>;
-}
 
 export default function Nav({ active, home, shareHref = '/share' }: { active?: 'destinations' | 'stories' | 'about'; home?: boolean; shareHref?: string }) {
   const [open, setOpen] = useState(false);
@@ -79,7 +73,7 @@ export default function Nav({ active, home, shareHref = '/share' }: { active?: '
           {isPending ? <span className="size-9" aria-hidden="true"></span> : user ? (
             <div ref={userEl} className="relative">
               <button type="button" onClick={() => setUserMenu(o => !o)} aria-haspopup="menu" aria-expanded={userMenu} aria-label="Account menu" className="flex cursor-pointer rounded-full outline-offset-2">
-                <Avatar user={user} />
+                <Avatar name={user.name || user.email} image={user.image} />
               </button>
               {userMenu && (
                 <div role="menu" className="absolute top-[calc(100%+10px)] right-0 z-20 flex w-64 flex-col rounded-[10px] border border-[#e6e6e6] bg-white p-1.5">
@@ -87,6 +81,7 @@ export default function Nav({ active, home, shareHref = '/share' }: { active?: '
                     <span className="truncate text-[15px] font-bold">{user.name}</span>
                     <span className="truncate text-[13px] text-muted">{user.email}</span>
                   </div>
+                  <Link href="/account" role="menuitem" onClick={() => setUserMenu(false)} className="mt-1 rounded-md px-3 py-2.5 text-[15px] font-medium hover:bg-[#f4f4f4]">Your profile</Link>
                   <button type="button" role="menuitem" onClick={signOut} className="mt-1 cursor-pointer rounded-md px-3 py-2.5 text-left text-[15px] font-medium hover:bg-[#f4f4f4]">Log out</button>
                 </div>
               )}
@@ -126,11 +121,13 @@ export default function Nav({ active, home, shareHref = '/share' }: { active?: '
         <Link href={shareHref} onClick={close} className="mt-8 rounded-full bg-ink py-4 text-center text-[16px] font-bold text-white hover:bg-bd-green hover:text-white">Share your story</Link>
         {!isPending && (user ? (
           <div className="mt-6 flex items-center gap-3 rounded-[10px] bg-[#f4f4f4] p-3">
-            <Avatar user={user} size="size-10" />
-            <div className="flex min-w-0 flex-1 flex-col">
-              <span className="truncate text-[15px] font-bold">{user.name}</span>
-              <span className="truncate text-[13px] text-muted">{user.email}</span>
-            </div>
+            <Link href="/account" onClick={close} className="flex min-w-0 flex-1 items-center gap-3">
+              <Avatar name={user.name || user.email} image={user.image} className="size-10 text-[15px]" />
+              <span className="flex min-w-0 flex-col">
+                <span className="truncate text-[15px] font-bold">{user.name}</span>
+                <span className="truncate text-[13px] text-muted">Your profile</span>
+              </span>
+            </Link>
             <button type="button" onClick={signOut} className="shrink-0 cursor-pointer rounded-full border border-[#d9d9d9] bg-white px-4 py-2 text-[14px] font-medium">Log out</button>
           </div>
         ) : (

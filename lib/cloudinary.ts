@@ -27,3 +27,19 @@ export async function uploadStoryImage(storyId: string, image: { mime: string; b
 export async function deleteImage(publicId: string): Promise<void> {
   await cloudinary.uploader.destroy(publicId, { invalidate: true });
 }
+
+// Profile photos: one per user, replaced on each upload, served as a face-centred square.
+export async function uploadAvatar(userId: string, image: { mime: string; base64: string }): Promise<string> {
+  const r = await cloudinary.uploader.upload(`data:${image.mime};base64,${image.base64}`, {
+    folder: 'trip/avatars',
+    public_id: userId,
+    resource_type: 'image',
+    overwrite: true,
+    invalidate: true,
+  });
+  return cloudinary.url(r.public_id, { secure: true, version: r.version, crop: 'fill', gravity: 'face', width: 400, height: 400, fetch_format: 'auto', quality: 'auto' });
+}
+
+export async function deleteAvatar(userId: string): Promise<void> {
+  await cloudinary.uploader.destroy(`trip/avatars/${userId}`, { invalidate: true });
+}

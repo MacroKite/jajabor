@@ -22,6 +22,10 @@ export type Story = {
   date: string; // YYYY-MM-DD
   image?: string; // URL of the traveller's photo, if they uploaded one
   authorId?: string; // account that wrote it; starter stories have none
+  authorImage?: string; // the author's profile photo
 };
 
 export const findDest = (dests: Destination[], id: string | null | undefined) => dests.find(d => d.id === id);
+
+// Longest bio on a traveller profile.
+export const BIO_MAX = 300;

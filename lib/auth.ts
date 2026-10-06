@@ -1,8 +1,13 @@
 import { betterAuth } from 'better-auth';
 import { mongodbAdapter } from 'better-auth/adapters/mongodb';
+import { APIError } from 'better-auth/api';
 import { nextCookies } from 'better-auth/next-js';
 import { MongoClient } from 'mongodb';
 import { headers } from 'next/headers';
+import { CLOUD } from './images';
+import { BIO_MAX } from './data';
+
+const PHOTO_HOSTS = [`https://res.cloudinary.com/${CLOUD}/`, 'https://lh3.googleusercontent.com/'];
 
 const uri = process.env.MONGODB_URI;
 if (!uri) throw new Error('MONGODB_URI is not set');
@@ -25,8 +30,40 @@ export const auth = betterAuth({
   },
   // Signing in with Google using the same email as a password account joins the two.
   account: { accountLinking: { enabled: true, trustedProviders: ['google'] } },
+  // Profile fields shown on the public traveller page; users edit them on /account.
+  user: {
+    additionalFields: {
+      hometown: { type: 'string', required: false, input: true },
+      bio: { type: 'string', required: false, input: true },
+    },
+  },
+  databaseHooks: {
+    user: {
+      update: {
+        // Clean up profile edits before they are saved.
+        before: async data => {
+          // Better Auth passes fields that aren't changing as undefined; leave those alone.
+          const d: Record<string, unknown> = { ...data };
+          if (d.name !== undefined) {
+            const name = String(d.name ?? '').trim().slice(0, 80);
+            if (!name) throw new APIError('BAD_REQUEST', { message: 'Please add your name.' });
+            d.name = name;
+          }
+          if (d.hometown !== undefined) d.hometown = String(d.hometown ?? '').trim().slice(0, 80) || null;
+          if (d.bio !== undefined) d.bio = String(d.bio ?? '').trim().slice(0, BIO_MAX) || null;
+          // Photos come from our own upload (Cloudinary) or from Google sign-in; nothing else.
+          if (d.image != null && !PHOTO_HOSTS.some(h => String(d.image).startsWith(h))) {
+            throw new APIError('BAD_REQUEST', { message: 'Please upload your photo on your profile page.' });
+          }
+          return { data: d };
+        },
+      },
+    },
+  },
   plugins: [nextCookies()],
 });
+
+export type SessionUser = typeof auth.$Infer.Session.user;
 
 export async function getSession() {
   return auth.api.getSession({ headers: await headers() });
