@@ -168,10 +168,9 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
       {/* Phone: 2 columns, first 9 photos. Tablet: 4 columns. Desktop: 6 columns, one screen tall. */}
       <section className="mt-10 grid w-full auto-rows-[130px] grid-flow-dense grid-cols-2 gap-1 p-1 tablet:mt-14 tablet:h-screen tablet:min-h-[560px] tablet:grid-cols-4 tablet:grid-rows-6 desktop:mt-18 desktop:grid-cols-6 desktop:grid-rows-4">
         {home.mosaic.map(({ img, label, wide, tall }, i) => (
-          <div key={i} className={`relative cursor-pointer overflow-hidden rounded-md bg-ink ${wide ? 'col-span-2' : 'col-span-1'} ${tall ? 'row-span-2' : 'row-span-1'} ${i >= 9 ? 'hidden tablet:block' : ''}`}>
+          <div key={i} className={`relative overflow-hidden rounded-md bg-frame ${wide ? 'col-span-2' : 'col-span-1'} ${tall ? 'row-span-2' : 'row-span-1'} ${i >= 9 ? 'hidden tablet:block' : ''}`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={img} alt={label} loading="lazy" className="absolute inset-0 block size-full object-cover" />
-            <div className="absolute inset-0 bg-[rgba(12,12,12,0.55)] [transition:background_0.35s_ease] hover:bg-[rgba(12,12,12,0)]"></div>
           </div>
         ))}
       </section>
