@@ -11,7 +11,7 @@ import { MON, decorate } from '@/lib/stories';
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const p = await getProfile((await params).id);
   if (!p) return {};
-  return { title: p.name, description: p.bio || `Travel stories by ${p.name} on TRIP.`, openGraph: { type: 'profile', images: p.image ? [p.image] : undefined } };
+  return { title: p.name, description: p.bio || `Travel stories by ${p.name} on JAJABOR.`, openGraph: { type: 'profile', images: p.image ? [p.image] : undefined } };
 }
 
 const PIN = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>;

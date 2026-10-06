@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import Avatar from '@/components/Avatar';
+import Logo from '@/components/Logo';
 
 const LINKS = [
   { key: 'destinations', href: '/destinations', label: 'Destinations' },
@@ -14,7 +15,8 @@ const LINKS = [
 
 type User = { name: string; email: string; image?: string | null };
 
-export default function Nav({ active, home, shareHref = '/share' }: { active?: 'destinations' | 'stories' | 'about'; home?: boolean; shareHref?: string }) {
+// `hideShare` drops the "Share your story" button, e.g. on the login and sign-up pages, where it would only lead back to login.
+export default function Nav({ active, home, shareHref = '/share', hideShare = false }: { active?: 'destinations' | 'stories' | 'about'; home?: boolean; shareHref?: string; hideShare?: boolean }) {
   const [open, setOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
   const userEl = useRef<HTMLDivElement>(null);
@@ -62,8 +64,8 @@ export default function Nav({ active, home, shareHref = '/share' }: { active?: '
   return (
     <div className="sticky top-0 z-30">
       <nav className="flex h-16 items-center justify-between gap-6 bg-white/82 px-[5vw] backdrop-blur-[14px] backdrop-saturate-[1.4] tablet:h-[72px]">
-        <Link href={home ? '#top' : '/'} onClick={close} className="flex items-center gap-2 text-[22px] font-black tracking-[-0.02em]">
-          <span className="block size-3.5 rounded-full bg-bd-red"></span>TRIP
+        <Link href={home ? '#top' : '/'} onClick={close} aria-label="Jajabor home" className="flex shrink-0 text-ink hover:text-ink">
+          <Logo className="h-9 w-auto tablet:h-10" />
         </Link>
         <div className="hidden gap-8 text-[15px] font-medium tablet:flex desktop:gap-14">
           {LINKS.map(l => <Link key={l.key} href={l.href} className={active === l.key ? 'text-bd-green' : undefined}>{l.label}</Link>)}
@@ -89,7 +91,7 @@ export default function Nav({ active, home, shareHref = '/share' }: { active?: '
           ) : (
             <Link href={loginHref} className="text-[15px] font-medium">Log in</Link>
           )}
-          <Link href={shareHref} className="rounded-full bg-ink px-5.5 py-3 text-[15px] font-medium text-white">Share your story</Link>
+          {!hideShare && <Link href={shareHref} className="rounded-full bg-ink px-5.5 py-3 text-[15px] font-medium text-white">Share your story</Link>}
         </div>
         <button
           type="button"
@@ -118,7 +120,7 @@ export default function Nav({ active, home, shareHref = '/share' }: { active?: '
             </Link>
           ))}
         </div>
-        <Link href={shareHref} onClick={close} className="mt-8 rounded-full bg-ink py-4 text-center text-[16px] font-bold text-white hover:bg-bd-green hover:text-white">Share your story</Link>
+        {!hideShare && <Link href={shareHref} onClick={close} className="mt-8 rounded-full bg-ink py-4 text-center text-[16px] font-bold text-white hover:bg-bd-green hover:text-white">Share your story</Link>}
         {!isPending && (user ? (
           <div className="mt-6 flex items-center gap-3 rounded-[10px] bg-[#f4f4f4] p-3">
             <Link href="/account" onClick={close} className="flex min-w-0 flex-1 items-center gap-3">
@@ -131,7 +133,7 @@ export default function Nav({ active, home, shareHref = '/share' }: { active?: '
             <button type="button" onClick={signOut} className="shrink-0 cursor-pointer rounded-full border border-[#d9d9d9] bg-white px-4 py-2 text-[14px] font-medium">Log out</button>
           </div>
         ) : (
-          <Link href={loginHref} onClick={close} className="mt-3 rounded-full border border-[#e2e2e2] py-4 text-center text-[16px] font-bold">Log in</Link>
+          <Link href={loginHref} onClick={close} className={`${hideShare ? 'mt-8' : 'mt-3'} rounded-full border border-[#e2e2e2] py-4 text-center text-[16px] font-bold`}>Log in</Link>
         ))}
         <a href="mailto:hello@trip.org.bd" className="mt-auto pt-6 text-center text-[14px] text-muted">hello@trip.org.bd</a>
       </div>

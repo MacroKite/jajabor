@@ -5,7 +5,7 @@ import ContactForm from './ContactForm';
 
 export const metadata: Metadata = {
   title: 'About',
-  description: 'TRIP is a nonprofit run by volunteers: a free, honest guide to travelling in Bangladesh.',
+  description: 'JAJABOR is a nonprofit run by volunteers: a free, honest guide to travelling in Bangladesh.',
 };
 
 const P = 'm-0 text-[17px] tablet:text-[19px] desktop:text-[clamp(20px,1.6vw,23px)] leading-[1.7] text-pretty text-[#2a2a2a]';

@@ -20,7 +20,8 @@ export default buildConfig({
   db: mongooseAdapter({ url: process.env.MONGODB_URI || '' }),
   admin: {
     user: Users.slug,
-    meta: { titleSuffix: ' · TRIP CMS' },
+    // Use the site's mountain icon in the browser tab instead of Payload's.
+    meta: { titleSuffix: ' · JAJABOR CMS', icons: [{ rel: 'icon', type: 'image/svg+xml', url: '/icon.svg' }] },
     importMap: { baseDir: dirname },
   },
   collections: [Destinations, Media, Users],

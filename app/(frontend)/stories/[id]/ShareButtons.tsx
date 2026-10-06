@@ -11,7 +11,7 @@ export default function ShareButtons({ path, title, img }: { path: string; title
 
   const E = encodeURIComponent;
   const url = () => window.location.origin + path;
-  const txt = title + ' | TRIP';
+  const txt = title + ' | JAJABOR';
   const open = (u: string) => window.open(u, '_blank', 'noopener');
   const copy = async () => {
     try { await navigator.clipboard.writeText(url()); } catch {}

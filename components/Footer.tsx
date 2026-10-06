@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import type { Contact } from '@/lib/content';
+import Logo from '@/components/Logo';
 
 // Mountain layers are generated from a fixed seed, so server and browser draw the same shapes.
 const H = 400;
@@ -103,8 +104,8 @@ export default function Footer({ contact }: { contact: Contact }) {
       <div className="relative -mt-px bg-[#0b2a20] px-[5vw] pt-6 pb-8 text-white">
         <div ref={content} className="grid grid-cols-2 gap-x-6 gap-y-10 pb-10 tablet:grid-cols-4 tablet:gap-x-10 tablet:gap-y-12 tablet:pb-14">
           <div data-rv="1" className="col-span-2 flex flex-col gap-4.5 tablet:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 text-[40px] leading-none font-black tracking-[-0.05em] text-white">
-              <span className="block size-3.5 rounded-full bg-bd-red"></span>TRIP
+            <Link href="/" aria-label="Jajabor home" className="flex self-start text-white hover:text-white">
+              <Logo className="h-14 w-auto" onDark />
             </Link>
             <p className="m-0 max-w-[260px] text-[15px] leading-[1.6] text-[#b9d3c7]">A free, honest guide to travelling in Bangladesh. Written by travellers, run by volunteers.</p>
           </div>
@@ -133,7 +134,7 @@ export default function Footer({ contact }: { contact: Contact }) {
           </div>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/14 pt-6 text-[13px] text-[#8fb3a3]">
-          <span>© 2026 TRIP · A nonprofit, made in Dhaka</span>
+          <span>© 2026 JAJABOR · A nonprofit, made in Dhaka</span>
           <span>Photos: Wikimedia Commons contributors, CC BY-SA.</span>
         </div>
       </div>

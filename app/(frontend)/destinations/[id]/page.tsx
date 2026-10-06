@@ -10,7 +10,7 @@ export const generateStaticParams = async () => (await getDestinations()).map(d 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const d = await getDestination((await params).id);
   if (!d) return {};
-  return { title: d.name, description: d.blurb, openGraph: { title: `${d.name} · TRIP`, description: d.blurb, images: [d.img] } };
+  return { title: d.name, description: d.blurb, openGraph: { title: `${d.name} · JAJABOR`, description: d.blurb, images: [d.img] } };
 }
 
 const H2 = 'm-0 text-[clamp(32px,3.4vw,52px)] leading-none font-bold tracking-[-0.04em]';

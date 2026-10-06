@@ -35,9 +35,9 @@ export const HOME = {
 };
 
 export const FAQ = [
-  { question: 'Who runs TRIP?', answer: 'TRIP is a nonprofit run by volunteers. We don’t sell trips, take bookings or earn commissions.' },
+  { question: 'Who runs JAJABOR?', answer: 'JAJABOR is a nonprofit run by volunteers. We don’t sell trips, take bookings or earn commissions.' },
   { question: 'Where do the costs come from?', answer: 'Recent traveller reports and local operators, checked weekly and shown in Taka.' },
-  { question: 'Can I write for TRIP?', answer: 'Yes. Anyone can share a travel story. Tell it honestly and include what you spent; it helps the next person most.' },
+  { question: 'Can I write for JAJABOR?', answer: 'Yes. Anyone can share a travel story. Tell it honestly and include what you spent; it helps the next person most.' },
   { question: 'When is the best time to travel?', answer: 'October to March for most places. Monsoon (June–September) is best for haors, waterfalls and tea gardens.' },
   { question: 'Do I need permits?', answer: 'Some places do — like the Sundarbans and parts of Bandarban. Each guide lists what you need.' },
 ];
@@ -47,8 +47,8 @@ export const ABOUT = {
   heroFile: 'public/images/about-hero.jpg',
   heroAlt: 'A traveller standing on rocks above the hills at dusk',
   whoWeAre:
-    'TRIP is a nonprofit organisation run by volunteers who love travelling in Bangladesh. We started because planning a trip here usually means digging through old Facebook posts, outdated blogs and advice that is trying to sell you something. We wanted one clear, honest place where anyone could find out how to get somewhere, what to eat, where to stay and when to go.\n\n' +
+    'JAJABOR is a nonprofit organisation run by volunteers who love travelling in Bangladesh. We started because planning a trip here usually means digging through old Facebook posts, outdated blogs and advice that is trying to sell you something. We wanted one clear, honest place where anyone could find out how to get somewhere, what to eat, where to stay and when to go.\n\n' +
     'We don’t sell tours, take bookings or earn commissions. Every guide is free to read, and every story is written by a real traveller. Our only goal is to help more people see their own country, and to do it in a way that respects the places and the communities who live there.',
-  contactIntro: 'Have a question, an idea or a place we should cover? We’d love to hear from you, and every message helps us make TRIP better.',
+  contactIntro: 'Have a question, an idea or a place we should cover? We’d love to hear from you, and every message helps us make JAJABOR better.',
   contact: { email: 'hello@trip.org.bd', phone: '+880 1700 000000', address: 'House 12, Road 4, Dhanmondi, Dhaka 1205' },
 };

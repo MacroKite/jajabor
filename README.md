@@ -1,4 +1,4 @@
-# TRIP
+# JAJABOR
 
 A free, honest guide to travelling in Bangladesh, with stories written by travellers. A nonprofit, made in Dhaka.
 
