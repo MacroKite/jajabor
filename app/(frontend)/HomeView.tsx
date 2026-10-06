@@ -52,6 +52,10 @@ function sequence(t: number, items: Destination[], thumbs: Thumb[], slow = false
 }
 type Seq = ReturnType<typeof sequence>;
 
+// Scroll length of a places section, matching sequence(): the intro, a 0.9-screen step per place,
+// then one more screen on the last place so it stays in view before the section scrolls away.
+const sectionHeight = (n: number, slow = false) => `${((slow ? 1.1 : 0) + 1.5 + 0.9 * (n - 1) + 1 + 1) * 100}vh`;
+
 
 const LINE = 'transition-[opacity,filter,transform] duration-300 ease-out';
 const PILL = 'flex items-center gap-2.5 rounded-full bg-ink px-5.5 py-3.5 text-[15px] font-bold text-white transition-colors duration-250 hover:bg-bd-green hover:text-white';
@@ -72,7 +76,9 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
   const [t, setT] = useState(-1);
   const [tg, setTg] = useState(-1);
   const [query, setQuery] = useState('');
-  const [hs, setHs] = useState(0);
+  // Stories carousel position in the tripled track (see `track` below); starts on the middle copy.
+  const [hs, setHs] = useState(stories.length > 1 ? stories.length : 0);
+  const [jump, setJump] = useState(false);
   const [faq, setFaq] = useState(0);
   const [stacked, setStacked] = useState(false);
   const lovedEl = useRef<HTMLElement>(null);
@@ -116,7 +122,26 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
   const gs = sequence(tg, gems, [], true, stacked);
   const latest = stories.map(r => decorate(r, dests));
   const newest = latest[0]; // stories arrive newest first
-  const hi = Math.min(hs, Math.max(0, latest.length - 1));
+  // The carousel loops: the stories are laid out three times and the active card stays in the
+  // middle copy. After each slide that leaves it, we jump to the same story in the middle copy
+  // with transitions off, so there is never a first or last card.
+  const loop = latest.length > 1;
+  const track = loop ? [...latest, ...latest, ...latest] : latest;
+  const hi = Math.max(0, Math.min(hs, track.length - 1));
+  const go = (step: number) => setHs(p => Math.max(0, Math.min(track.length - 1, p + step)));
+  const recentre = () => {
+    const n = latest.length;
+    if (!loop || (hi >= n && hi < 2 * n)) return;
+    setJump(true);
+    setHs(n + (((hi - n) % n) + n) % n);
+  };
+  useEffect(() => {
+    if (!jump) return;
+    // Let the jump paint without transitions, then turn them back on.
+    let r2 = 0;
+    const r1 = requestAnimationFrame(() => { r2 = requestAnimationFrame(() => setJump(false)); });
+    return () => { cancelAnimationFrame(r1); cancelAnimationFrame(r2); };
+  }, [jump]);
 
   const places = (s: Seq) => (
     <>
@@ -204,7 +229,7 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
         </div>
       </section>
 
-      <section id="popular" ref={lovedEl} className="relative mt-[140px] h-[700vh]">
+      <section id="popular" ref={lovedEl} className="relative mt-[140px]" style={{ height: sectionHeight(popular.length) }}>
         <div className="sticky top-0 h-screen overflow-hidden bg-white">
           {places(loved)}
           <div aria-hidden="true" className={COVER} style={cover(loved)}>
@@ -224,7 +249,7 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
         </div>
       </section>
 
-      <section id="gems" ref={gemsEl} className="relative h-[730vh]">
+      <section id="gems" ref={gemsEl} className="relative" style={{ height: sectionHeight(gems.length, true) }}>
         <div className="sticky top-0 h-screen overflow-hidden bg-white">
           {places(gs)}
           <div aria-hidden="true" className={COVER} style={cover(gs)}>
@@ -253,20 +278,21 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
         </div>
         <div className="px-[5vw]">
           <div
-            className={`flex touch-pan-y gap-6 transition-transform duration-1000 ease-swing will-change-transform ${CARD_W}`}
+            className={`flex touch-pan-y gap-6 will-change-transform ${CARD_W} ${jump ? 'transition-none [&_*]:transition-none!' : 'transition-transform duration-1000 ease-swing'}`}
             style={{ transform: `translateX(calc(${-hi} * (var(--card-w) + 24px)))` }}
+            onTransitionEnd={e => { if (e.target === e.currentTarget && e.propertyName === 'transform') recentre(); }}
             onTouchStart={e => { swipeX.current = e.touches[0].clientX; }}
             onTouchEnd={e => {
               if (swipeX.current === null) return;
               const dx = e.changedTouches[0].clientX - swipeX.current;
               swipeX.current = null;
-              if (Math.abs(dx) > 50) setHs(Math.max(0, Math.min(latest.length - 1, hi + (dx < 0 ? 1 : -1))));
+              if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
             }}
           >
-            {latest.map((r, k) => {
+            {track.map((r, k) => {
               const on = k === hi, d = k - hi;
               return (
-                <article key={r.id} onClick={() => { if (!on) setHs(k); }} className={`flex flex-[0_0_var(--card-w)] origin-left flex-wrap gap-x-10 gap-y-5 tablet:gap-y-7 overflow-hidden rounded-[10px] bg-[#f8f8f7] p-[clamp(20px,2.4vw,36px)] [transition:opacity_1s_var(--ease-swing),scale_1s_var(--ease-swing)] ${on ? 'scale-100 cursor-default opacity-100' : 'scale-[0.94] cursor-pointer opacity-55'}`}>
+                <article key={`${r.id}-${k}`} aria-hidden={!on} onClick={() => { if (!on) setHs(k); }} className={`flex flex-[0_0_var(--card-w)] origin-left flex-wrap gap-x-10 gap-y-5 tablet:gap-y-7 overflow-hidden rounded-[10px] bg-[#f8f8f7] p-[clamp(20px,2.4vw,36px)] [transition:opacity_1s_var(--ease-swing),scale_1s_var(--ease-swing)] ${on ? 'scale-100 cursor-default opacity-100' : 'scale-[0.94] cursor-pointer opacity-55'}`}>
                   <div className="relative aspect-[4/3] flex-[1.5_1_360px] overflow-hidden rounded-md bg-[#eeeeec]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     {r.img && <img src={r.img} alt="" loading="lazy" className={`absolute inset-0 block size-full object-cover [transition:scale_1.4s_var(--ease-swing),translate_1.4s_var(--ease-swing)] ${on ? 'translate-x-0 scale-100' : d > 0 ? '-translate-x-[6%] scale-[1.15]' : 'translate-x-[6%] scale-[1.15]'}`} />}
@@ -289,8 +315,8 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
           </div>
           <div className="mt-6 flex tablet:mt-9 flex-wrap items-center gap-x-8 gap-y-6">
             <div className="flex gap-3">
-              <button onClick={() => setHs(Math.max(0, hi - 1))} aria-label="Previous story" className={`flex size-12 cursor-pointer tablet:size-15 items-center justify-center rounded-full border-[1.5px] border-ink bg-white [transition:opacity_0.3s,background-color_0.25s,translate_0.25s] hover:-translate-x-0.5 hover:bg-frame ${hi === 0 ? 'opacity-30' : 'opacity-100'}`}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
-              <button onClick={() => setHs(Math.min(latest.length - 1, hi + 1))} aria-label="Next story" className={`flex size-12 cursor-pointer tablet:size-15 items-center justify-center rounded-full bg-ink [transition:opacity_0.3s,background-color_0.25s,translate_0.25s] hover:translate-x-0.5 hover:bg-bd-green ${hi >= latest.length - 1 ? 'opacity-30' : 'opacity-100'}`}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+              <button onClick={() => go(-1)} aria-label="Previous story" className={`flex size-12 cursor-pointer tablet:size-15 items-center justify-center rounded-full border-[1.5px] border-ink bg-white [transition:opacity_0.3s,background-color_0.25s,translate_0.25s] hover:-translate-x-0.5 hover:bg-frame ${!loop && hi === 0 ? 'opacity-30' : 'opacity-100'}`}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
+              <button onClick={() => go(1)} aria-label="Next story" className={`flex size-12 cursor-pointer tablet:size-15 items-center justify-center rounded-full bg-ink [transition:opacity_0.3s,background-color_0.25s,translate_0.25s] hover:translate-x-0.5 hover:bg-bd-green ${!loop && hi >= track.length - 1 ? 'opacity-30' : 'opacity-100'}`}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
             </div>
           </div>
         </div>

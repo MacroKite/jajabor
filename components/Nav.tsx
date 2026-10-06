@@ -63,14 +63,15 @@ export default function Nav({ active, home, shareHref = '/share', hideShare = fa
 
   return (
     <div className="sticky top-0 z-30">
-      <nav className="flex h-16 items-center justify-between gap-6 bg-white/82 px-[5vw] backdrop-blur-[14px] backdrop-saturate-[1.4] tablet:h-[72px]">
-        <Link href={home ? '#top' : '/'} onClick={close} aria-label="Jajabor home" className="flex shrink-0 text-ink hover:text-ink">
+      {/* From tablet up, a 1fr / auto / 1fr grid keeps the links centred whatever the widths of the logo and buttons. */}
+      <nav className="flex h-[72px] items-center justify-between gap-6 bg-white/82 px-[5vw] backdrop-blur-[14px] backdrop-saturate-[1.4] tablet:grid tablet:h-[88px] tablet:grid-cols-[1fr_auto_1fr]">
+        <Link href={home ? '#top' : '/'} onClick={close} aria-label="Jajabor home" className="flex shrink-0 justify-self-start text-ink hover:text-ink">
           <Logo className="h-11 w-auto tablet:h-13" />
         </Link>
         <div className="hidden gap-8 text-[15px] font-medium tablet:flex desktop:gap-14">
           {LINKS.map(l => <Link key={l.key} href={l.href} className={active === l.key ? 'text-bd-green' : undefined}>{l.label}</Link>)}
         </div>
-        <div className="hidden items-center gap-4 tablet:flex desktop:gap-5">
+        <div className="hidden items-center gap-4 justify-self-end tablet:flex desktop:gap-5">
           {/* Reserve the space while the session loads, so the nav doesn't jump. */}
           {isPending ? <span className="size-9" aria-hidden="true"></span> : user ? (
             <div ref={userEl} className="relative">
@@ -110,7 +111,7 @@ export default function Nav({ active, home, shareHref = '/share', hideShare = fa
       <div
         id="mobile-menu"
         inert={!open}
-        className={`fixed inset-x-0 top-16 bottom-0 flex flex-col overflow-y-auto bg-white px-[5vw] pt-6 pb-[max(24px,env(safe-area-inset-bottom))] transition-[opacity,translate] duration-250 tablet:hidden ${open ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'}`}
+        className={`fixed inset-x-0 top-[72px] bottom-0 flex flex-col overflow-y-auto bg-white px-[5vw] pt-6 pb-[max(24px,env(safe-area-inset-bottom))] transition-[opacity,translate] duration-250 tablet:hidden ${open ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'}`}
       >
         <div className="flex flex-col">
           {LINKS.map(l => (
