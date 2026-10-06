@@ -1,4 +1,3 @@
-import { byId } from './data';
 import { MIN_WORDS, wc } from './stories';
 
 export type StoryFields = { place: string; title: string; text: string; name: string; from: string };
@@ -24,8 +23,8 @@ function parseImage(v: unknown): StoryImageInput | null {
 }
 
 // Validates a submitted story. A photo is required when publishing; when editing it is optional
-// (no photo means keep the current one).
-export function readStoryInput(f: Record<string, unknown>, photoRequired: boolean): { error: string } | { fields: StoryFields; image: StoryImageInput | null } {
+// (no photo means keep the current one). `placeIds` are the destinations a story can be about.
+export function readStoryInput(f: Record<string, unknown>, photoRequired: boolean, placeIds: string[]): { error: string } | { fields: StoryFields; image: StoryImageInput | null } {
   // Honeypot: real people never fill this hidden field.
   if (str(f.website, 200)) return { error: 'Could not save your story.' };
 
@@ -37,7 +36,7 @@ export function readStoryInput(f: Record<string, unknown>, photoRequired: boolea
   const n = wc(text);
   const hasPhoto = typeof f.image === 'string' && f.image !== '';
 
-  const error = !byId(place) ? 'Pick the place your story is about.'
+  const error = !placeIds.includes(place) ? 'Pick the place your story is about.'
     : photoRequired && !hasPhoto ? 'Add a photo from your trip.'
     : !title ? 'Give your story a title.'
     : n < MIN_WORDS ? `Your story needs at least ${MIN_WORDS} words. You have ${n}.`

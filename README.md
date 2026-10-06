@@ -24,8 +24,7 @@ Styling is Tailwind CSS v4 with three layouts, set in [`app/globals.css`](app/gl
 
 ## Data
 
-- **Destinations** and their guides are in [`lib/data.ts`](lib/data.ts). They change rarely, so they stay in code: the pages are prerendered, and every edit is reviewed in git. The home page reads from the same list.
-- **Destination photos** are on Cloudinary under `trip/places/` (copied from Wikimedia Commons, CC BY-SA; each image's original page is in its `source` context field). [`lib/images.ts`](lib/images.ts) builds the URLs: `photo('sajek-valley-01', 900)` gives a 900px-wide WebP/AVIF. To add a photo, upload it to `trip/places/` in the Cloudinary Media Library and use its name with `photo()`.
+- **Destinations, the home page text, photo grid, FAQ, the About page and the contact details** are edited in the CMS (below). The site reads them through [`lib/content.ts`](lib/content.ts).
 - **Stories** and **contact messages** are stored in MongoDB, in the `stories` and `messages` collections. The Mongoose models are in [`models/`](models/), the connection is in [`lib/mongodb.ts`](lib/mongodb.ts), and the queries are in [`lib/db.ts`](lib/db.ts). The home page features the newest published story.
 - **Story photos** are stored on Cloudinary, in the `trip/stories` folder, named after the story id ([`lib/cloudinary.ts`](lib/cloudinary.ts)). Each story keeps the photo's `imageUrl` and `imagePublicId`. The browser shrinks each photo to at most 1600px wide before upload (usually 200–600 KB); the server checks it is a real JPG, PNG or WebP under 3 MB, then uploads it. Cloudinary serves it as WebP or AVIF where the browser supports it.
 - New stories go live immediately. To hide one (in `mongosh` or MongoDB Compass):
@@ -37,6 +36,18 @@ Styling is Tailwind CSS v4 with three layouts, set in [`app/globals.css`](app/gl
   ```js
   db.messages.find().sort({ createdAt: -1 })
   ```
+
+## CMS (Payload)
+
+Content is edited at **`/admin`** with [Payload CMS](https://payloadcms.com), which runs inside this app and stores its data in the same MongoDB database.
+
+- **First time:** open `/admin` and create the first account; it is always an **admin**. Admins add volunteers under *Settings → CMS users* as **editors**.
+- **Editors** can edit destinations, photos, the home page, FAQ and About page. Only **admins** can delete destinations or photos, and manage CMS users. CMS accounts are separate from the site's reader accounts.
+- **What's editable:** *Destinations* (drag rows to reorder), *Photos* (uploaded to Cloudinary under `trip/media/`, with a credit field for licences), and the *Home page*, *FAQ* and *About page & contact* (contact details and social links also appear in the footer).
+- **Changes go live in seconds**, with no redeploy: saving refreshes the affected pages. New destinations get their page on first visit.
+- **Code:** collections and globals are in [`cms/`](cms/), the config in [`payload.config.ts`](payload.config.ts). After changing them, run `npm run generate:types` (and `npm run generate:importmap` if you add admin components).
+- The site and the CMS have separate root layouts: the site is in `app/(frontend)`, the admin in `app/(payload)`. Unknown URLs use `app/global-not-found.tsx`.
+- `scripts/seed-cms.ts` copied the original hard-coded content into the CMS (`npx payload run scripts/seed-cms.ts`; it does nothing once destinations exist).
 
 ## Accounts
 
@@ -55,7 +66,7 @@ Visitors can read everything without an account; **publishing a story needs one*
 1. Push this folder to a GitHub repository, then import it at [vercel.com/new](https://vercel.com/new). Vercel detects Next.js, so no settings are needed.
 2. Create a free cluster on [MongoDB Atlas](https://www.mongodb.com/atlas). Under **Network Access**, allow `0.0.0.0/0` (Vercel has no fixed IP addresses), and create a database user.
 3. Create a free [Cloudinary](https://cloudinary.com) account.
-4. In the Vercel project, under **Settings → Environment Variables**, set `MONGODB_URI` to the Atlas connection string (with `/trip` as the database name), `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET` from the Cloudinary dashboard, and `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (your site URL, e.g. `https://trip.org.bd`), `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET`.
+4. In the Vercel project, under **Settings → Environment Variables**, set `MONGODB_URI` to the Atlas connection string (with `/trip` as the database name), `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET` from the Cloudinary dashboard, and `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (your site URL, e.g. `https://trip.org.bd`), `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` and `PAYLOAD_SECRET`.
 5. Redeploy.
 6. Optional: set `NEXT_PUBLIC_SITE_URL` (e.g. `https://trip.org.bd`) once you have a custom domain. It is used in the sitemap and in share previews.
 

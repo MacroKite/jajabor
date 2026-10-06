@@ -1,4 +1,4 @@
-import { byId, type Story } from './data';
+import { findDest, type Destination, type Story } from './data';
 
 export const MIN_WORDS = 80;
 export const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -21,8 +21,9 @@ export type Decorated = Story & {
   excerpt: string;
 };
 
-export function decorate(r: Story): Decorated {
-  const d = byId(r.place);
+// `dests` supplies the place name and the fallback photo for stories without one.
+export function decorate(r: Story, dests: Destination[]): Decorated {
+  const d = findDest(dests, r.place);
   const paras = r.text.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
   return {
     ...r,

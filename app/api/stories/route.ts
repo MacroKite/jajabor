@@ -6,6 +6,7 @@ import { hasImageStorage } from '@/lib/cloudinary';
 import { hasDatabase, insertStory } from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { readStoryInput } from '@/lib/story-input';
+import { getDestinations } from '@/lib/content';
 
 const bad = (error: string, status = 400) => NextResponse.json({ error }, { status });
 
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
   let f: Record<string, unknown>;
   try { f = await req.json(); } catch { return bad('Invalid request. Your photo may be too large.'); }
 
-  const input = readStoryInput(f, true);
+  const input = readStoryInput(f, true, (await getDestinations()).map(d => d.id));
   if ('error' in input) return bad(input.error);
   if (!hasDatabase || !hasImageStorage) return bad('Stories are read-only right now. Please try again later.', 503);
 

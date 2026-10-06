@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
+import type { Contact } from '@/lib/content';
 
 // Mountain layers are generated from a fixed seed, so server and browser draw the same shapes.
 const H = 400;
@@ -39,7 +40,7 @@ const HEAD = 'max-w-40 border-b border-white/70 pb-3 text-[16px] font-bold';
 const LINK = 'text-[15px] text-[#cfe3da] hover:text-white';
 const SOCIAL = 'flex size-10 items-center justify-center rounded-full border-[1.5px] border-white/75 transition-[background-color,translate] duration-250 hover:-translate-y-0.5 hover:bg-white/12';
 
-export default function Footer() {
+export default function Footer({ contact }: { contact: Contact }) {
   const scene = useRef<HTMLDivElement>(null);
   const birds = useRef<SVGSVGElement>(null);
   const mist = useRef<HTMLDivElement>(null);
@@ -121,14 +122,14 @@ export default function Footer() {
           </div>
           <div data-rv="1" className="col-span-2 flex flex-col gap-3.5 tablet:col-span-1">
             <span className={HEAD}>Contact</span>
-            <a href="mailto:hello@trip.org.bd" className={LINK}>hello@trip.org.bd</a>
-            <a href="tel:+8801700000000" className={LINK}>+880 1700 000000</a>
-            <span className="text-[15px] leading-normal text-[#cfe3da]">Dhanmondi, Dhaka 1205</span>
-            <div className="mt-1.5 flex gap-2.5">
-              <a href="#" aria-label="Facebook" className={SOCIAL}><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.8c0-.9.3-1.6 1.6-1.6h1.7V3.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V13h2.7v8z"></path></svg></a>
-              <a href="#" aria-label="Instagram" className={SOCIAL}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="0.8" fill="#fff" stroke="none"></circle></svg></a>
-              <a href="#" aria-label="YouTube" className={SOCIAL}><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.3 5 12 5 12 5s-6.3 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.7 19 12 19 12 19s6.3 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3z"></path></svg></a>
-            </div>
+            {contact.email && <a href={`mailto:${contact.email}`} className={LINK}>{contact.email}</a>}
+            {contact.phone && <a href={`tel:${contact.phone.replace(/[^+\d]/g, '')}`} className={LINK}>{contact.phone}</a>}
+            {contact.address && <span className="text-[15px] leading-normal text-[#cfe3da]">{contact.address}</span>}
+            {(contact.social.facebook || contact.social.instagram || contact.social.youtube) && <div className="mt-1.5 flex gap-2.5">
+              {contact.social.facebook && <a href={contact.social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className={SOCIAL}><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.8c0-.9.3-1.6 1.6-1.6h1.7V3.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V13h2.7v8z"></path></svg></a>}
+              {contact.social.instagram && <a href={contact.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className={SOCIAL}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="0.8" fill="#fff" stroke="none"></circle></svg></a>}
+              {contact.social.youtube && <a href={contact.social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className={SOCIAL}><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.3 5 12 5 12 5s-6.3 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.7 19 12 19 12 19s6.3 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3z"></path></svg></a>}
+            </div>}
           </div>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/14 pt-6 text-[13px] text-[#8fb3a3]">

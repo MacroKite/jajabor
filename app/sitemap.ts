@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { DESTS } from '@/lib/data';
+import { getDestinations } from '@/lib/content';
 import { listStories } from '@/lib/db';
 import { siteUrl } from '@/lib/site';
 
@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const stories = await listStories().catch(() => []);
   return [
     ...['/', '/destinations', '/stories', '/share', '/about'].map(p => ({ url: base + p })),
-    ...DESTS.map(d => ({ url: `${base}/destinations/${d.id}` })),
+    ...(await getDestinations().catch(() => [])).map(d => ({ url: `${base}/destinations/${d.id}` })),
     ...stories.map(s => ({ url: `${base}/stories/${s.id}`, lastModified: s.date })),
   ];
 }

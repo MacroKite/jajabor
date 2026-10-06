@@ -1,8 +1,12 @@
 import type { NextConfig } from 'next';
+import { withPayload } from '@payloadcms/next/withPayload';
 
 const q = (key: string) => [{ type: 'query' as const, key, value: '(?<v>.+)' }];
 
 const nextConfig: NextConfig = {
+  // The site and the Payload admin each have their own root layout, so unknown URLs
+  // use app/global-not-found.tsx.
+  experimental: { globalNotFound: true },
   // Old prototype URLs keep working.
   async redirects() {
     return [
@@ -18,4 +22,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withPayload(nextConfig);
