@@ -24,14 +24,15 @@ function parseImage(v: unknown): StoryImageInput | null {
 
 // Validates a submitted story. A photo is required when publishing; when editing it is optional
 // (no photo means keep the current one). `placeIds` are the destinations a story can be about.
-export function readStoryInput(f: Record<string, unknown>, photoRequired: boolean, placeIds: string[]): { error: string } | { fields: StoryFields; image: StoryImageInput | null } {
+// The author name always comes from the logged-in account, never from the form.
+export function readStoryInput(f: Record<string, unknown>, photoRequired: boolean, placeIds: string[], authorName: string): { error: string } | { fields: StoryFields; image: StoryImageInput | null } {
   // Honeypot: real people never fill this hidden field.
   if (str(f.website, 200)) return { error: 'Could not save your story.' };
 
   const place = str(f.place, 60);
   const title = str(f.title, 160);
   const text = str(f.text, 30000).replace(/\r\n/g, '\n');
-  const name = str(f.name, 80);
+  const name = str(authorName, 80) || 'A traveller';
   const from = str(f.from, 80);
   const n = wc(text);
   const hasPhoto = typeof f.image === 'string' && f.image !== '';
@@ -40,7 +41,6 @@ export function readStoryInput(f: Record<string, unknown>, photoRequired: boolea
     : photoRequired && !hasPhoto ? 'Add a photo from your trip.'
     : !title ? 'Give your story a title.'
     : n < MIN_WORDS ? `Your story needs at least ${MIN_WORDS} words. You have ${n}.`
-    : !name ? 'Add your name.'
     : '';
   if (error) return { error };
 

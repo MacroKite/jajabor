@@ -18,5 +18,5 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
   const session = await getSession();
   if (!session) redirect('/login?next=' + encodeURIComponent('/share' + (defaultPlace ? '?place=' + defaultPlace : '')));
 
-  return <ShareView places={dests.map(d => ({ id: d.id, name: d.name }))} initial={{ place: defaultPlace, title: '', text: '', name: session.user.name, from: '', image: '' }} />;
+  return <ShareView places={dests.map(d => ({ id: d.id, name: d.name }))} authorName={session.user.name} initial={{ place: defaultPlace, title: '', text: '', from: '', image: '' }} />;
 }

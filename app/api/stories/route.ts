@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   let f: Record<string, unknown>;
   try { f = await req.json(); } catch { return bad('Invalid request. Your photo may be too large.'); }
 
-  const input = readStoryInput(f, true, (await getDestinations()).map(d => d.id));
+  const input = readStoryInput(f, true, (await getDestinations()).map(d => d.id), session.user.name);
   if ('error' in input) return bad(input.error);
   if (!hasDatabase || !hasImageStorage) return bad('Stories are read-only right now. Please try again later.', 503);
 

@@ -31,11 +31,12 @@ function resize(file: File): Promise<string> {
   });
 }
 
-export type StoryDraft = { place: string; title: string; text: string; name: string; from: string; image: string };
+export type StoryDraft = { place: string; title: string; text: string; from: string; image: string };
 
 // Writes a new story, or edits one when `storyId` is given. When editing, `initial.image` is the
 // current photo's URL; only a newly chosen photo (a data: URL) is sent to the server.
-export default function ShareView({ initial, places, storyId }: { initial: StoryDraft; places: { id: string; name: string }[]; storyId?: string }) {
+// The story is published under `authorName`, the logged-in account's name (the server uses the same).
+export default function ShareView({ initial, places, authorName, storyId }: { initial: StoryDraft; places: { id: string; name: string }[]; authorName: string; storyId?: string }) {
   const router = useRouter();
   const editing = !!storyId;
   const [f, setF] = useState({ ...initial, website: '' });
@@ -64,7 +65,7 @@ export default function ShareView({ initial, places, storyId }: { initial: Story
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (busy) return;
-    const msg = !f.place ? 'Pick the place your story is about.' : !editing && !f.image ? 'Add a photo from your trip.' : !f.title.trim() ? 'Give your story a title.' : n < MIN_WORDS ? `Your story needs at least ${MIN_WORDS} words. You have ${n}.` : !f.name.trim() ? 'Add your name.' : '';
+    const msg = !f.place ? 'Pick the place your story is about.' : !editing && !f.image ? 'Add a photo from your trip.' : !f.title.trim() ? 'Give your story a title.' : n < MIN_WORDS ? `Your story needs at least ${MIN_WORDS} words. You have ${n}.` : '';
     if (msg) return setErr(msg);
     setBusy(true);
     try {
@@ -106,9 +107,10 @@ export default function ShareView({ initial, places, storyId }: { initial: Story
             <span className={`text-[12px] font-medium ${n < MIN_WORDS ? 'text-faint' : 'text-bd-green'}`}>{n < MIN_WORDS ? `${n} words · write at least ${MIN_WORDS}` : n + ' words'}</span>
           </label>
           <div className={GRID}>
-            <label className={LABEL}>Your name
-              <input value={f.name} onChange={set('name')} maxLength={80} placeholder="Nusrat Jahan" className={`${FIELD} font-normal`} />
-            </label>
+            <div className={LABEL}>Published as
+              <span className="truncate rounded-[10px] bg-[#f4f4f4] px-4.5 py-4 text-[16px] font-medium text-ink">{authorName}</span>
+              <span className="text-[12px] font-normal text-faint">The name on your account.</span>
+            </div>
             <label className={LABEL}>Where you&apos;re from
               <input value={f.from} onChange={set('from')} maxLength={80} placeholder="Dhaka" className={`${FIELD} font-normal`} />
             </label>

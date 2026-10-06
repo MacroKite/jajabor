@@ -55,7 +55,7 @@ Visitors can read everything without an account; **publishing a story needs one*
 
 - Users, sessions and linked accounts are stored in MongoDB, in the `user`, `session` and `account` collections. Passwords are hashed by Better Auth.
 - Signing in with Google using the same email as an existing password account links the two.
-- `/share` redirects to `/login` and back; `/api/stories` rejects requests without a session. Each new story stores its author's `userId`.
+- `/share` redirects to `/login` and back; `/api/stories` rejects requests without a session. Each new story stores its author's `userId` and is published under the name on their account (there is no name field in the form).
 - Authors can **edit** (`/stories/<id>/edit`, `PATCH /api/stories/<id>`) and **delete** (`DELETE /api/stories/<id>`) their own stories; the buttons appear on the story page for the author only. Deleting also removes the photo from Cloudinary. Starter stories have no author, so they can't be changed from the site.
 - Not set up yet: email verification and password reset (both need an email service such as Resend).
 

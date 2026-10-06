@@ -17,5 +17,5 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   if (!s) notFound();
 
   const places = (await getDestinations()).map(d => ({ id: d.id, name: d.name }));
-  return <ShareView storyId={s.id} places={places} initial={{ place: s.place, title: s.title, text: s.text, name: s.name, from: s.from, image: s.image ?? '' }} />;
+  return <ShareView storyId={s.id} places={places} authorName={session.user.name} initial={{ place: s.place, title: s.title, text: s.text, from: s.from, image: s.image ?? '' }} />;
 }
