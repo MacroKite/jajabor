@@ -2,7 +2,7 @@ import { cache } from 'react';
 import { getPayload } from 'payload';
 import config from '@payload-config';
 import type { Destination as CmsDestination, Media } from '@/payload-types';
-import type { Destination } from './data';
+import type { Destination, PhotoCredit } from './data';
 import { cld } from './images';
 
 // Site content edited in the CMS at /admin, read on the server through Payload's local API.
@@ -17,17 +17,25 @@ const img = (m: string | Media | null | undefined, w: number) => {
   return id ? cld(id, w) : m.url ?? '';
 };
 
-const toDestination = (d: CmsDestination): Destination => ({
-  id: d.slug,
-  type: d.type,
-  name: d.name,
-  bn: d.bn,
-  district: d.district,
-  blurb: d.blurb,
-  img: img(d.image, 1400),
-  gallery: (d.gallery ?? []).map(g => img(g, 900)).filter(Boolean),
-  article: d.article,
-});
+// The photographer and licence entered for a photo in the CMS, if any.
+const credit = (m: string | Media | null | undefined): PhotoCredit | null =>
+  m && typeof m !== 'string' && m.credit ? { text: m.credit, source: m.source || undefined } : null;
+
+const toDestination = (d: CmsDestination): Destination => {
+  const gallery = (d.gallery ?? []).filter(g => img(g, 900));
+  return {
+    id: d.slug,
+    type: d.type,
+    name: d.name,
+    bn: d.bn,
+    district: d.district,
+    blurb: d.blurb,
+    img: img(d.image, 1400),
+    gallery: gallery.map(g => img(g, 900)),
+    credits: [credit(d.image), ...gallery.map(credit)],
+    article: d.article,
+  };
+};
 
 // In the order set by dragging rows in the CMS.
 export const getDestinations = cache(async (): Promise<Destination[]> => {
@@ -80,4 +88,29 @@ export const getAbout = cache(async () => {
       social: { facebook: a.social?.facebook || undefined, instagram: a.social?.instagram || undefined, youtube: a.social?.youtube || undefined },
     } satisfies Contact,
   };
+});
+
+export type CreditEntry = { id: string; thumb: string; alt: string; credit: string; source?: string; usedOn: string[] };
+
+// Every photo the site currently shows, with who took it, for the /credits page.
+export const getPhotoCredits = cache(async (): Promise<CreditEntry[]> => {
+  const p = await cms();
+  const [{ docs: dests }, home, about] = await Promise.all([
+    p.find({ collection: 'destinations', depth: 1, limit: 500, pagination: false, sort: '_order' }),
+    p.findGlobal({ slug: 'home', depth: 1 }),
+    p.findGlobal({ slug: 'about', depth: 1 }),
+  ]);
+  const byId = new Map<string, CreditEntry>();
+  const add = (m: string | Media | null | undefined, place: string) => {
+    if (!m || typeof m === 'string') return;
+    const id = String(m.id);
+    const e = byId.get(id) ?? { id, thumb: img(m, 480), alt: m.alt, credit: m.credit || '', source: m.source || undefined, usedOn: [] };
+    if (!e.usedOn.includes(place)) e.usedOn.push(place);
+    byId.set(id, e);
+  };
+  for (const d of dests) { add(d.image, d.name); for (const g of d.gallery ?? []) add(g, d.name); }
+  for (const m of home.mosaic ?? []) add(m.image, 'Home page');
+  for (const m of home.introPhotos ?? []) add(m, 'Home page');
+  add(about.heroImage, 'About page');
+  return [...byId.values()];
 });

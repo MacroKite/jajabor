@@ -9,8 +9,12 @@ export type Destination = {
   blurb: string;
   img: string;
   gallery: string[];
+  // Photographer and licence for img, then each gallery photo, with a link to where it came from.
+  credits?: (PhotoCredit | null)[];
   article: { about: string; food: string; stay: string; route: string };
 };
+
+export type PhotoCredit = { text: string; source?: string };
 
 export type Story = {
   id: string;

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Nav from '@/components/Nav';
 import { getDestination, getDestinations } from '@/lib/content';
+import type { PhotoCredit } from '@/lib/data';
 
 // Built at deploy time; places added later in the CMS are built on their first visit.
 export const generateStaticParams = async () => (await getDestinations()).map(d => ({ id: d.id }));
@@ -18,6 +19,16 @@ const P = 'm-0 text-[17px] tablet:text-[19px] desktop:text-[clamp(20px,1.6vw,23p
 const PAIR = 'relative h-[clamp(220px,36vw,560px)] overflow-hidden rounded-[10px] bg-frame';
 const IMG = 'absolute inset-0 block size-full object-cover';
 const paras = (t: string) => t.split(/\n\s*\n/).filter(Boolean);
+
+// "Photo: photographer, licence", linking to where the photo came from.
+function Credit({ c }: { c?: PhotoCredit | null }) {
+  if (!c) return null;
+  return (
+    <figcaption className="text-[12px] leading-snug text-faint">
+      Photo: {c.source ? <a href={c.source} target="_blank" rel="noopener noreferrer" className="text-faint underline-offset-2 hover:text-muted hover:underline">{c.text}</a> : c.text}
+    </figcaption>
+  );
+}
 
 function Section({ title, text }: { title: string; text: string }) {
   return (
@@ -49,26 +60,33 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         </div>
       </header>
 
-      <section className="mt-8 px-[5vw] tablet:mt-12 desktop:mt-16">
+      <figure className="m-0 mt-8 flex flex-col gap-2 px-[5vw] tablet:mt-12 desktop:mt-16">
         <div className="relative aspect-[4/3] tablet:aspect-[16/7] tablet:min-h-80 overflow-hidden rounded-[10px] bg-frame">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={d.img} alt={d.name} className={IMG} />
         </div>
-      </section>
+        <Credit c={d.credits?.[0]} />
+      </figure>
 
       <Section title="About the place" text={d.article.about} />
       <Section title="What to eat" text={d.article.food} />
 
       {d.gallery.length >= 2 && (
         <section className="flex flex-wrap gap-5 px-[5vw] pt-14 tablet:pt-20 desktop:pt-30">
-          <div className={`flex-[1_1_260px] ${PAIR}`}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={g1} alt="" loading="lazy" className={IMG} />
-          </div>
-          <div className={`flex-[2_1_460px] ${PAIR}`}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={g2} alt="" loading="lazy" className={IMG} />
-          </div>
+          <figure className="m-0 flex flex-[1_1_260px] flex-col gap-2">
+            <div className={PAIR}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={g1} alt="" loading="lazy" className={IMG} />
+            </div>
+            <Credit c={d.credits?.[1]} />
+          </figure>
+          <figure className="m-0 flex flex-[2_1_460px] flex-col gap-2">
+            <div className={PAIR}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={g2} alt="" loading="lazy" className={IMG} />
+            </div>
+            <Credit c={d.credits?.[2]} />
+          </figure>
         </section>
       )}
 

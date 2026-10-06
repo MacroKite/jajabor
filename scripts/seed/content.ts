@@ -2,8 +2,8 @@
 // Photo ids are Cloudinary images under trip/places/.
 
 export const HOME = {
-  heroSubtitle: 'Honest guides to every destination - real costs in Taka, how to get there, and when to visit.',
-  introText: 'One clear page per place with **real costs, routes & seasons** - checked every week.',
+  heroSubtitle: 'Honest guides to Bangladesh’s best places: how to get there, where to stay, what to eat and when to go.',
+  introText: 'Forget scattered posts and out-of-date blogs. Every place gets **one clear guide** with the routes, stays, food and seasons you need.',
   // [photo id, label, wide, tall]
   mosaic: [
     ['a-dusk-at-coxs-bazar-sea-beach', "Cox's Bazar", true, false],

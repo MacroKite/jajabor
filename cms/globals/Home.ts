@@ -29,7 +29,7 @@ export const Home: GlobalConfig = {
       fields: [
         { type: 'row', fields: [
           { name: 'image', type: 'upload', relationTo: 'media', required: true },
-          { name: 'label', type: 'text', required: true, admin: { description: 'Place name shown on the photo.' } },
+          { name: 'label', type: 'text', required: true, admin: { description: 'Place name. Not shown on the photo; screen readers read it out.' } },
         ] },
         { type: 'row', fields: [
           { name: 'wide', type: 'checkbox', defaultValue: false },

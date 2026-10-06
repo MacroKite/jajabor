@@ -172,7 +172,6 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={img} alt={label} loading="lazy" className="absolute inset-0 block size-full object-cover" />
             <div className="absolute inset-0 bg-[rgba(12,12,12,0.55)] [transition:background_0.35s_ease] hover:bg-[rgba(12,12,12,0)]"></div>
-            <span className="pointer-events-none absolute bottom-2.5 left-3 text-[14px] font-bold text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.45)]">{label}</span>
           </div>
         ))}
       </section>

@@ -43,7 +43,7 @@ Content is edited at **`/admin`** with [Payload CMS](https://payloadcms.com), wh
 
 - **First time:** open `/admin` and create the first account; it is always an **admin**. Admins add volunteers under *Settings → CMS users* as **editors**.
 - **Editors** can edit destinations, photos, the home page, FAQ and About page. Only **admins** can delete destinations or photos, and manage CMS users. CMS accounts are separate from the site's reader accounts.
-- **What's editable:** *Destinations* (drag rows to reorder), *Photos* (uploaded to Cloudinary under `trip/media/`, with a credit field for licences), and the *Home page*, *FAQ* and *About page & contact* (contact details and social links also appear in the footer).
+- **What's editable:** *Destinations* (drag rows to reorder), *Photos* (uploaded to Cloudinary under `trip/media/`; fill in **Description** and **Credit**, e.g. "Jane Doe, CC BY-SA 4.0", for every photo: credits appear under guide photos and on `/credits`), and the *Home page*, *FAQ* and *About page & contact* (contact details and social links also appear in the footer).
 - **Changes go live in seconds**, with no redeploy: saving refreshes the affected pages. New destinations get their page on first visit.
 - **Code:** collections and globals are in [`cms/`](cms/), the config in [`payload.config.ts`](payload.config.ts). After changing them, run `npm run generate:types` (and `npm run generate:importmap` if you add admin components).
 - The site and the CMS have separate root layouts: the site is in `app/(frontend)`, the admin in `app/(payload)`. Unknown URLs use `app/global-not-found.tsx`.

@@ -135,7 +135,7 @@ export default function Footer({ contact }: { contact: Contact }) {
         </div>
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/14 pt-6 text-[13px] text-[#8fb3a3]">
           <span>© 2026 JAJABOR · A nonprofit, made in Dhaka</span>
-          <span>Photos: Wikimedia Commons contributors, CC BY-SA.</span>
+          <Link href="/credits" className="text-[#8fb3a3] hover:text-white">Photo credits</Link>
         </div>
       </div>
     </footer>

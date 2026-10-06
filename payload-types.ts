@@ -448,7 +448,7 @@ export interface Home {
     | {
         image: string | Media;
         /**
-         * Place name shown on the photo.
+         * Place name. Not shown on the photo; screen readers read it out.
          */
         label: string;
         wide?: boolean | null;
