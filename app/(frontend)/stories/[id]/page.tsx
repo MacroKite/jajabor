@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Nav from '@/components/Nav';
 import Avatar from '@/components/Avatar';
+import RichText from '@/components/RichText';
 import { getStory } from '@/lib/db';
 import { decorate } from '@/lib/stories';
 import { getDestinations } from '@/lib/content';
@@ -52,7 +53,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           {story.img && <img src={story.img} alt={story.title} className="absolute inset-0 block size-full object-cover" />}
         </div>
         <div className="mt-10 flex flex-col gap-[1.2em] tablet:mt-16">
-          {story.paras.map((p, i) => <p key={i} className="m-0 text-[17px] tablet:text-[19px] desktop:text-[clamp(20px,1.6vw,23px)] leading-[1.7] text-pretty text-[#2a2a2a]">{p}</p>)}
+          <RichText text={story.text} />
         </div>
         <ShareButtons path={story.href} title={story.title} img={img} />
       </article>

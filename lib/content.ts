@@ -33,7 +33,12 @@ const toDestination = (d: CmsDestination): Destination => {
     img: img(d.image, 1400),
     gallery: gallery.map(g => img(g, 900)),
     credits: [credit(d.image), ...gallery.map(credit)],
-    article: d.article,
+    article: {
+      headline: d.article.headline || undefined,
+      intro: d.article.intro,
+      notice: d.article.notice || undefined,
+      sections: d.article.sections.map(s => ({ title: s.title, body: s.body })),
+    },
   };
 };
 
@@ -68,9 +73,7 @@ export const getFaq = cache(async () => {
 });
 
 export type Contact = {
-  email: string;
   phone: string;
-  address: string;
   social: { facebook?: string; instagram?: string; youtube?: string };
 };
 
@@ -82,9 +85,7 @@ export const getAbout = cache(async () => {
     whoWeAre: (a.whoWeAre ?? '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean),
     contactIntro: a.contactIntro ?? '',
     contact: {
-      email: a.contact?.email ?? '',
       phone: a.contact?.phone ?? '',
-      address: a.contact?.address ?? '',
       social: { facebook: a.social?.facebook || undefined, instagram: a.social?.instagram || undefined, youtube: a.social?.youtube || undefined },
     } satisfies Contact,
   };

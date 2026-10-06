@@ -79,7 +79,7 @@ export default function AuthForm({ mode, next, initialError }: { mode: 'login' |
       </form>
 
       <p className="m-0 text-center text-[15px] text-muted">
-        {signup ? 'Already have an account?' : 'New to JAJABOR?'}{' '}
+        {signup ? 'Already have an account?' : 'New to Jajabor?'}{' '}
         <Link href={otherHref} className="font-bold text-ink underline underline-offset-4">{signup ? 'Log in' : 'Create an account'}</Link>
       </p>
     </div>

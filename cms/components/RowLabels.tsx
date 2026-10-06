@@ -9,6 +9,11 @@ export function MosaicRowLabel() {
   return <span>{data?.label || `Photo ${(rowNumber ?? 0) + 1}`}</span>;
 }
 
+export function SectionRowLabel() {
+  const { data, rowNumber } = useRowLabel<{ title?: string }>();
+  return <span>{data?.title || `Section ${(rowNumber ?? 0) + 1}`}</span>;
+}
+
 export function FaqRowLabel() {
   const { data, rowNumber } = useRowLabel<{ question?: string }>();
   return <span>{data?.question || `Question ${(rowNumber ?? 0) + 1}`}</span>;

@@ -1,6 +1,6 @@
-# JAJABOR
+# Jajabor
 
-A free, honest guide to travelling in Bangladesh, with stories written by travellers. A nonprofit, made in Dhaka.
+A free, honest guide to travelling in Bangladesh, with stories written by travellers.
 
 Built with Next.js (App Router), Tailwind CSS and MongoDB (Mongoose). The original HTML design files are in [`design/`](design/).
 
@@ -41,7 +41,7 @@ Styling is Tailwind CSS v4 with three layouts, set in [`app/globals.css`](app/gl
 
 Content is edited at **`/admin`** with [Payload CMS](https://payloadcms.com), which runs inside this app and stores its data in the same MongoDB database.
 
-- **First time:** open `/admin` and create the first account; it is always an **admin**. Admins add volunteers under *Settings → CMS users* as **editors**.
+- **First time:** open `/admin` and create the first account; it is always an **admin**. Admins add team members under *Settings → CMS users* as **editors**.
 - **Editors** can edit destinations, photos, the home page, FAQ and About page. Only **admins** can delete destinations or photos, and manage CMS users. CMS accounts are separate from the site's reader accounts.
 - **What's editable:** *Destinations* (drag rows to reorder), *Photos* (uploaded to Cloudinary under `trip/media/`; fill in **Description** and **Credit**, e.g. "Jane Doe, CC BY-SA 4.0", for every photo: credits appear under guide photos and on `/credits`), and the *Home page*, *FAQ* and *About page & contact* (contact details and social links also appear in the footer).
 - **Changes go live in seconds**, with no redeploy: saving refreshes the affected pages. New destinations get their page on first visit.

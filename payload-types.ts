@@ -158,21 +158,28 @@ export interface Destination {
   gallery?: (string | Media)[] | null;
   article: {
     /**
-     * Leave an empty line between paragraphs.
+     * Shown above the introduction, e.g. "মেঘের ওপরে এক রাত".
      */
-    about: string;
+    headline?: string | null;
     /**
      * Leave an empty line between paragraphs.
      */
-    food: string;
+    intro: string;
     /**
-     * Leave an empty line between paragraphs.
+     * Optional. Shown in a highlighted box under the introduction, for rules or closures travellers must know.
      */
-    stay: string;
+    notice?: string | null;
     /**
-     * Leave an empty line between paragraphs.
+     * Shown in this order, e.g. "কেন যাবেন", "কীভাবে যাবেন". The two gallery photos appear after the second section.
      */
-    route: string;
+    sections: {
+      title: string;
+      /**
+       * Leave an empty line between paragraphs. Start a line with "- " for a bullet point, or "  - " (two spaces first) for a point inside the one above. Wrap words in **double stars** to make them bold.
+       */
+      body: string;
+      id?: string | null;
+    }[];
   };
   updatedAt: string;
   createdAt: string;
@@ -335,10 +342,16 @@ export interface DestinationsSelect<T extends boolean = true> {
   article?:
     | T
     | {
-        about?: T;
-        food?: T;
-        stay?: T;
-        route?: T;
+        headline?: T;
+        intro?: T;
+        notice?: T;
+        sections?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+              id?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;
@@ -497,9 +510,10 @@ export interface About {
   whoWeAre: string;
   contactIntro: string;
   contact: {
-    email: string;
+    /**
+     * Separate several numbers with commas, e.g. "01621089309, 01625680371". Bangladeshi mobile numbers are shown as +880 1621-089309. Shown in the footer and on the About page.
+     */
     phone: string;
-    address: string;
   };
   /**
    * Full links, e.g. https://facebook.com/tripbd. Leave empty to hide the icon.
@@ -561,9 +575,7 @@ export interface AboutSelect<T extends boolean = true> {
   contact?:
     | T
     | {
-        email?: T;
         phone?: T;
-        address?: T;
       };
   social?:
     | T

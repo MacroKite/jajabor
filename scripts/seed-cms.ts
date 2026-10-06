@@ -8,6 +8,7 @@ import { getPayload } from 'payload';
 import { v2 as cloudinary } from 'cloudinary';
 import config from '../payload.config';
 import { DESTS } from './seed/destinations';
+import { ARTICLES } from './seed/articles';
 import { ABOUT, FAQ, HOME } from './seed/content';
 
 const payload = await getPayload({ config });
@@ -45,7 +46,7 @@ for (const d of DESTS) {
   for (const g of d.gallery) gallery.push(await photo(idFromUrl(g), d.name));
   await payload.create({
     collection: 'destinations',
-    data: { slug: d.id, name: d.name, bn: d.bn, type: d.type, district: d.district, blurb: d.blurb, image, gallery, article: d.article },
+    data: { slug: d.id, name: d.name, bn: d.bn, type: d.type, district: d.district, blurb: d.blurb, image, gallery, article: ARTICLES[d.id] },
   });
   payload.logger.info(`destination: ${d.name}`);
 }

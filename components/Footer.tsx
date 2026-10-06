@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import type { Contact } from '@/lib/content';
 import Logo from '@/components/Logo';
+import { phones } from '@/lib/format';
 
 // Mountain layers are generated from a fixed seed, so server and browser draw the same shapes.
 const H = 400;
@@ -39,7 +40,6 @@ const BIRDS = [[0, 10], [18, 4], [34, 14], [52, 2], [70, 12], [90, 6]].map(([x, 
 
 const HEAD = 'max-w-40 border-b border-white/70 pb-3 text-[16px] font-bold';
 const LINK = 'text-[15px] text-[#cfe3da] hover:text-white';
-const SOCIAL = 'flex size-10 items-center justify-center rounded-full border-[1.5px] border-white/75 transition-[background-color,translate] duration-250 hover:-translate-y-0.5 hover:bg-white/12';
 
 export default function Footer({ contact }: { contact: Contact }) {
   const scene = useRef<HTMLDivElement>(null);
@@ -102,39 +102,29 @@ export default function Footer({ contact }: { contact: Contact }) {
       </div>
 
       <div className="relative -mt-px bg-[#0b2a20] px-[5vw] pt-6 pb-8 text-white">
-        <div ref={content} className="grid grid-cols-2 gap-x-6 gap-y-10 pb-10 tablet:grid-cols-4 tablet:gap-x-10 tablet:gap-y-12 tablet:pb-14">
-          <div data-rv="1" className="col-span-2 flex flex-col gap-4.5 tablet:col-span-1">
+        <div ref={content} className="flex flex-col gap-10 pb-10 tablet:flex-row tablet:items-start tablet:justify-between tablet:gap-12 tablet:pb-14">
+          <div data-rv="1" className="flex flex-col gap-4.5">
             <Link href="/" aria-label="Jajabor home" className="flex self-start text-white hover:text-white">
               <Logo className="h-14 w-auto" onDark />
             </Link>
-            <p className="m-0 max-w-[260px] text-[15px] leading-[1.6] text-[#b9d3c7]">A free, honest guide to travelling in Bangladesh. Written by travellers, run by volunteers.</p>
+            <p className="m-0 max-w-[260px] text-[15px] leading-[1.6] text-[#b9d3c7]">A free, honest guide to travelling in Bangladesh. Written by travellers, for travellers.</p>
           </div>
-          <div data-rv="1" className="flex flex-col gap-3.5">
-            <span className={HEAD}>Explore</span>
-            <Link href="/destinations" className={LINK}>Destinations</Link>
-            <Link href="/stories" className={LINK}>Stories</Link>
-            <Link href="/about" className={LINK}>About us</Link>
-          </div>
-          <div data-rv="1" className="flex flex-col gap-3.5">
-            <span className={HEAD}>Get involved</span>
-            <Link href="/share" className={LINK}>Share your story</Link>
-            <Link href="/about#contact" className={LINK}>Suggest a place</Link>
-            <Link href="/about#contact" className={LINK}>Contact us</Link>
-          </div>
-          <div data-rv="1" className="col-span-2 flex flex-col gap-3.5 tablet:col-span-1">
-            <span className={HEAD}>Contact</span>
-            {contact.email && <a href={`mailto:${contact.email}`} className={LINK}>{contact.email}</a>}
-            {contact.phone && <a href={`tel:${contact.phone.replace(/[^+\d]/g, '')}`} className={LINK}>{contact.phone}</a>}
-            {contact.address && <span className="text-[15px] leading-normal text-[#cfe3da]">{contact.address}</span>}
-            {(contact.social.facebook || contact.social.instagram || contact.social.youtube) && <div className="mt-1.5 flex gap-2.5">
-              {contact.social.facebook && <a href={contact.social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className={SOCIAL}><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.8c0-.9.3-1.6 1.6-1.6h1.7V3.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V13h2.7v8z"></path></svg></a>}
-              {contact.social.instagram && <a href={contact.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className={SOCIAL}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="0.8" fill="#fff" stroke="none"></circle></svg></a>}
-              {contact.social.youtube && <a href={contact.social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className={SOCIAL}><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.3 5 12 5 12 5s-6.3 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.7 19 12 19 12 19s6.3 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3z"></path></svg></a>}
-            </div>}
+          {/* Explore and Contact sit together on the right, 120px apart. */}
+          <div className="grid grid-cols-2 gap-x-6 tablet:flex tablet:gap-[120px]">
+            <div data-rv="1" className="flex flex-col gap-3.5">
+              <span className={HEAD}>Explore</span>
+              <Link href="/destinations" className={LINK}>Destinations</Link>
+              <Link href="/stories" className={LINK}>Stories</Link>
+              <Link href="/about" className={LINK}>About us</Link>
+            </div>
+            <div data-rv="1" className="flex flex-col gap-3.5">
+              <span className={HEAD}>Contact</span>
+              {phones(contact.phone).map(p => <a key={p.href} href={p.href} className={LINK}>{p.text}</a>)}
+            </div>
           </div>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/14 pt-6 text-[13px] text-[#8fb3a3]">
-          <span>© 2026 JAJABOR · A nonprofit, made in Dhaka</span>
+          <span>© 2026 Jajabor</span>
           <Link href="/credits" className="text-[#8fb3a3] hover:text-white">Photo credits</Link>
         </div>
       </div>

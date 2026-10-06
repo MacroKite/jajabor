@@ -5,9 +5,9 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
-  title: { default: 'JAJABOR · Know Bangladesh before you go', template: '%s · JAJABOR' },
-  description: 'A free, honest guide to travelling in Bangladesh. Written by travellers, run by volunteers.',
-  openGraph: { siteName: 'JAJABOR', type: 'website' },
+  title: { default: 'Jajabor · Know Bangladesh before you go', template: '%s · Jajabor' },
+  description: 'A free, honest guide to travelling in Bangladesh. Written by travellers, for travellers.',
+  openGraph: { siteName: 'Jajabor', type: 'website' },
 };
 
 export const viewport: Viewport = { width: 'device-width', initialScale: 1 };

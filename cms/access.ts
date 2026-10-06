@@ -1,6 +1,6 @@
 import type { Access, FieldAccess } from 'payload';
 
-// Two roles: admins manage everything, including CMS users; editors (volunteers) edit content.
+// Two roles: admins manage everything, including CMS users; editors edit content.
 type CmsUser = { id: string | number; role?: 'admin' | 'editor' } | null | undefined;
 
 export const anyone: Access = () => true;

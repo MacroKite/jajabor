@@ -4,7 +4,7 @@ import { getPhotoCredits } from '@/lib/content';
 
 export const metadata: Metadata = {
   title: 'Photo credits',
-  description: 'The photographers whose work appears on JAJABOR, and the licences their photos are shared under.',
+  description: 'The photographers whose work appears on Jajabor, and the licences their photos are shared under.',
 };
 
 // Every photo on the site with its photographer, licence and source. Most come from Wikimedia

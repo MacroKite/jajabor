@@ -3,6 +3,7 @@ import { anyone, isAdmin, loggedIn } from '../access';
 import { revalidateAfterChange, revalidateAfterDelete } from '../revalidate';
 
 const PARAS = 'Leave an empty line between paragraphs.';
+const BODY = `${PARAS} Start a line with "- " for a bullet point, or "  - " (two spaces first) for a point inside the one above. Wrap words in **double stars** to make them bold.`;
 
 export const Destinations: CollectionConfig = {
   slug: 'destinations',
@@ -48,10 +49,25 @@ export const Destinations: CollectionConfig = {
       label: 'Guide',
       type: 'group',
       fields: [
-        { name: 'about', label: 'About the place', type: 'textarea', required: true, admin: { description: PARAS, rows: 10 } },
-        { name: 'food', label: 'What to eat', type: 'textarea', required: true, admin: { description: PARAS, rows: 8 } },
-        { name: 'stay', label: 'Where to stay', type: 'textarea', required: true, admin: { description: PARAS, rows: 8 } },
-        { name: 'route', label: 'How to get there', type: 'textarea', required: true, admin: { description: PARAS, rows: 8 } },
+        { name: 'headline', label: 'Subheading', type: 'text', admin: { description: 'Shown above the introduction, e.g. "মেঘের ওপরে এক রাত".' } },
+        { name: 'intro', label: 'Introduction', type: 'textarea', required: true, admin: { description: PARAS, rows: 5 } },
+        { name: 'notice', label: 'Important notice', type: 'textarea', admin: { description: 'Optional. Shown in a highlighted box under the introduction, for rules or closures travellers must know.', rows: 4 } },
+        {
+          name: 'sections',
+          type: 'array',
+          required: true,
+          minRows: 1,
+          labels: { singular: 'Section', plural: 'Sections' },
+          admin: {
+            description: 'Shown in this order, e.g. "কেন যাবেন", "কীভাবে যাবেন". The two gallery photos appear after the second section.',
+            initCollapsed: true,
+            components: { RowLabel: '/cms/components/RowLabels#SectionRowLabel' },
+          },
+          fields: [
+            { name: 'title', type: 'text', required: true },
+            { name: 'body', label: 'Text', type: 'textarea', required: true, admin: { description: BODY, rows: 12 } },
+          ],
+        },
       ],
     },
   ],

@@ -11,7 +11,16 @@ export type Destination = {
   gallery: string[];
   // Photographer and licence for img, then each gallery photo, with a link to where it came from.
   credits?: (PhotoCredit | null)[];
-  article: { about: string; food: string; stay: string; route: string };
+  article: DestinationArticle;
+};
+
+// A guide: an introduction, an optional notice box, then titled sections. Section text uses
+// "- " for bullets ("  - " for a bullet inside the one above) and **double stars** for bold.
+export type DestinationArticle = {
+  headline?: string;
+  intro: string;
+  notice?: string;
+  sections: { title: string; body: string }[];
 };
 
 export type PhotoCredit = { text: string; source?: string };

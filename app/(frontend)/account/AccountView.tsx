@@ -152,7 +152,7 @@ export default function AccountView({ user, hasPassword, stories }: { user: Me; 
                 <button type="submit" disabled={!!busy} className={`${PRIMARY} self-start`}>{busy === 'password' ? 'Changing…' : 'Change password'}</button>
               </form>
             ) : (
-              <p className="m-0 text-[15px] text-muted">You log in with Google, so there’s no JAJABOR password to change.</p>
+              <p className="m-0 text-[15px] text-muted">You log in with Google, so there’s no Jajabor password to change.</p>
             )}
           </section>
         </div>

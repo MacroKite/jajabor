@@ -1,4 +1,5 @@
 import { findDest, type Destination, type Story } from './data';
+import { plain, textBlocks } from './format';
 
 export const MIN_WORDS = 80;
 export const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -24,7 +25,7 @@ export type Decorated = Story & {
 // `dests` supplies the place name and the fallback photo for stories without one.
 export function decorate(r: Story, dests: Destination[]): Decorated {
   const d = findDest(dests, r.place);
-  const paras = r.text.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+  const paras = textBlocks(r.text).flatMap(b => (b.kind === 'p' ? [plain(b.text)] : []));
   return {
     ...r,
     img: r.image || d?.img || '',

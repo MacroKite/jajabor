@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Nav from '@/components/Nav';
 import type { Destination, Story } from '@/lib/data';
 import type { HomeContent } from '@/lib/content';
+import { bold } from '@/lib/format';
 import { cut, decorate } from '@/lib/stories';
 
 // Where the floating photos sit around the “Most loved destinations” heading; the photos come from the CMS.
@@ -63,9 +64,6 @@ const PIN = <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="
 const CARD_W = '[--card-w:88vw] tablet:[--card-w:78vw] desktop:[--card-w:min(78vw,1080px)]';
 const DOTS = ['left-[6.67%] top-[26.1%]', 'left-[93.33%] top-[26.1%]', 'left-[20.83%] top-[73.9%]', 'left-[79.17%] top-[73.9%]'];
 const HANDLES = ['-left-[5px] -top-[5px]', '-right-[5px] -top-[5px]', '-left-[5px] -bottom-[5px]', '-right-[5px] -bottom-[5px]'];
-
-// Renders **double-starred** words in bold.
-const bold = (t: string) => t.split(/\*\*(.+?)\*\*/g).map((part, i) => (i % 2 ? <b key={i} className="font-bold text-ink">{part}</b> : part));
 
 export default function HomeView({ stories, dests, home, faqs }: { stories: Story[]; dests: Destination[]; home: HomeContent; faqs: { q: string; a: string }[] }) {
   const popular = dests.filter(d => d.type === 'popular');

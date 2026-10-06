@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import Nav from '@/components/Nav';
 import { getDestination, getDestinations } from '@/lib/content';
 import type { PhotoCredit } from '@/lib/data';
+import { bold } from '@/lib/format';
+import RichText, { P } from '@/components/RichText';
 
 // Built at deploy time; places added later in the CMS are built on their first visit.
 export const generateStaticParams = async () => (await getDestinations()).map(d => ({ id: d.id }));
@@ -11,14 +13,12 @@ export const generateStaticParams = async () => (await getDestinations()).map(d 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const d = await getDestination((await params).id);
   if (!d) return {};
-  return { title: d.name, description: d.blurb, openGraph: { title: `${d.name} · JAJABOR`, description: d.blurb, images: [d.img] } };
+  return { title: d.name, description: d.blurb, openGraph: { title: `${d.name} · Jajabor`, description: d.blurb, images: [d.img] } };
 }
 
 const H2 = 'm-0 text-[clamp(32px,3.4vw,52px)] leading-none font-bold tracking-[-0.04em]';
-const P = 'm-0 text-[17px] tablet:text-[19px] desktop:text-[clamp(20px,1.6vw,23px)] leading-[1.7] text-pretty text-[#2a2a2a]';
 const PAIR = 'relative h-[clamp(220px,36vw,560px)] overflow-hidden rounded-[10px] bg-frame';
 const IMG = 'absolute inset-0 block size-full object-cover';
-const paras = (t: string) => t.split(/\n\s*\n/).filter(Boolean);
 
 // "Photo: photographer, licence", linking to where the photo came from.
 function Credit({ c }: { c?: PhotoCredit | null }) {
@@ -35,7 +35,7 @@ function Section({ title, text }: { title: string; text: string }) {
     <section className="px-[5vw] pt-14 tablet:pt-20 desktop:pt-30">
       <div className="flex flex-col gap-6">
         <h2 className={H2}>{title}</h2>
-        {paras(text).map((p, i) => <p key={i} className={P}>{p}</p>)}
+        <RichText text={text} />
       </div>
     </section>
   );
@@ -45,6 +45,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const d = await getDestination((await params).id);
   if (!d) notFound();
   const [g1, g2] = d.gallery;
+  const { headline, intro, notice, sections } = d.article;
 
   return (
     <div className="overflow-x-clip bg-white">
@@ -68,8 +69,21 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         <Credit c={d.credits?.[0]} />
       </figure>
 
-      <Section title="About the place" text={d.article.about} />
-      <Section title="What to eat" text={d.article.food} />
+      {/* The guide is written in Bangla. */}
+      <div lang="bn" className="font-bangla">
+        <section className="px-[5vw] pt-14 tablet:pt-20 desktop:pt-30">
+          <div className="flex flex-col gap-6">
+            {headline && <h2 className={H2}>{headline}</h2>}
+            <RichText text={intro} />
+            {notice && (
+              <p className={`${P} rounded-r-[10px] border-l-4 border-[#e8833a] bg-[#fff4e8] px-5 py-4 tablet:px-7 tablet:py-5`}>
+                <b className="font-bold text-ink">গুরুত্বপূর্ণ:</b> {bold(notice)}
+              </p>
+            )}
+          </div>
+        </section>
+
+        {sections.slice(0, 2).map((s, i) => <Section key={i} title={s.title} text={s.body} />)}
 
       {d.gallery.length >= 2 && (
         <section className="flex flex-wrap gap-5 px-[5vw] pt-14 tablet:pt-20 desktop:pt-30">
@@ -90,8 +104,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         </section>
       )}
 
-      <Section title="Where to stay" text={d.article.stay} />
-      <Section title="How to get there" text={d.article.route} />
+        {sections.slice(2).map((s, i) => <Section key={i + 2} title={s.title} text={s.body} />)}
+      </div>
 
     </div>
   );

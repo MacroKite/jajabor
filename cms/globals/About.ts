@@ -17,11 +17,7 @@ export const About: GlobalConfig = {
       name: 'contact',
       type: 'group',
       fields: [
-        { type: 'row', fields: [
-          { name: 'email', type: 'email', required: true },
-          { name: 'phone', type: 'text', required: true },
-        ] },
-        { name: 'address', type: 'text', required: true },
+        { name: 'phone', type: 'text', required: true, admin: { description: 'Separate several numbers with commas, e.g. "01621089309, 01625680371". Bangladeshi mobile numbers are shown as +880 1621-089309. Shown in the footer and on the About page.' } },
       ],
     },
     {

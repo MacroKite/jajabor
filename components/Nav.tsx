@@ -65,7 +65,7 @@ export default function Nav({ active, home, shareHref = '/share', hideShare = fa
     <div className="sticky top-0 z-30">
       <nav className="flex h-16 items-center justify-between gap-6 bg-white/82 px-[5vw] backdrop-blur-[14px] backdrop-saturate-[1.4] tablet:h-[72px]">
         <Link href={home ? '#top' : '/'} onClick={close} aria-label="Jajabor home" className="flex shrink-0 text-ink hover:text-ink">
-          <Logo className="h-9 w-auto tablet:h-10" />
+          <Logo className="h-11 w-auto tablet:h-13" />
         </Link>
         <div className="hidden gap-8 text-[15px] font-medium tablet:flex desktop:gap-14">
           {LINKS.map(l => <Link key={l.key} href={l.href} className={active === l.key ? 'text-bd-green' : undefined}>{l.label}</Link>)}
@@ -135,7 +135,6 @@ export default function Nav({ active, home, shareHref = '/share', hideShare = fa
         ) : (
           <Link href={loginHref} onClick={close} className={`${hideShare ? 'mt-8' : 'mt-3'} rounded-full border border-[#e2e2e2] py-4 text-center text-[16px] font-bold`}>Log in</Link>
         ))}
-        <a href="mailto:hello@trip.org.bd" className="mt-auto pt-6 text-center text-[14px] text-muted">hello@trip.org.bd</a>
       </div>
     </div>
   );
