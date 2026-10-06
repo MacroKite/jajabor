@@ -1,5 +1,5 @@
 import { findDest, type Destination, type Story } from './data';
-import { plain, textBlocks } from './format';
+import { plain, textBlocks, wordCount } from './format';
 
 export const MIN_WORDS = 80;
 export const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -8,7 +8,8 @@ export const fmtDate = (iso: string) => {
   const [y, m, d] = iso.split('-');
   return `${+d} ${MON[+m - 1]} ${y}`;
 };
-export const wc = (s: string) => (s.trim().match(/\S+/g) || []).length;
+// Words in a story, not counting formatting marks like "## " or "- ".
+export const wc = wordCount;
 export const cut = (t: string, n: number) => (t.length > n ? t.slice(0, t.lastIndexOf(' ', n)) + '…' : t);
 
 export type Decorated = Story & {

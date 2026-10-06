@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Nav from '@/components/Nav';
 import Avatar from '@/components/Avatar';
+import { StoryCard } from '@/components/Cards';
 import { getSession } from '@/lib/auth';
 import { getProfile, listStoriesByUser } from '@/lib/db';
 import { getDestinations } from '@/lib/content';
@@ -33,7 +34,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
       <header className="flex flex-col gap-6 px-[5vw] pt-10 tablet:flex-row tablet:items-end tablet:gap-8 tablet:pt-16 desktop:pt-24">
         <Avatar name={profile.name} image={profile.image} className="size-24 text-[40px] tablet:size-32 tablet:text-[52px] desktop:size-40 desktop:text-[64px]" />
-        <div className="flex min-w-0 flex-1 flex-col gap-3">
+        <div className="flex min-w-0 flex-1 flex-col gap-5 tablet:gap-8">
           <h1 className="m-0 text-[clamp(40px,7vw,104px)] leading-[0.92] font-bold tracking-[-0.05em] break-words">{profile.name}</h1>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[15px] text-muted tablet:text-[16px]">
             {profile.hometown && <span className="flex items-center gap-1.5">{PIN}{profile.hometown}</span>}
@@ -50,21 +51,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         <h2 className="m-0 border-b border-[#e4e4e4] pb-5 text-[clamp(28px,3vw,40px)] font-bold tracking-[-0.04em]">Stories by {first}</h2>
         {list.length ? (
           <div className="grid grid-cols-1 gap-x-8 gap-y-12 pt-8 tablet:grid-cols-2 desktop:grid-cols-3">
-            {list.map(s => (
-              <Link key={s.id} href={s.href} className="flex flex-col gap-3 text-ink">
-                <div className="relative aspect-[16/11] overflow-hidden rounded-[10px] bg-frame">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  {s.img && <img src={s.img} alt="" loading="lazy" className="absolute inset-0 block size-full object-cover transition-transform duration-900 ease-glide hover:scale-105" />}
-                </div>
-                <span className="text-[22px] leading-[1.1] font-bold tracking-[-0.03em] text-balance">{s.title}</span>
-                <span className="text-[14px] text-muted">{s.placeName} · {s.when} · {s.readTime}</span>
-              </Link>
-            ))}
+            {list.map(s => <StoryCard key={s.id} s={s} />)}
           </div>
         ) : (
           <div className="flex flex-wrap items-center justify-between gap-4 pt-8 text-[17px] text-muted">
             {isMe ? 'You haven’t shared a story yet.' : `${first} hasn’t shared a story yet.`}
-            {isMe && <Link href="/share" className="rounded-[10px] bg-ink px-5.5 py-3.5 text-[15px] font-bold text-white hover:bg-bd-green hover:text-white">Write your first story</Link>}
+            {isMe && <Link href="/share" className="rounded-full bg-ink px-5.5 py-3.5 text-[15px] font-bold text-white hover:bg-bd-green hover:text-white">Write your first story</Link>}
           </div>
         )}
       </section>

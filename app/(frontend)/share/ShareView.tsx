@@ -6,6 +6,10 @@ import { useState } from 'react';
 import Nav from '@/components/Nav';
 import { MIN_WORDS, wc } from '@/lib/stories';
 import { resizePhoto } from '@/lib/resize-photo';
+import StoryEditor from '@/components/StoryEditor';
+
+// Longest story the server accepts, in characters including formatting marks (see lib/story-input).
+const MAX_CHARS = 30000;
 
 const LABEL = 'flex flex-col gap-2 text-[14px] font-medium';
 const FIELD = 'rounded-[10px] border border-[#e2e2e2] bg-white px-4.5 py-4 text-[16px] outline-bd-green';
@@ -45,7 +49,7 @@ export default function ShareView({ initial, places, authorName, storyId }: { in
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (busy) return;
-    const msg = !f.place ? 'Pick the place your story is about.' : !editing && !f.image ? 'Add a photo from your trip.' : !f.title.trim() ? 'Give your story a title.' : n < MIN_WORDS ? `Your story needs at least ${MIN_WORDS} words. You have ${n}.` : '';
+    const msg = !f.place ? 'Pick the place your story is about.' : !editing && !f.image ? 'Add a photo from your trip.' : !f.title.trim() ? 'Give your story a title.' : n < MIN_WORDS ? `Your story needs at least ${MIN_WORDS} words. You have ${n}.` : f.text.length > MAX_CHARS ? 'Your story is too long. Please shorten it a little.' : '';
     if (msg) return setErr(msg);
     setBusy(true);
     try {
@@ -82,10 +86,11 @@ export default function ShareView({ initial, places, authorName, storyId }: { in
               <input value={f.title} onChange={set('title')} maxLength={160} placeholder="Two days in Sajek on ৳5,000" className={`${FIELD} font-medium`} />
             </label>
           </div>
-          <label className={LABEL}>Your story
-            <textarea rows={14} value={f.text} onChange={set('text')} maxLength={30000} placeholder="Start from the beginning. Leave an empty line between paragraphs." className="min-h-[280px] resize-y rounded-[10px] border border-[#e2e2e2] bg-white px-5 py-4.5 text-[17px] leading-[1.65] font-normal outline-bd-green"></textarea>
+          <div className={LABEL}>
+            <span id="story-label">Your story</span>
+            <StoryEditor value={initial.text} onChange={text => { setF(st => ({ ...st, text })); setErr(''); }} labelledBy="story-label" placeholder="Start from the beginning. Use H1 and H2 for sections, and lists for costs or tips." />
             <span className={`text-[12px] font-medium ${n < MIN_WORDS ? 'text-faint' : 'text-bd-green'}`}>{n < MIN_WORDS ? `${n} words · write at least ${MIN_WORDS}` : n + ' words'}</span>
-          </label>
+          </div>
           <div className={GRID}>
             <div className={LABEL}>Published as
               <span className="truncate rounded-[10px] bg-[#f4f4f4] px-4.5 py-4 text-[16px] font-medium text-ink">{authorName}</span>

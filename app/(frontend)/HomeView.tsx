@@ -3,9 +3,10 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import Nav from '@/components/Nav';
+import SearchForm from '@/components/SearchForm';
 import type { Destination, Story } from '@/lib/data';
 import type { HomeContent } from '@/lib/content';
-import { bold } from '@/lib/format';
+import { bnLang, bold } from '@/lib/format';
 import { cut, decorate } from '@/lib/stories';
 
 // Where the floating photos sit around the “Most loved destinations” heading; the photos come from the CMS.
@@ -75,7 +76,6 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
   const thumbs: Thumb[] = home.introPhotos.slice(0, THUMB_SLOTS.length).map((img, i) => ({ ...THUMB_SLOTS[i], img }));
   const [t, setT] = useState(-1);
   const [tg, setTg] = useState(-1);
-  const [query, setQuery] = useState('');
   // Stories carousel position in the tripled track (see `track` below); starts on the middle copy.
   const [hs, setHs] = useState(stories.length > 1 ? stories.length : 0);
   const [jump, setJump] = useState(false);
@@ -108,15 +108,6 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
     const to = setTimeout(onScroll, 50);
     return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); clearTimeout(to); cancelAnimationFrame(raf); };
   }, []);
-
-  const onSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const el = document.getElementById('popular');
-    if (!el) return;
-    const q = query.trim().toLowerCase();
-    const match = q ? popular.findIndex(p => (p.name + ' ' + p.district + ' ' + p.bn).toLowerCase().includes(q)) : -1;
-    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY + (1.7 + Math.max(0, match) * 0.9) * window.innerHeight, behavior: 'smooth' });
-  };
 
   const loved = sequence(t, popular, thumbs, false, stacked);
   const gs = sequence(tg, gems, [], true, stacked);
@@ -180,12 +171,8 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
 
       <header id="top" className="mx-auto flex max-w-[1360px] flex-col items-center px-[5vw] pt-10 text-center tablet:px-8 tablet:pt-16 desktop:pt-18">
         <h1 className="m-0 text-[clamp(40px,8.5vw,128px)] leading-[0.95] font-bold tracking-[-0.045em] text-balance">Know <span className="text-mesh pb-[0.06em]">Bangladesh</span><br />before you go.</h1>
-        <p className="mt-5 mb-0 max-w-[520px] text-[16px] leading-normal text-pretty text-muted tablet:mt-7 tablet:text-[19px]">{home.heroSubtitle}</p>
-        <form role="search" onSubmit={onSearch} className="mt-8 flex w-full max-w-[760px] items-center gap-2 rounded-full border border-[#e6e6e6] bg-white py-1.5 pr-1.5 pl-5 tablet:mt-11 tablet:gap-3 tablet:py-2.5 tablet:pr-2.5 tablet:pl-8">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#141414" strokeWidth="2" className="size-5 shrink-0 tablet:size-[22px]"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
-          <input aria-label="Search your destination" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search a destination" className="min-w-0 flex-1 bg-transparent py-3 text-[16px] text-ink outline-0 tablet:py-3.5 tablet:text-[20px]" />
-          <button type="submit" className="shrink-0 cursor-pointer rounded-full bg-bd-green px-5 py-3.5 text-[15px] font-bold text-white hover:bg-[#00573f] tablet:px-9 tablet:py-5 tablet:text-[17px]">Search</button>
-        </form>
+        <p className="mt-7 mb-0 max-w-[520px] text-[16px] leading-normal text-pretty text-muted tablet:mt-9 tablet:text-[19px]">{home.heroSubtitle}</p>
+        <SearchForm className="mt-8 tablet:mt-11" />
       </header>
 
       {/* Phone: 2 columns, first 9 photos. Tablet: 4 columns. Desktop: 6 columns, one screen tall. */}
@@ -303,7 +290,7 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
                       <span className="flex items-center gap-1.5">{PIN}{r.placeName}</span>
                       <span>{r.when}</span>
                     </div>
-                    <h3 className="m-0 text-[clamp(26px,2.4vw,38px)] leading-[1.08] font-medium tracking-[-0.035em] text-balance">{r.title}</h3>
+                    <h3 lang={bnLang(r.title)} className="m-0 text-[clamp(26px,2.4vw,38px)] leading-[1.08] font-medium tracking-[-0.035em] text-balance">{r.title}</h3>
                     <p className="m-0 line-clamp-3 tablet:line-clamp-5 text-[16px] leading-[1.6] text-muted">{cut(r.excerpt, 300)}</p>
                     <div className="mt-auto flex flex-col">
                       <Link href={r.href} tabIndex={on ? 0 : -1} className={`${PILL} self-start`}>Read story <Arrow /></Link>

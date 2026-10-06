@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
 import Nav from '@/components/Nav';
+import { DestinationCard } from '@/components/Cards';
 import type { Destination } from '@/lib/data';
 
 type Filter = 'all' | 'popular' | 'gem';
@@ -44,21 +44,7 @@ export default function DestinationsView({ dests, initialFilter }: { dests: Dest
       </div>
 
       <section className="grid grid-cols-[repeat(auto-fill,minmax(max(300px,calc((100%_-_80px)_/_3)),1fr))] gap-x-6 gap-y-12 tablet:gap-x-10 desktop:gap-y-20 px-[5vw] pt-10">
-        {list.map(c => (
-          <Link key={c.id} href={'/destinations/' + c.id} className="flex flex-col gap-3.5 text-ink">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[10px] bg-frame">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={c.img} alt={c.name} loading="lazy" className="absolute inset-0 block size-full object-cover transition-transform duration-900 ease-glide hover:scale-105" />
-            </div>
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[26px] leading-[1.1] font-bold tracking-[-0.03em]">{c.name}</span>
-                <span lang="bn" className="text-[17px] font-medium text-bd-green">{c.bn}</span>
-              </div>
-            </div>
-            <p className="m-0 text-[16px] leading-normal text-pretty text-muted">{c.blurb}</p>
-          </Link>
-        ))}
+        {list.map(c => <DestinationCard key={c.id} d={c} />)}
       </section>
       {list.length === 0 && (
         <div className="px-[5vw] pt-10 text-[18px] text-muted">Nothing matches “{q}” yet. <button onClick={() => setQ('')} className="cursor-pointer text-[18px] font-bold text-ink underline underline-offset-4">Clear search</button></div>

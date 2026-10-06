@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Nav from '@/components/Nav';
 import { findDest, type Destination, type Story } from '@/lib/data';
 import { cut, decorate } from '@/lib/stories';
+import { bnLang } from '@/lib/format';
 
 const PIN = <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5c5c5c" strokeWidth="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>;
 
@@ -74,7 +75,7 @@ export default function StoriesView({ stories, dests, initialPlace }: { stories:
               </div>
               <div className="flex min-w-0 flex-[1_1_360px] flex-col gap-5">
                 <div className="flex items-start justify-between gap-4">
-                  <h2 className="m-0 text-[clamp(26px,2.4vw,36px)] leading-[1.02] font-bold tracking-[-0.045em] text-balance">{r.title}</h2>
+                  <h2 lang={bnLang(r.title)} className="m-0 text-[clamp(26px,2.4vw,36px)] leading-[1.02] font-bold tracking-[-0.045em] text-balance">{r.title}</h2>
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F42A41" strokeWidth="1.6" className="mt-0.5 shrink-0"><path d="M7 17L17 7M9 7h8v8"></path></svg>
                 </div>
                 <p className="m-0 line-clamp-2 max-w-[640px] text-[16px] leading-[1.55] text-[#3a3a3a]">{cut(r.excerpt, 150)}</p>

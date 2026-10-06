@@ -2,7 +2,7 @@
 // Photo ids are Cloudinary images under trip/places/.
 
 export const HOME = {
-  heroSubtitle: 'Honest guides to Bangladesh’s best places: how to get there, where to stay, what to eat and when to go.',
+  heroSubtitle: 'Authentic Bangladesh travel guides, written by people who’ve actually been there.',
   introText: 'Forget scattered posts and out-of-date blogs. Every place gets **one clear guide** with the routes, stays, food and seasons you need.',
   // [photo id, label, wide, tall]
   mosaic: [

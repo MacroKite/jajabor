@@ -6,6 +6,9 @@ import { getDestination, getDestinations } from '@/lib/content';
 import type { PhotoCredit } from '@/lib/data';
 import { bold } from '@/lib/format';
 import RichText, { P } from '@/components/RichText';
+import { DestinationCard, MoreSection, StoryCard } from '@/components/Cards';
+import { listStories } from '@/lib/db';
+import { decorate } from '@/lib/stories';
 
 // Built at deploy time; places added later in the CMS are built on their first visit.
 export const generateStaticParams = async () => (await getDestinations()).map(d => ({ id: d.id }));
@@ -45,6 +48,11 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const d = await getDestination((await params).id);
   if (!d) notFound();
   const [g1, g2] = d.gallery;
+  const [dests, stories] = await Promise.all([getDestinations(), listStories()]);
+  // The next three places in the CMS order, wrapping round, so each guide suggests different ones.
+  const i = dests.findIndex(x => x.id === d.id);
+  const others = [...dests.slice(i + 1), ...dests.slice(0, i)].slice(0, 3);
+  const here = stories.filter(r => r.place === d.id).slice(0, 3).map(r => decorate(r, dests));
   const { headline, intro, notice, sections } = d.article;
 
   return (
@@ -106,6 +114,15 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
         {sections.slice(2).map((s, i) => <Section key={i + 2} title={s.title} text={s.body} />)}
       </div>
+
+      {here.length > 0 && (
+        <MoreSection title={`Stories from ${d.name}`} href={'/stories?place=' + d.id} linkText="View all stories">
+          {here.map(r => <StoryCard key={r.id} s={r} />)}
+        </MoreSection>
+      )}
+      <MoreSection title="More destinations" href="/destinations" linkText="View all destinations">
+        {others.map(x => <DestinationCard key={x.id} d={x} />)}
+      </MoreSection>
 
     </div>
   );

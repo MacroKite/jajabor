@@ -29,7 +29,42 @@
   ::placeholder { color: #757575 }
 }
 
-/* Highlighted words in headings: plain black, like the rest of the heading. */
+/* Bangla headlines: vowel signs sit above and below the letters, so the tight line height used for
+   Latin headlines makes lines touch. Unlayered, so it wins over the leading-* utilities. */
+:is(h1, h2, h3):lang(bn) {
+  line-height: 1.25;
+}
+
+/* The story editor on the Share and Edit pages (components/StoryEditor.tsx). Text looks close to
+   how the story page shows it, a little smaller to suit a form. */
+.story-editor {
+  outline: none;
+  font-size: 17px;
+  line-height: 1.65;
+  color: #2a2a2a;
+  & > * + * { margin-top: 0.9em; }
+  & h2 { margin-top: 1.1em; font-size: 28px; line-height: 1.3; font-weight: 700; letter-spacing: -0.03em; color: var(--color-ink); }
+  & h3 { margin-top: 1em; font-size: 22px; line-height: 1.35; font-weight: 700; letter-spacing: -0.02em; color: var(--color-ink); }
+  & > :first-child { margin-top: 0; }
+  & strong { font-weight: 700; color: var(--color-ink); }
+  & ul { list-style: disc; padding-left: 1.4em; }
+  & ol { list-style: decimal; padding-left: 1.5em; }
+  & li + li { margin-top: 0.35em; }
+  & li > ul, & li > ol { margin-top: 0.35em; }
+  & li > ul { list-style: circle; }
+  & li > ol { list-style: lower-alpha; }
+  & li p { margin: 0; }
+  /* The placeholder, shown while the editor is empty. */
+  & p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    color: #9a9a9a;
+    pointer-events: none;
+  }
+}
+
+/* Highlighted words in headings: plain black, the same as the rest of the heading. */
 @utility text-mesh {
   color: var(--color-ink);
 }

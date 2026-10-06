@@ -15,6 +15,7 @@ const NOT_YOURS = 'This story doesn’t exist, or it isn’t yours to change.';
 function revalidate() {
   revalidatePath('/');
   revalidatePath('/stories', 'layout');
+  revalidatePath('/destinations', 'layout'); // guides list stories from their place
 }
 
 export async function PATCH(req: Request, { params }: Ctx) {

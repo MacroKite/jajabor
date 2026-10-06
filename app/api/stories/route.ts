@@ -37,5 +37,6 @@ export async function POST(req: Request) {
 
   revalidatePath('/');
   revalidatePath('/stories', 'layout');
+  revalidatePath('/destinations', 'layout'); // guides list stories from their place
   return NextResponse.json({ id: story.id }, { status: 201 });
 }
