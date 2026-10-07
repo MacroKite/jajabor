@@ -115,6 +115,7 @@ export default function Footer({ contact }: { contact: Contact }) {
               <span className={HEAD}>Explore</span>
               <Link href="/destinations" className={LINK}>Destinations</Link>
               <Link href="/stories" className={LINK}>Stories</Link>
+              <Link href="/travel-personality" className={LINK}>Travel personality test</Link>
               <Link href="/about" className={LINK}>About us</Link>
             </div>
             <div data-rv="1" className="flex flex-col gap-3.5">

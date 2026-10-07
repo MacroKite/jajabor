@@ -10,13 +10,14 @@ import Logo from '@/components/Logo';
 const LINKS = [
   { key: 'destinations', href: '/destinations', label: 'Destinations' },
   { key: 'stories', href: '/stories', label: 'Stories' },
+  { key: 'personality', href: '/travel-personality', label: 'Travel test' },
   { key: 'about', href: '/about', label: 'About' },
 ] as const;
 
 type User = { name: string; email: string; image?: string | null };
 
 // `hideShare` drops the "Share your story" button, e.g. on the login and sign-up pages, where it would only lead back to login.
-export default function Nav({ active, home, shareHref = '/share', hideShare = false }: { active?: 'destinations' | 'stories' | 'about'; home?: boolean; shareHref?: string; hideShare?: boolean }) {
+export default function Nav({ active, home, shareHref = '/share', hideShare = false }: { active?: (typeof LINKS)[number]['key']; home?: boolean; shareHref?: string; hideShare?: boolean }) {
   const [open, setOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
   const userEl = useRef<HTMLDivElement>(null);
