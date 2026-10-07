@@ -6,13 +6,13 @@ import { useEffect, useRef, useState } from 'react';
 import Nav from '@/components/Nav';
 import { DestinationCard } from '@/components/Cards';
 import type { Destination } from '@/lib/data';
-import { QUESTIONS, bnDigits, letter, scoreTest, type Result } from '@/lib/personality';
+import { NOMAD, PICKS_TITLE, QUESTIONS, bnDigits, headline, scoreTest, type Result } from '@/lib/personality';
 import { drawCard } from '@/lib/personality-card';
 import { resizePhoto } from '@/lib/resize-photo';
 
 type Step = 'intro' | 'questions' | 'details' | 'result';
 
-// The postcard's serif, also used for its letter on the page. Loaded on this page only.
+// The postcard's serif. Loaded on this page only.
 const tiro = Tiro_Bangla({ weight: '400', style: ['normal', 'italic'], subsets: ['bengali', 'latin'] });
 
 const LETTERS = ['ক', 'খ', 'গ', 'ঘ'];
@@ -88,7 +88,7 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
   const canShareFile = () => !!blob.current && typeof navigator !== 'undefined' && !!navigator.canShare?.({ files: [file()] });
   const share = async () => {
     try {
-      if (canShareFile()) await navigator.share({ files: [file()], title: 'আমার ভ্রমণ ব্যক্তিত্ব', text: `আমি একজন ${result?.type.title}! আপনার ভ্রমণ ব্যক্তিত্ব জানুন:` });
+      if (canShareFile()) await navigator.share({ files: [file()], title: 'আমার ভ্রমণ ব্যক্তিত্ব', text: `আমি একজন ${result?.type.title} ${NOMAD}! আপনার ভ্রমণ ব্যক্তিত্ব জানুন:` });
       else download();
     } catch { /* the person closed the share sheet */ }
   };
@@ -103,13 +103,13 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
 
       <main lang="bn" className="px-[5vw] pt-10 tablet:pt-16 desktop:pt-20">
         {step === 'intro' && (
-          <section className="flex max-w-[900px] flex-col items-start gap-7">
+          <section className="mx-auto flex max-w-[900px] flex-col items-center gap-7 text-center">
             <span className="rounded-full bg-[#eef5f1] px-4 py-2 text-[14px] font-bold text-bd-green">ভ্রমণ ব্যক্তিত্ব পরীক্ষা</span>
             <h1 className={H1}>আপনি কোন ধরনের পর্যটক?</h1>
             <p className="m-0 max-w-[620px] text-[18px] leading-[1.7] text-pretty text-muted tablet:text-[20px]">
               {bnDigits(total)}টি সহজ প্রশ্নের উত্তর দিন। জেনে নিন আপনার ভ্রমণ ধরন, পছন্দ আর বাংলাদেশের কোন জায়গাগুলো আপনার জন্য সেরা। শেষে পাবেন নিজের নাম আর ছবিসহ একটি ফটো কার্ড।
             </p>
-            <div className="flex flex-wrap gap-2.5 text-[14px] font-medium text-ink">
+            <div className="flex flex-wrap justify-center gap-2.5 text-[14px] font-medium text-ink">
               {[`${bnDigits(total)}টি প্রশ্ন`, 'মাত্র ২ মিনিট', 'লগইন লাগবে না'].map(t => <span key={t} className="rounded-full border border-[#e2e2e2] px-4 py-2">{t}</span>)}
             </div>
             <button type="button" onClick={() => setStep('questions')} className={`${BTN} mt-2`}>পরীক্ষা শুরু করুন →</button>
@@ -117,7 +117,7 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
         )}
 
         {step === 'questions' && (
-          <section className="flex max-w-[900px] flex-col gap-8">
+          <section className="mx-auto flex w-full max-w-[820px] flex-col gap-8">
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between text-[15px] font-medium text-muted">
                 <span>প্রশ্ন {bnDigits(qi + 1)}/{bnDigits(total)}</span>
@@ -127,7 +127,7 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
                 <div className="h-full rounded-full bg-bd-green transition-[width] duration-300" style={{ width: `${((qi + 1) / total) * 100}%` }} />
               </div>
             </div>
-            <h1 className="m-0 text-[clamp(28px,4vw,52px)] leading-[1.3] font-bold tracking-[-0.02em] text-balance">{q.text}</h1>
+            <h1 className="m-0 text-center text-[clamp(28px,4vw,52px)] leading-[1.3] font-bold tracking-[-0.02em] text-balance">{q.text}</h1>
             <div className="flex flex-col gap-3">
               {(q.kind === 'type' ? q.options : q.options.map(o => o.text)).map((text, i) => {
                 const on = answers[qi] === i;
@@ -144,10 +144,10 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
         )}
 
         {step === 'details' && (
-          <section className="flex max-w-[640px] flex-col gap-7">
-            <span className="rounded-full self-start bg-[#eef5f1] px-4 py-2 text-[14px] font-bold text-bd-green">শেষ ধাপ</span>
+          <section className="mx-auto flex w-full max-w-[640px] flex-col items-center gap-7 text-center">
+            <span className="rounded-full bg-[#eef5f1] px-4 py-2 text-[14px] font-bold text-bd-green">শেষ ধাপ</span>
             <h1 className="m-0 text-[clamp(32px,5vw,64px)] leading-[1.2] font-bold tracking-[-0.03em]">আপনার ফটো কার্ড তৈরি করি</h1>
-            <form onSubmit={showResult} noValidate className="flex flex-col gap-6">
+            <form onSubmit={showResult} noValidate className="flex w-full flex-col gap-6 text-left">
               <label className="flex flex-col gap-2 text-[15px] font-medium">আপনার নাম
                 <input value={name} onChange={e => { setName(e.target.value); setErr(''); }} maxLength={40} autoFocus placeholder="আপনার নাম লিখুন" className="rounded-[10px] border border-[#e2e2e2] bg-white px-4.5 py-4 text-[17px] font-normal outline-bd-green" />
               </label>
@@ -163,8 +163,8 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
                   <input type="file" accept="image/*" aria-label="ছবি যোগ করুন" onChange={onPhoto} className="absolute inset-0 size-full cursor-pointer opacity-0" />
                 </label>
               </div>
-              {err && <span role="alert" className="text-[14px] font-medium text-bd-red">{err}</span>}
-              <div className="flex flex-wrap items-center gap-4">
+              {err && <span role="alert" className="text-center text-[14px] font-medium text-bd-red">{err}</span>}
+              <div className="flex flex-wrap items-center justify-center gap-4">
                 <button type="submit" disabled={busy} className={BTN}>{busy ? 'কার্ড তৈরি হচ্ছে…' : 'ফলাফল দেখুন'}</button>
                 <button type="button" onClick={() => { setQi(total - 1); setStep('questions'); }} className="cursor-pointer text-[15px] font-medium text-muted hover:text-ink">← প্রশ্নে ফিরে যান</button>
               </div>
@@ -178,27 +178,43 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
               <div className="flex flex-col gap-4">
                 {card
                   // eslint-disable-next-line @next/next/no-img-element
-                  ? <img src={card} alt={`${name.trim()}-এর ভ্রমণ ব্যক্তিত্ব কার্ড: ${result.type.title}`} className="block w-full rounded-[14px] shadow-[0_10px_40px_rgba(0,0,0,0.12)]" />
+                  ? <img src={card} alt={`ভ্রমণ ব্যক্তিত্ব পোস্টকার্ড: ${headline(name.trim(), result.type)}`} className="block w-full rounded-[14px] shadow-[0_10px_40px_rgba(0,0,0,0.12)]" />
                   : <div className="rounded-[14px] bg-frame p-8 text-[15px] text-muted">কার্ডটি তৈরি করা যায়নি, তবে নিচে আপনার ফলাফল দেখুন।</div>}
-                {card && (
-                  <div className="flex flex-wrap gap-3">
-                    <button type="button" onClick={download} className={BTN}>কার্ড ডাউনলোড করুন</button>
-                    <button type="button" onClick={share} className={BTN_LINE}>শেয়ার করুন</button>
+                <div className="flex flex-wrap gap-3">
+                  {card && <button type="button" onClick={download} className={BTN}>কার্ড ডাউনলোড করুন</button>}
+                  {card && <button type="button" onClick={share} className={BTN_LINE}>শেয়ার করুন</button>}
+                </div>
+              </div>
+              {/* The type in detail: a paragraph, key points and the suggested places. */}
+              <div className="flex min-w-0 flex-col gap-8 desktop:pt-6">
+                <h1 className={`${H1} text-bd-green`}>{result.type.title} {NOMAD}</h1>
+                <p className="m-0 text-[19px] leading-[1.85] text-pretty text-[#2a2a2a] tablet:text-[22px]">{result.type.description}</p>
+                <div className="flex flex-col gap-4">
+                  <h2 className="m-0 text-[22px] font-bold tablet:text-[26px]">মূল বৈশিষ্ট্য</h2>
+                  <ul className="m-0 grid list-none grid-cols-1 gap-3 p-0 tablet:grid-cols-2">
+                    {result.type.traits.map(t => (
+                      <li key={t} className="flex items-start gap-3 rounded-[12px] bg-[#f4f4f4] px-5 py-4 text-[17px] leading-[1.6] tablet:text-[18px]">
+                        <span aria-hidden="true" className="mt-[0.55em] size-2.5 shrink-0 rounded-full bg-bd-green" />{t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                {suggested.length > 0 && (
+                  <div className="flex flex-col gap-4">
+                    <h2 className="m-0 text-[22px] font-bold tablet:text-[26px]">{PICKS_TITLE}</h2>
+                    <ol className="m-0 flex list-none flex-col gap-4 p-0">
+                      {suggested.map((d, i) => (
+                        <li key={d.id} className="flex items-start gap-4">
+                          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-bd-green text-[16px] font-bold text-white">{bnDigits(i + 1)}</span>
+                          <span className="flex flex-col gap-1">
+                            <Link href={'/destinations/' + d.id} className="text-[20px] font-bold text-ink hover:text-bd-green tablet:text-[22px]">{d.bn}</Link>
+                            <span className="text-[16px] leading-[1.6] text-muted tablet:text-[17px]">{d.blurb}</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
                 )}
-              </div>
-              <div className="flex flex-col gap-6">
-                <span className="text-[16px] font-medium text-muted">{name.trim()}, আপনার ভ্রমণ ধরন</span>
-                <h1 className={`${H1} text-bd-green`}>{result.type.title}</h1>
-                <p className="m-0 text-[20px] leading-[1.6] font-medium text-ink tablet:text-[22px]">{result.type.tagline}</p>
-                <p className="m-0 text-[17px] leading-[1.75] text-pretty text-[#2a2a2a] tablet:text-[19px]">{result.type.description}</p>
-                {result.second && <p className="m-0 text-[16px] leading-[1.7] text-muted">আপনার মধ্যে কিছুটা <b className="font-bold text-ink">{result.second.title}</b>-ও আছে।</p>}
-                <div className="flex flex-col gap-3 rounded-[14px] bg-[#f1ede6] px-6 py-6 tablet:px-8 tablet:py-7">
-                  <h2 className="m-0 text-[22px] font-bold">আপনার ভ্রমণ পছন্দ</h2>
-                  <p className={`${tiro.className} m-0 text-[19px] leading-[1.9] text-pretty text-[#262420] italic tablet:text-[21px]`}>
-                    {letter(result, suggested.map(d => d.bn))}
-                  </p>
-                </div>
                 <button type="button" onClick={restart} className={`${BTN_LINE} self-start`}>আবার পরীক্ষা দিন</button>
               </div>
             </section>

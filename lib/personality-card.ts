@@ -1,15 +1,15 @@
 // Draws the travel personality result as a postcard, 1080×1350 (Instagram portrait size), in the
 // browser, so what people see is exactly what they download or share. Nothing is uploaded.
 // Layout: a photo of the top suggested place behind a cream postcard with a perforated, stamp-like
-// edge; a serif title, the traveller's photo as the stamp with postmarks, From / To lines and a
-// short letter built from their answers.
+// edge; a headline with their name and type, the traveller's photo as the stamp with postmarks,
+// their travel dream, a short letter about them built from their answers and Jajabor's picks.
 
-import { letter, type Result } from './personality';
+import { PICKS_TITLE, headline, letter, type Result } from './personality';
 
 export const CARD_W = 1080;
 export const CARD_H = 1350;
 
-const INK = '#262420', MUTED = '#77736b', PAPER = '#f1ede6', LINE = '#c9c3b8';
+const INK = '#262420', MUTED = '#77736b', PAPER = '#f1ede6', LINE = '#c9c3b8', GREEN = '#006A4E';
 const SANS = '"Satoshi", "Hind Siliguri", sans-serif';
 const MONTHS = ['জানু', 'ফেব্রু', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টে', 'অক্টো', 'নভে', 'ডিসে'];
 const bn = (n: number) => String(n).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[+d]);
@@ -143,52 +143,72 @@ export async function drawCard(opts: { result: Result; name: string; photo?: str
   ctx.textBaseline = 'alphabetic';
   ctx.textAlign = 'left';
 
-  // Title: "পোস্টকার্ড" and the travel type, in a large serif.
-  ctx.fillStyle = INK;
-  ctx.font = serif(66);
-  ctx.fillText('পোস্টকার্ড', L, PY + 175);
-  // The travel type on one line, or two if it would get too small.
-  const one = fit(ctx, result.type.title, serif, 58, 420);
-  const titleLines = one >= 46 ? [result.type.title] : (ctx.font = serif(52), wrap(ctx, result.type.title, 420));
-  titleLines.slice(0, 2).forEach((t, i) => { ctx.font = serif(one >= 46 ? one : fit(ctx, t, serif, 52, 420)); ctx.fillText(t, L, PY + 262 + i * 70); });
+  // A small "ভ্রমণ পোস্টকার্ড" label at the top.
+  ctx.fillStyle = MUTED;
+  ctx.font = `500 26px ${SANS}`; // no letter spacing: it would pull Bangla letter clusters apart
+  ctx.fillText('ভ্রমণ পোস্টকার্ড', L, PY + 118);
 
   // The stamp: the traveller's photo, or the place photo when they didn't add one.
   const SX = PX + PW - 110 - 210, SY = PY + 96, SW = 210, SH = 262;
   const stamp = face ?? hero;
   if (stamp) cover(ctx, stamp, SX, SY, SW, SH);
   else { ctx.fillStyle = '#5d7d6e'; ctx.fillRect(SX, SY, SW, SH); }
-  waves(ctx, SX - 165, SY + SH - 30, 190);
+  waves(ctx, SX - 150, SY + SH - 22, 175);
   postmark(ctx, SX + SW - 18, SY + SH - 2, 62, -0.22, SERIF);
 
-  // From / To lines.
-  const lineY = [PY + 445, PY + 525], lineEnd = PX + PW - 290;
-  [['প্রেরক', name], ['গন্তব্য', placeNames[0] ?? 'বাংলাদেশ']].forEach(([label, value], i) => {
-    const y = lineY[i];
-    ctx.fillStyle = MUTED; ctx.font = `500 26px ${SANS}`;
-    ctx.fillText(label, L, y);
-    ctx.fillStyle = INK;
-    ctx.font = hand(fit(ctx, value, hand, 36, lineEnd - L - 140));
-    ctx.fillText(value, L + 130, y);
-    ctx.strokeStyle = LINE; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(L, y + 20); ctx.lineTo(lineEnd, y + 20); ctx.stroke();
-  });
-  postmark(ctx, PX + PW - 165, PY + 520, 56, 0.18, SERIF);
-
-  // The letter.
-  const textW = PW - 220;
+  // Headline beside the stamp: "{name} {type} যাযাবর", up to three lines.
+  const head = headline(name, result.type);
+  const headW = SX - L - 40;
+  let hs = 60, headLines: string[] = [];
+  for (; hs > 36; hs -= 2) { ctx.font = serif(hs); headLines = wrap(ctx, head, headW); if (headLines.length <= 3 && headLines.every(t => ctx.measureText(t).width <= headW)) break; }
   ctx.fillStyle = INK;
-  ctx.font = hand(36);
-  ctx.fillText('প্রিয় বাংলাদেশ,', L, PY + 640);
-  // The letter fills the space between the greeting and the signature, shrinking if it is long.
-  const body = letter(result, placeNames);
-  const TOP = PY + 705, SIGN = PY + PH - 78, room = SIGN - 48 - TOP;
-  let size = 32, lines: string[] = [];
-  for (; size > 22; size--) { ctx.font = hand(size); lines = wrap(ctx, body, textW); if ((lines.length - 1) * size * 1.7 + size <= room) break; }
+  ctx.font = serif(hs);
+  const headLh = Math.round(hs * 1.3);
+  // A little more space under the label than before the headline's own line height.
+  headLines.forEach((t, i) => ctx.fillText(t, L, PY + 215 + i * headLh));
+
+  // স্বপ্ন: the urge behind their travelling, on one ruled line (the text shrinks to fit).
+  const textW = PW - 220, lineEnd = L + textW;
+  const DY = Math.max(PY + 465, PY + 215 + (headLines.length - 1) * headLh + 100);
+  ctx.fillStyle = MUTED; ctx.font = `500 24px ${SANS}`;
+  ctx.fillText('স্বপ্ন', L, DY);
+  ctx.fillStyle = INK;
+  ctx.font = hand(fit(ctx, result.type.dream, hand, 32, lineEnd - L - 85));
+  ctx.fillText(result.type.dream, L + 85, DY);
+  const ruleY = DY + 22;
+  ctx.strokeStyle = LINE; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(L, ruleY); ctx.lineTo(lineEnd, ruleY); ctx.stroke();
+
+  // Jajabor's picks, at the bottom of the card: a green title, then one place per line.
+  const PICK_LH = 56, LAST = PY + PH - 78;
+  const picks = placeNames.slice(0, 3);
+  const PICKS_TOP = LAST - (picks.length - 1) * PICK_LH - 64; // the title's baseline
+  if (picks.length) {
+    ctx.strokeStyle = LINE; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(L, PICKS_TOP - 52); ctx.lineTo(lineEnd, PICKS_TOP - 52); ctx.stroke();
+    ctx.fillStyle = GREEN; ctx.font = `700 26px ${SANS}`;
+    ctx.fillText(PICKS_TITLE, L, PICKS_TOP);
+    picks.forEach((p, i) => {
+      const y = PICKS_TOP + 64 + i * PICK_LH;
+      ctx.fillStyle = GREEN;
+      ctx.beginPath(); ctx.arc(L + 8, y - 12, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = INK; ctx.font = serif(fit(ctx, p, serif, 38, textW - 36));
+      ctx.fillText(p, L + 32, y);
+    });
+  }
+
+  // The letter, about the person by name, filling the space between, shrinking if it is long.
+  const body = letter(result, name);
+  const TOP = ruleY + 82, BOTTOM = (picks.length ? PICKS_TOP - 52 : LAST) - 40;
+  let size = 33, lines: string[] = [], lh = 0;
+  for (; size > 22; size--) {
+    lh = Math.round(size * 1.7);
+    ctx.font = hand(size); lines = wrap(ctx, body, textW);
+    if (TOP + (lines.length - 1) * lh <= BOTTOM) break;
+  }
+  ctx.fillStyle = INK;
   ctx.font = hand(size);
-  lines.forEach((t, i) => ctx.fillText(t, L, TOP + i * Math.round(size * 1.7)));
-  ctx.textAlign = 'right';
-  ctx.font = hand(fit(ctx, '— ' + name, hand, 34, 420));
-  ctx.fillText('— ' + name, L + textW, SIGN);
+  lines.forEach((t, i) => ctx.fillText(t, L, TOP + i * lh));
 
   // Footer, on the photo below the postcard: where to take the test.
   ctx.textAlign = 'center';

@@ -10,9 +10,13 @@ import Logo from '@/components/Logo';
 const LINKS = [
   { key: 'destinations', href: '/destinations', label: 'Destinations' },
   { key: 'stories', href: '/stories', label: 'Stories' },
-  { key: 'personality', href: '/travel-personality', label: 'Travel test' },
   { key: 'about', href: '/about', label: 'About' },
+  // Shown as a highlighted pill rather than a plain link (see SPARKLE).
+  { key: 'personality', href: '/travel-personality', label: 'Travel personality test' },
 ] as const;
+
+// A small four-point sparkle that marks the Travel personality test link as something special.
+const SPARKLE = <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c.6 4.6 2.4 7.4 10 10-7.6 2.6-9.4 5.4-10 10-.6-4.6-2.4-7.4-10-10 7.6-2.6 9.4-5.4 10-10z" /></svg>;
 
 type User = { name: string; email: string; image?: string | null };
 
@@ -32,7 +36,7 @@ export default function Nav({ active, home, shareHref = '/share', hideShare = fa
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
-    const mq = window.matchMedia('(min-width: 48rem)');
+    const mq = window.matchMedia('(min-width: 64rem)'); // the menu button is gone from desktop width
     const onMq = () => { if (mq.matches) setOpen(false); };
     window.addEventListener('keydown', onKey);
     mq.addEventListener('change', onMq);
@@ -64,15 +68,17 @@ export default function Nav({ active, home, shareHref = '/share', hideShare = fa
 
   return (
     <div className="sticky top-0 z-30">
-      {/* From tablet up, a 1fr / auto / 1fr grid keeps the links centred whatever the widths of the logo and buttons. */}
-      <nav className="flex h-[72px] items-center justify-between gap-6 bg-white/82 px-[5vw] backdrop-blur-[14px] backdrop-saturate-[1.4] tablet:grid tablet:h-[88px] tablet:grid-cols-[1fr_auto_1fr]">
+      {/* Phones and tablets show the menu button. From desktop up, a 1fr / auto / 1fr grid keeps the links centred whatever the widths of the logo and buttons. */}
+      <nav className="flex h-[72px] items-center justify-between gap-6 bg-white/82 px-[5vw] backdrop-blur-[14px] backdrop-saturate-[1.4] tablet:h-[88px] desktop:grid desktop:grid-cols-[1fr_auto_1fr]">
         <Link href={home ? '#top' : '/'} onClick={close} aria-label="Jajabor home" className="flex shrink-0 justify-self-start text-ink hover:text-ink">
           <Logo className="h-11 w-auto tablet:h-13" />
         </Link>
-        <div className="hidden gap-8 text-[15px] font-medium tablet:flex desktop:gap-14">
-          {LINKS.map(l => <Link key={l.key} href={l.href} className={active === l.key ? 'text-bd-green' : undefined}>{l.label}</Link>)}
+        <div className="hidden items-center gap-10 text-[15px] font-medium desktop:flex desktop:gap-14">
+          {LINKS.map(l => l.key === 'personality' ? (
+            <Link key={l.key} href={l.href} className={`-my-2 flex items-center gap-1.5 rounded-full border px-3.5 py-2 font-bold whitespace-nowrap text-bd-green transition-colors hover:bg-bd-green hover:text-white ${active === l.key ? 'border-bd-green bg-bd-green/10' : 'border-bd-green/35 bg-[#eef5f1]'}`}>{SPARKLE}{l.label}</Link>
+          ) : <Link key={l.key} href={l.href} className={active === l.key ? 'text-bd-green' : undefined}>{l.label}</Link>)}
         </div>
-        <div className="hidden items-center gap-4 justify-self-end tablet:flex desktop:gap-5">
+        <div className="hidden items-center gap-5 justify-self-end desktop:flex">
           {/* Reserve the space while the session loads, so the nav doesn't jump. */}
           {isPending ? <span className="size-9" aria-hidden="true"></span> : user ? (
             <div ref={userEl} className="relative">
@@ -91,9 +97,9 @@ export default function Nav({ active, home, shareHref = '/share', hideShare = fa
               )}
             </div>
           ) : (
-            <Link href={loginHref} className="text-[15px] font-medium">Log in</Link>
+            <Link href={loginHref} className="text-[15px] font-medium whitespace-nowrap">Log in</Link>
           )}
-          {!hideShare && <Link href={shareHref} className="rounded-full bg-ink px-5.5 py-3 text-[15px] font-medium text-white">Share your story</Link>}
+          {!hideShare && <Link href={shareHref} className="rounded-full bg-ink px-5.5 py-3 text-[15px] font-medium whitespace-nowrap text-white">Share your story</Link>}
         </div>
         <button
           type="button"
@@ -101,7 +107,7 @@ export default function Nav({ active, home, shareHref = '/share', hideShare = fa
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? 'Close menu' : 'Open menu'}
-          className="-mr-2 flex size-11 cursor-pointer items-center justify-center rounded-full tablet:hidden"
+          className="-mr-2 flex size-11 cursor-pointer items-center justify-center rounded-full desktop:hidden"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#141414" strokeWidth="2" strokeLinecap="round">
             {open ? <path d="M6 6l12 12M18 6L6 18"></path> : <path d="M4 7h16M4 12h16M4 17h16"></path>}
@@ -112,12 +118,12 @@ export default function Nav({ active, home, shareHref = '/share', hideShare = fa
       <div
         id="mobile-menu"
         inert={!open}
-        className={`fixed inset-x-0 top-[72px] bottom-0 flex flex-col overflow-y-auto bg-white px-[5vw] pt-6 pb-[max(24px,env(safe-area-inset-bottom))] transition-[opacity,translate] duration-250 tablet:hidden ${open ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'}`}
+        className={`fixed inset-x-0 top-[72px] bottom-0 tablet:top-[88px] flex flex-col overflow-y-auto bg-white px-[5vw] pt-6 pb-[max(24px,env(safe-area-inset-bottom))] transition-[opacity,translate] duration-250 desktop:hidden ${open ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'}`}
       >
         <div className="flex flex-col">
           {LINKS.map(l => (
-            <Link key={l.key} href={l.href} onClick={close} className={`flex items-center justify-between border-b border-[#ececec] py-5 text-[30px] font-bold tracking-[-0.03em] ${active === l.key ? 'text-bd-green' : ''}`}>
-              {l.label}
+            <Link key={l.key} href={l.href} onClick={close} className={`flex items-center justify-between border-b border-[#ececec] py-5 text-[30px] font-bold tracking-[-0.03em] ${active === l.key || l.key === 'personality' ? 'text-bd-green' : ''}`}>
+              <span className="flex items-center gap-2.5">{l.key === 'personality' && <span className="[&>svg]:size-5">{SPARKLE}</span>}{l.label}</span>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
             </Link>
           ))}
