@@ -6,8 +6,9 @@
   --breakpoint-tablet: 48rem;  /* 768px */
   --breakpoint-desktop: 64rem; /* 1024px */
 
-  --font-sans: 'Satoshi', 'Hind Siliguri', system-ui, sans-serif;
-  --font-bangla: 'Hind Siliguri', sans-serif;
+  /* Noto Sans Bengali is loaded with the digits ০–৯ only, so Bangla numbers use it and letters use Hind Siliguri. */
+  --font-sans: 'Satoshi', 'Noto Sans Bengali', 'Hind Siliguri', system-ui, sans-serif;
+  --font-bangla: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
 
   /* Bangladesh flag green and red, plus the greys used across the design. */
   --color-ink: #141414;

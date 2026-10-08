@@ -10,7 +10,8 @@ export const CARD_W = 1080;
 export const CARD_H = 1350;
 
 const INK = '#262420', MUTED = '#77736b', PAPER = '#f1ede6', LINE = '#c9c3b8', GREEN = '#006A4E';
-const SANS = '"Satoshi", "Hind Siliguri", sans-serif';
+// "Noto Sans Bengali" holds only the digits ০–৯ (see SiteDocument): Hind Siliguri draws a broken "১".
+const SANS = '"Satoshi", "Noto Sans Bengali", "Hind Siliguri", sans-serif';
 const MONTHS = ['জানু', 'ফেব্রু', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টে', 'অক্টো', 'নভে', 'ডিসে'];
 const bn = (n: number) => String(n).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[+d]);
 
@@ -114,14 +115,15 @@ function waves(ctx: CanvasRenderingContext2D, x: number, y: number, w: number) {
   ctx.restore();
 }
 
-export async function drawCard(opts: { result: Result; name: string; photo?: string; placeNames: string[]; heroImage?: string; siteHost: string; serifFamily: string }): Promise<HTMLCanvasElement> {
+export async function drawCard(opts: { result: Result; name: string; photo?: string; placeNames: string[]; heroImage?: string; siteHost: string; serifFamily: string; logoSvg?: string }): Promise<HTMLCanvasElement> {
   const { result, name, photo, placeNames, heroImage, siteHost } = opts;
   const SERIF = `${opts.serifFamily}, "Hind Siliguri", serif`;
   const serif = (s: number) => `400 ${s}px ${SERIF}`;
   const hand = (s: number) => `italic 400 ${s}px ${SERIF}`;
   // Make sure the fonts are ready, or the canvas falls back to a system font.
-  await Promise.all([serif(40), hand(40), `700 40px ${SANS}`, `500 40px ${SANS}`].flatMap(f => [document.fonts.load(f, 'বাংলা'), document.fonts.load(f, 'Aa')])).catch(() => {});
-  const [hero, face] = await Promise.all([heroImage ? loadImage(heroImage) : null, photo ? loadImage(photo) : null]);
+  await Promise.all([serif(40), hand(40), `700 40px ${SANS}`, `500 40px ${SANS}`, `400 40px ${SANS}`].flatMap(f => [document.fonts.load(f, 'বাংলা'), document.fonts.load(f, 'Aa'), document.fonts.load(f, '০১২৩৪৫৬৭৮৯')])).catch(() => {});
+  const logoSrc = opts.logoSvg ? 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(opts.logoSvg) : null;
+  const [hero, face, logo] = await Promise.all([heroImage ? loadImage(heroImage) : null, photo ? loadImage(photo) : null, logoSrc ? loadImage(logoSrc) : null]);
 
   const cv = document.createElement('canvas');
   cv.width = CARD_W; cv.height = CARD_H;
@@ -214,7 +216,17 @@ export async function drawCard(opts: { result: Result; name: string; photo?: str
   ctx.textAlign = 'center';
   ctx.fillStyle = 'rgba(255,255,255,0.88)'; ctx.font = `500 24px ${SANS}`;
   ctx.fillText(`আপনার ভ্রমণ ব্যক্তিত্ব জানুন · ${siteHost}/travel-personality`, CARD_W / 2, CARD_H - 52);
-  ctx.font = `700 30px ${SANS}`;
-  ctx.fillText('Jajabor', CARD_W / 2, 84);
+  // The Jajabor logo above the postcard, as in the navbar, on a cream badge so the black wordmark
+  // shows against the photo; the name in text if the logo could not be drawn.
+  if (logo) {
+    const LH = 58, LW = LH * (114 / 61); // the logo's viewBox is 114 × 61
+    const BW = LW + 52, BH = LH + 28, BX = (CARD_W - BW) / 2, BY = 24;
+    ctx.beginPath(); ctx.roundRect(BX, BY, BW, BH, 18);
+    ctx.fillStyle = PAPER; ctx.fill();
+    ctx.drawImage(logo, BX + 26, BY + 14, LW, LH);
+  } else {
+    ctx.font = `700 30px ${SANS}`;
+    ctx.fillText('Jajabor', CARD_W / 2, 84);
+  }
   return cv;
 }
