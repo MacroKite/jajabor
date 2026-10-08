@@ -110,7 +110,7 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
               {bnDigits(total)}টি সহজ প্রশ্নের উত্তর দিন। জেনে নিন আপনার ভ্রমণ ধরন, পছন্দ আর বাংলাদেশের কোন জায়গাগুলো আপনার জন্য সেরা। শেষে পাবেন নিজের নাম আর ছবিসহ একটি ফটো কার্ড।
             </p>
             <div className="flex flex-wrap justify-center gap-2.5 text-[14px] font-medium text-ink">
-              {[`${bnDigits(total)}টি প্রশ্ন`, 'মাত্র ২ মিনিট', 'লগইন লাগবে না'].map(t => <span key={t} className="rounded-full border border-[#e2e2e2] px-4 py-2">{t}</span>)}
+              {[`${bnDigits(total)}টি প্রশ্ন`, 'মাত্র ২ মিনিট'].map(t => <span key={t} className="rounded-full border border-[#e2e2e2] px-4 py-2">{t}</span>)}
             </div>
             <button type="button" onClick={() => setStep('questions')} className={`${BTN} mt-2`}>পরীক্ষা শুরু করুন →</button>
           </section>
