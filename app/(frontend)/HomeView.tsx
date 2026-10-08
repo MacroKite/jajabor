@@ -170,7 +170,7 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
       <Nav home />
 
       <header id="top" className="mx-auto flex max-w-[1360px] flex-col items-center px-[5vw] pt-10 text-center tablet:px-8 tablet:pt-16 desktop:pt-18">
-        <h1 className="m-0 text-[clamp(40px,8.5vw,128px)] leading-[0.95] font-bold tracking-[-0.045em] text-balance">Know <span className="text-mesh pb-[0.06em]">Bangladesh</span><br />before you go.</h1>
+        <h1 className="m-0 max-w-[1200px] text-[clamp(36px,6.4vw,104px)] leading-[0.98] font-bold tracking-[-0.045em] text-balance">Real stories and travel guide from real travellers</h1>
         <p className="mt-7 mb-0 max-w-[520px] text-[16px] leading-normal text-pretty text-muted tablet:mt-9 tablet:text-[19px]">{home.heroSubtitle}</p>
         <SearchForm className="mt-8 tablet:mt-11" />
       </header>

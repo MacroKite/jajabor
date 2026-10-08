@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Tiro_Bangla } from 'next/font/google';
 import { useEffect, useRef, useState } from 'react';
 import Nav from '@/components/Nav';
-import Logo from '@/components/Logo';
 import { DestinationCard } from '@/components/Cards';
 import type { Destination } from '@/lib/data';
 import { NOMAD, PICKS_TITLE, QUESTIONS, bnDigits, headline, scoreTest, type Result } from '@/lib/personality';
@@ -36,8 +35,6 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
   const [busy, setBusy] = useState(false);
   const blob = useRef<Blob | null>(null);
   const top = useRef<HTMLDivElement>(null);
-  // A hidden copy of the logo, drawn onto the postcard (see logoSvg below).
-  const logoEl = useRef<HTMLSpanElement>(null);
 
   // Each step starts at the top of the page.
   useEffect(() => { top.current?.scrollIntoView({ block: 'start' }); }, [step, qi]);
@@ -69,7 +66,7 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
     const r = scoreTest(answers);
     const places = r.places.map(byId).filter((d): d is Destination => !!d);
     try {
-      const cv = await drawCard({ result: r, name: n, photo: photo || undefined, placeNames: places.map(p => p.bn), heroImage: places[0]?.img, siteHost: window.location.host, serifFamily: tiro.style.fontFamily, logoSvg: logoSvg() });
+      const cv = await drawCard({ result: r, name: n, photo: photo || undefined, placeNames: places.map(p => p.bn), heroImage: places[0]?.img, siteHost: window.location.host, serifFamily: tiro.style.fontFamily });
       setCard(cv.toDataURL('image/png'));
       blob.current = await new Promise(res => cv.toBlob(res, 'image/png'));
     } catch {
@@ -79,17 +76,6 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
     setResult(r);
     setBusy(false);
     setStep('result');
-  };
-
-  // The navbar logo (green mountain, black wordmark) as a standalone SVG for the 1080px card.
-  // Outside the page its CSS colours don't apply, so they are written in; it's sized for a sharp image.
-  const logoSvg = () => {
-    const svg = logoEl.current?.querySelector('svg');
-    if (!svg) return undefined;
-    return new XMLSerializer().serializeToString(svg)
-      .replace('class="fill-bd-green"', 'fill="#006A4E"')
-      .replace(/currentColor/g, '#141414')
-      .replace('<svg', '<svg width="456" height="244"');
   };
 
   const file = () => new File([blob.current!], 'jajabor-travel-personality.png', { type: 'image/png' });
@@ -114,7 +100,6 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
     <div className="overflow-x-clip bg-white">
       <Nav active="personality" />
       <div ref={top} className="scroll-mt-24" />
-      <span ref={logoEl} aria-hidden="true" className="hidden"><Logo /></span>
 
       <main lang="bn" className="px-[5vw] pt-10 tablet:pt-16 desktop:pt-20">
         {step === 'intro' && (
