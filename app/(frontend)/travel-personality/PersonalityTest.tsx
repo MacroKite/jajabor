@@ -35,6 +35,22 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
   const [busy, setBusy] = useState(false);
   const blob = useRef<Blob | null>(null);
   const top = useRef<HTMLDivElement>(null);
+  // Facebook, Messenger and Instagram open links in their own browser, which blocks downloads and
+  // file sharing; there we offer a link to carry the test over to Chrome or Safari instead.
+  const [inApp, setInApp] = useState(false);
+  const [copied, setCopied] = useState<'' | 'ok' | 'manual'>('');
+
+  useEffect(() => {
+    setInApp(/FBAN|FBAV|FB_IAB|FBIOS|Messenger|Instagram/i.test(navigator.userAgent));
+    // A copied link (see testLink) brings the answers and name along: go straight to the last step.
+    const p = new URLSearchParams(window.location.search);
+    const a = p.get('a') ?? '';
+    if (a.length === QUESTIONS.length && [...a].every((c, i) => +c < (QUESTIONS[i].options.length))) {
+      setAnswers([...a].map(Number));
+      setName((p.get('n') ?? '').slice(0, 40));
+      setStep('details');
+    }
+  }, []);
 
   // Each step starts at the top of the page.
   useEffect(() => { top.current?.scrollIntoView({ block: 'start' }); }, [step, qi]);
@@ -92,7 +108,25 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
       else download();
     } catch { /* the person closed the share sheet */ }
   };
-  const restart = () => { setAnswers([]); setQi(0); setResult(null); setCard(''); setStep('intro'); };
+  // A link back to this test with the answers and name in it, e.g. /travel-personality?a=1111110110&n=Maruf.
+  const testLink = () => `${window.location.origin}/travel-personality?a=${answers.join('')}&n=${encodeURIComponent(name.trim())}`;
+  const copyLink = async () => {
+    const link = testLink();
+    try {
+      await navigator.clipboard.writeText(link);
+      return setCopied('ok');
+    } catch { /* the in-app browser may block the clipboard; try the older way */ }
+    const t = document.createElement('textarea');
+    t.value = link;
+    t.style.position = 'fixed'; t.style.opacity = '0';
+    document.body.appendChild(t);
+    t.select();
+    const ok = document.execCommand('copy');
+    t.remove();
+    // If even that fails, the link is shown for the person to copy by hand.
+    setCopied(ok ? 'ok' : 'manual');
+  };
+  const restart = () => { setAnswers([]); setQi(0); setResult(null); setCard(''); setCopied(''); setStep('intro'); window.history.replaceState(null, '', '/travel-personality'); };
 
   const suggested = result ? result.places.map(byId).filter((d): d is Destination => !!d) : [];
 
@@ -180,10 +214,24 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
                   // eslint-disable-next-line @next/next/no-img-element
                   ? <img src={card} alt={`ভ্রমণ ব্যক্তিত্ব পোস্টকার্ড: ${headline(name.trim(), result.type)}`} className="block w-full rounded-[14px] shadow-[0_10px_40px_rgba(0,0,0,0.12)]" />
                   : <div className="rounded-[14px] bg-frame p-8 text-[15px] text-muted">কার্ডটি তৈরি করা যায়নি, তবে নিচে আপনার ফলাফল দেখুন।</div>}
-                <div className="flex flex-wrap gap-3">
-                  {card && <button type="button" onClick={download} className={BTN}>কার্ড ডাউনলোড করুন</button>}
-                  {card && <button type="button" onClick={share} className={BTN_LINE}>শেয়ার করুন</button>}
-                </div>
+                {inApp ? (
+                  // Inside Facebook, Messenger or Instagram: downloading and sharing don't work, so offer the link.
+                  <div className="flex flex-col gap-3 rounded-[14px] bg-[#fff4e8] px-5 py-4 text-[15px] leading-[1.7] text-ink">
+                    <span>ফেসবুক বা মেসেঞ্জারের ভেতর থেকে কার্ড ডাউনলোড বা শেয়ার করা যায় না। লিংকটি কপি করে Chrome বা Safari-তে খুলুন, আপনার উত্তর আর নাম সেখানে থেকে যাবে।</span>
+                    <button type="button" onClick={copyLink} className={`${BTN} self-start`}>{copied === 'ok' ? 'লিংক কপি হয়েছে ✓' : 'লিংক কপি করুন'}</button>
+                    {copied === 'ok' && <span className="text-[14px] text-muted">এবার Chrome বা Safari খুলে ঠিকানার ঘরে পেস্ট করুন।</span>}
+                    {copied === 'manual' && (
+                      <label className="flex flex-col gap-1.5 text-[14px] text-muted">লিংকটি চেপে ধরে কপি করুন:
+                        <input readOnly value={testLink()} onFocus={e => e.target.select()} className="rounded-[8px] border border-[#e2e2e2] bg-white px-3 py-2.5 text-[14px] text-ink" />
+                      </label>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-3">
+                    {card && <button type="button" onClick={download} className={BTN}>কার্ড ডাউনলোড করুন</button>}
+                    {card && <button type="button" onClick={share} className={BTN_LINE}>শেয়ার করুন</button>}
+                  </div>
+                )}
               </div>
               {/* The type in detail: a paragraph, key points and the suggested places. */}
               <div className="flex min-w-0 flex-col gap-8 desktop:pt-6">
