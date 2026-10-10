@@ -216,10 +216,9 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
                   : <div className="rounded-[14px] bg-frame p-8 text-[15px] text-muted">কার্ডটি তৈরি করা যায়নি, তবে নিচে আপনার ফলাফল দেখুন।</div>}
                 {inApp ? (
                   // Inside Facebook, Messenger or Instagram: downloading and sharing don't work, so offer the link.
-                  <div className="flex flex-col gap-3 rounded-[14px] bg-[#fff4e8] px-5 py-4 text-[15px] leading-[1.7] text-ink">
-                    <span>ফেসবুক বা মেসেঞ্জারের ভেতর থেকে কার্ড ডাউনলোড বা শেয়ার করা যায় না। লিংকটি কপি করে Chrome বা Safari-তে খুলুন, আপনার উত্তর আর নাম সেখানে থেকে যাবে।</span>
+                  <div className="flex flex-col gap-3">
                     <button type="button" onClick={copyLink} className={`${BTN} self-start`}>{copied === 'ok' ? 'লিংক কপি হয়েছে ✓' : 'লিংক কপি করুন'}</button>
-                    {copied === 'ok' && <span className="text-[14px] text-muted">এবার Chrome বা Safari খুলে ঠিকানার ঘরে পেস্ট করুন।</span>}
+                    {/* Only when the app blocks copying: the link to copy by hand. */}
                     {copied === 'manual' && (
                       <label className="flex flex-col gap-1.5 text-[14px] text-muted">লিংকটি চেপে ধরে কপি করুন:
                         <input readOnly value={testLink()} onFocus={e => e.target.select()} className="rounded-[8px] border border-[#e2e2e2] bg-white px-3 py-2.5 text-[14px] text-ink" />
