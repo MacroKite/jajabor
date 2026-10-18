@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import PageViewTracker from '@/components/PageViewTracker';
 import SiteDocument from '@/components/SiteDocument';
 import { siteUrl } from '@/lib/site';
 import './globals.css';
@@ -14,5 +15,10 @@ export const viewport: Viewport = { width: 'device-width', initialScale: 1 };
 
 // Root layout for the public site. The CMS at /admin has its own, in app/(payload).
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <SiteDocument>{children}</SiteDocument>;
+  return (
+    <SiteDocument>
+      {children}
+      <PageViewTracker />
+    </SiteDocument>
+  );
 }

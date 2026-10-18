@@ -23,6 +23,11 @@ export default buildConfig({
     // Use the site's mountain icon in the browser tab instead of Payload's.
     meta: { titleSuffix: ' · Jajabor CMS', icons: [{ rel: 'icon', type: 'image/svg+xml', url: '/icon.svg' }] },
     importMap: { baseDir: dirname },
+    // Visitor counts at /admin/analytics, linked from the top of the sidebar.
+    components: {
+      beforeNavLinks: ['/cms/components/AnalyticsNavLink#AnalyticsNavLink'],
+      views: { analytics: { Component: '/cms/components/Analytics#AnalyticsView', path: '/analytics' } },
+    },
   },
   collections: [Destinations, Media, Users],
   globals: [Home, Faq, About],
