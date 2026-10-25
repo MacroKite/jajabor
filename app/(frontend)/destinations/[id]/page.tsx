@@ -9,6 +9,8 @@ import RichText, { P } from '@/components/RichText';
 import { DestinationCard, MoreSection, StoryCard } from '@/components/Cards';
 import { listStories } from '@/lib/db';
 import { decorate } from '@/lib/stories';
+import { PageTransition } from '@/components/Transitions';
+import { SharedPhoto, destinationPhoto } from '@/components/Transitions';
 
 // Built at deploy time; places added later in the CMS are built on their first visit.
 export const generateStaticParams = async () => (await getDestinations()).map(d => ({ id: d.id }));
@@ -56,7 +58,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const { headline, intro, notice, sections } = d.article;
 
   return (
-    <div className="overflow-x-clip bg-paper">
+    <PageTransition>
       <Nav active="destinations" shareHref={'/share?place=' + d.id} />
 
       <header className="flex flex-col gap-5 px-[5vw] pt-14">
@@ -70,10 +72,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       </header>
 
       <figure className="m-0 mt-8 flex flex-col gap-2 px-[5vw] tablet:mt-12 desktop:mt-16">
-        <div className="relative aspect-[4/3] tablet:aspect-[16/7] tablet:min-h-80 overflow-hidden rounded-[10px] bg-frame">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={d.img} alt={d.name} className={IMG} />
-        </div>
+        <SharedPhoto name={destinationPhoto(d.id)}>
+          <div className="relative aspect-[4/3] tablet:aspect-[16/7] tablet:min-h-80 overflow-hidden rounded-[10px] bg-frame">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={d.img} alt={d.name} className={IMG} />
+          </div>
+        </SharedPhoto>
         <Credit c={d.credits?.[0]} />
       </figure>
 
@@ -121,9 +125,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         </MoreSection>
       )}
       <MoreSection title="More destinations" href="/destinations" linkText="View all destinations">
-        {others.map(x => <DestinationCard key={x.id} d={x} />)}
+        {others.map(x => <DestinationCard key={x.id} d={x} shared={false} />)}
       </MoreSection>
 
-    </div>
+    </PageTransition>
   );
 }

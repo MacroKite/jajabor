@@ -1,4 +1,5 @@
 import Nav from '@/components/Nav';
+import { PageTransition } from '@/components/Transitions';
 
 // Placeholders for the loading.tsx files of pages that render on every request (they check the
 // session or read the search). Next shows them the moment a link is clicked, then swaps in the page.
@@ -16,11 +17,11 @@ const HEADER = 'flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5v
 // The real nav, plus a status message for screen readers.
 export function SkeletonShell({ active, hideShare, children }: Pick<NavProps, 'active' | 'hideShare'> & { children: React.ReactNode }) {
   return (
-    <div className="overflow-x-clip bg-paper" aria-busy="true">
+    <PageTransition aria-busy="true">
       <Nav active={active} hideShare={hideShare} />
       <span role="status" className="sr-only">Loading…</span>
       {children}
-    </div>
+    </PageTransition>
   );
 }
 

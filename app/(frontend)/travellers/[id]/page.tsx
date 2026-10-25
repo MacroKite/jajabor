@@ -8,6 +8,7 @@ import { getSession } from '@/lib/auth';
 import { getProfile, listStoriesByUser } from '@/lib/db';
 import { getDestinations } from '@/lib/content';
 import { MON, decorate } from '@/lib/stories';
+import { PageTransition } from '@/components/Transitions';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const p = await getProfile((await params).id);
@@ -29,7 +30,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const first = profile.name.split(' ')[0];
 
   return (
-    <div className="overflow-x-clip bg-paper">
+    <PageTransition>
       <Nav />
 
       <header className="flex flex-col gap-6 px-[5vw] pt-10 tablet:flex-row tablet:items-end tablet:gap-8 tablet:pt-16 desktop:pt-24">
@@ -60,6 +61,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           </div>
         )}
       </section>
-    </div>
+    </PageTransition>
   );
 }

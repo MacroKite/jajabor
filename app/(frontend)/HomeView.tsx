@@ -8,6 +8,7 @@ import type { Destination, Story } from '@/lib/data';
 import type { HomeContent } from '@/lib/content';
 import { bnLang, bold } from '@/lib/format';
 import { cut, decorate } from '@/lib/stories';
+import { PageTransition } from '@/components/Transitions';
 
 // Where the floating photos sit around the “Most loved destinations” heading; the photos come from the CMS.
 type Thumb = { img: string; left: string; top: string; w: string; ar: string; sp: number; d: number };
@@ -166,7 +167,7 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
   const cover = (s: Seq) => ({ clipPath: s.grClip, opacity: s.grOp });
 
   return (
-    <div className="overflow-x-clip bg-paper">
+    <PageTransition>
       <Nav home />
 
       <header id="top" className="mx-auto flex max-w-[1360px] flex-col items-center px-[5vw] pt-10 text-center tablet:px-8 tablet:pt-16 desktop:pt-18">
@@ -334,6 +335,6 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
         </div>
       </section>
 
-    </div>
+    </PageTransition>
   );
 }

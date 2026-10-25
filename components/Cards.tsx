@@ -2,16 +2,21 @@ import Link from 'next/link';
 import type { Destination } from '@/lib/data';
 import type { Decorated } from '@/lib/stories';
 import { bnLang } from '@/lib/format';
+import { SharedPhoto, destinationPhoto, storyPhoto } from '@/components/Transitions';
 
 // Cards shared by the listing pages, profiles and the "more" sections at the end of guides and stories.
+// `shared` gives the photo its page-transition name (components/Transitions.tsx). The "more" sections
+// turn it off: they can list the guide or story just left, whose hero would slide down into the card.
 
-export function DestinationCard({ d }: { d: Destination }) {
+export function DestinationCard({ d, shared = true }: { d: Destination; shared?: boolean }) {
   return (
     <Link href={'/destinations/' + d.id} className="flex flex-col gap-3.5 text-ink">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-[10px] bg-frame">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={d.img} alt={d.name} loading="lazy" className="absolute inset-0 block size-full object-cover transition-transform duration-900 ease-glide hover:scale-105" />
-      </div>
+      <SharedPhoto name={shared ? destinationPhoto(d.id) : null}>
+        <div className="relative aspect-[4/3] overflow-hidden rounded-[10px] bg-frame">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={d.img} alt={d.name} loading="lazy" className="absolute inset-0 block size-full object-cover transition-transform duration-900 ease-glide hover:scale-105" />
+        </div>
+      </SharedPhoto>
       <div className="flex flex-col gap-0.5">
         <span className="text-[26px] leading-[1.1] font-bold tracking-[-0.03em]">{d.name}</span>
         <span lang="bn" className="text-[17px] font-medium text-accent">{d.bn}</span>
@@ -21,13 +26,15 @@ export function DestinationCard({ d }: { d: Destination }) {
   );
 }
 
-export function StoryCard({ s }: { s: Decorated }) {
+export function StoryCard({ s, shared = true }: { s: Decorated; shared?: boolean }) {
   return (
     <Link href={s.href} className="flex flex-col gap-3 text-ink">
-      <div className="relative aspect-[16/11] overflow-hidden rounded-[10px] bg-frame">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        {s.img && <img src={s.img} alt="" loading="lazy" className="absolute inset-0 block size-full object-cover transition-transform duration-900 ease-glide hover:scale-105" />}
-      </div>
+      <SharedPhoto name={shared ? storyPhoto(s.id) : null}>
+        <div className="relative aspect-[16/11] overflow-hidden rounded-[10px] bg-frame">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {s.img && <img src={s.img} alt="" loading="lazy" className="absolute inset-0 block size-full object-cover transition-transform duration-900 ease-glide hover:scale-105" />}
+        </div>
+      </SharedPhoto>
       <h3 lang={bnLang(s.title)} className="m-0 text-[22px] leading-[1.1] font-bold tracking-[-0.03em] text-balance">{s.title}</h3>
       <span className="text-[14px] text-muted">{s.placeName} · {s.when} · {s.readTime}</span>
     </Link>

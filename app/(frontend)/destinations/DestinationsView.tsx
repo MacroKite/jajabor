@@ -1,17 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { startTransition, useState, ViewTransition } from 'react';
 import Nav from '@/components/Nav';
 import { DestinationCard } from '@/components/Cards';
 import type { Destination } from '@/lib/data';
+import { PageTransition } from '@/components/Transitions';
 
 type Filter = 'all' | 'popular' | 'gem';
 
 export default function DestinationsView({ dests, initialFilter }: { dests: Destination[]; initialFilter: Filter }) {
   const [filter, setFilterState] = useState<Filter>(initialFilter);
   const [q, setQ] = useState('');
+  // A transition, so the grid crossfades to the new filter's places.
   const setFilter = (k: Filter) => {
-    setFilterState(k);
+    startTransition(() => setFilterState(k));
     window.history.replaceState(null, '', k === 'all' ? '/destinations' : '/destinations?filter=' + k);
   };
   const qq = q.trim().toLowerCase();
@@ -19,7 +21,7 @@ export default function DestinationsView({ dests, initialFilter }: { dests: Dest
   const tabs: [Filter, string][] = [['all', 'All'], ['popular', 'Popular'], ['gem', 'Hidden gems']];
 
   return (
-    <div className="overflow-x-clip bg-paper">
+    <PageTransition>
       <Nav active="destinations" />
 
       <header className="flex flex-col gap-7 px-[5vw] pt-10 tablet:pt-16 desktop:pt-22">
@@ -43,13 +45,15 @@ export default function DestinationsView({ dests, initialFilter }: { dests: Dest
         </label>
       </div>
 
-      <section className="grid grid-cols-[repeat(auto-fill,minmax(max(300px,calc((100%_-_80px)_/_3)),1fr))] gap-x-6 gap-y-12 tablet:gap-x-10 desktop:gap-y-20 px-[5vw] pt-10">
-        {list.map(c => <DestinationCard key={c.id} d={c} />)}
-      </section>
+      <ViewTransition key={filter} enter="page-in" exit="page-out" default="none">
+        <section className="grid grid-cols-[repeat(auto-fill,minmax(max(300px,calc((100%_-_80px)_/_3)),1fr))] gap-x-6 gap-y-12 tablet:gap-x-10 desktop:gap-y-20 px-[5vw] pt-10">
+          {list.map(c => <DestinationCard key={c.id} d={c} />)}
+        </section>
+      </ViewTransition>
       {list.length === 0 && (
         <div className="px-[5vw] pt-10 text-[18px] text-muted">Nothing matches “{q}” yet. <button onClick={() => setQ('')} className="cursor-pointer text-[18px] font-bold text-ink underline underline-offset-4">Clear search</button></div>
       )}
 
-    </div>
+    </PageTransition>
   );
 }

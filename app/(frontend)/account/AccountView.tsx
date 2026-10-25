@@ -8,6 +8,7 @@ import Avatar from '@/components/Avatar';
 import { authClient, refreshSession } from '@/lib/auth-client';
 import { BIO_MAX } from '@/lib/data';
 import { resizePhoto } from '@/lib/resize-photo';
+import { PageTransition } from '@/components/Transitions';
 
 type Me = { id: string; name: string; email: string; image: string; hometown: string; bio: string };
 type MyStory = { id: string; title: string; href: string; place: string; when: string; img: string };
@@ -82,7 +83,7 @@ export default function AccountView({ user, hasPassword, stories }: { user: Me; 
   const logOut = async () => { await authClient.signOut(); router.replace('/'); router.refresh(); };
 
   return (
-    <div className="overflow-x-clip bg-paper">
+    <PageTransition>
       <Nav />
 
       <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
@@ -188,6 +189,6 @@ export default function AccountView({ user, hasPassword, stories }: { user: Me; 
       <div className="px-[5vw] pt-10">
         <button type="button" onClick={logOut} className={SECONDARY}>Log out</button>
       </div>
-    </div>
+    </PageTransition>
   );
 }

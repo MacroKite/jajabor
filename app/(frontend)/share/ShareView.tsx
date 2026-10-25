@@ -7,6 +7,7 @@ import Nav from '@/components/Nav';
 import { MIN_WORDS, wc } from '@/lib/stories';
 import { resizePhoto } from '@/lib/resize-photo';
 import StoryEditor from '@/components/StoryEditor';
+import { PageTransition } from '@/components/Transitions';
 
 // Longest story the server accepts, in characters including formatting marks (see lib/story-input).
 const MAX_CHARS = 30000;
@@ -66,7 +67,7 @@ export default function ShareView({ initial, places, authorName, storyId }: { in
   };
 
   return (
-    <div className="overflow-x-clip bg-paper">
+    <PageTransition>
       <Nav />
 
       <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
@@ -125,6 +126,6 @@ export default function ShareView({ initial, places, authorName, storyId }: { in
         </form>
       </section>
 
-    </div>
+    </PageTransition>
   );
 }

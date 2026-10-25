@@ -3,6 +3,7 @@ import Nav from '@/components/Nav';
 import { getAbout } from '@/lib/content';
 import { phones } from '@/lib/format';
 import ContactForm from './ContactForm';
+import { PageTransition } from '@/components/Transitions';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -18,7 +19,7 @@ export default async function Page() {
   const about = await getAbout();
   const { contact } = about;
   return (
-    <div className="overflow-x-clip bg-paper">
+    <PageTransition>
       <Nav active="about" />
 
       <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
@@ -56,6 +57,6 @@ export default async function Page() {
         </div>
       </section>
 
-    </div>
+    </PageTransition>
   );
 }

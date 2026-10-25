@@ -12,6 +12,8 @@ import { getDestinations } from '@/lib/content';
 import { siteUrl } from '@/lib/site';
 import ShareButtons from './ShareButtons';
 import StoryOwnerActions from './StoryOwnerActions';
+import { PageTransition } from '@/components/Transitions';
+import { SharedPhoto, storyPhoto } from '@/components/Transitions';
 
 export const revalidate = 300;
 
@@ -38,7 +40,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const img = story.img ? new URL(story.img, siteUrl()).toString() : '';
 
   return (
-    <div className="overflow-x-clip bg-paper">
+    <PageTransition>
       <Nav active="stories" />
 
       <article className="px-[5vw] pt-14">
@@ -54,10 +56,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           <span>{story.when}</span>
         </div>
         <StoryOwnerActions id={story.id} authorId={story.authorId} />
-        <div className="relative aspect-[16/11] overflow-hidden rounded-[10px] bg-frame">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          {story.img && <img src={story.img} alt={story.title} className="absolute inset-0 block size-full object-cover" />}
-        </div>
+        <SharedPhoto name={storyPhoto(story.id)}>
+          <div className="relative aspect-[16/11] overflow-hidden rounded-[10px] bg-frame">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {story.img && <img src={story.img} alt={story.title} className="absolute inset-0 block size-full object-cover" />}
+          </div>
+        </SharedPhoto>
         <div lang={bnLang(story.text)} className="mt-10 flex flex-col gap-[1.2em] tablet:mt-16">
           <RichText text={story.text} />
         </div>
@@ -66,10 +70,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
       {more.length > 0 && (
         <MoreSection title="More stories" href="/stories" linkText="View all stories">
-          {more.map(r => <StoryCard key={r.id} s={r} />)}
+          {more.map(r => <StoryCard key={r.id} s={r} shared={false} />)}
         </MoreSection>
       )}
 
-    </div>
+    </PageTransition>
   );
 }

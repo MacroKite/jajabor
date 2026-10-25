@@ -9,6 +9,7 @@ import type { Destination } from '@/lib/data';
 import { NOMAD, PICKS_TITLE, QUESTIONS, bnDigits, headline, scoreTest, type Result } from '@/lib/personality';
 import { drawCard } from '@/lib/personality-card';
 import { resizePhoto } from '@/lib/resize-photo';
+import { PageTransition } from '@/components/Transitions';
 
 type Step = 'intro' | 'questions' | 'details' | 'result';
 
@@ -131,7 +132,7 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
   const suggested = result ? result.places.map(byId).filter((d): d is Destination => !!d) : [];
 
   return (
-    <div className="overflow-x-clip bg-paper">
+    <PageTransition>
       <Nav active="personality" />
       <div ref={top} className="scroll-mt-24" />
 
@@ -280,6 +281,6 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
           </>
         )}
       </main>
-    </div>
+    </PageTransition>
   );
 }

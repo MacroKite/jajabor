@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { startTransition, useEffect, useRef, useState, ViewTransition } from 'react';
 import Nav from '@/components/Nav';
 import { findDest, type Destination, type Story } from '@/lib/data';
 import { cut, decorate } from '@/lib/stories';
 import { bnLang } from '@/lib/format';
+import { PageTransition, SharedPhoto, storyPhoto } from '@/components/Transitions';
 
 const PIN = <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="stroke-muted" strokeWidth="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>;
 
@@ -19,8 +20,9 @@ export default function StoriesView({ stories, dests, initialPlace }: { stories:
   const n = list.length, d = findDest(dests, place);
   const shareHref = '/share' + (place !== 'all' ? '?place=' + place : '');
 
+  // A transition, so the list crossfades to the new place's stories.
   const setPlace = (key: string) => {
-    setPlaceState(key);
+    startTransition(() => setPlaceState(key));
     setFilterOpen(false);
     window.history.replaceState(null, '', key === 'all' ? '/stories' : '/stories?place=' + key);
   };
@@ -37,7 +39,7 @@ export default function StoriesView({ stories, dests, initialPlace }: { stories:
   const options = [{ key: 'all', label: 'All places', count: all.length }, ...dests.map(x => ({ key: x.id, label: x.name, count: all.filter(r => r.place === x.id).length }))];
 
   return (
-    <div className="overflow-x-clip bg-paper">
+    <PageTransition>
       <Nav active="stories" shareHref={shareHref} />
 
       <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
@@ -65,34 +67,38 @@ export default function StoriesView({ stories, dests, initialPlace }: { stories:
         </div>
       </div>
 
-      <section className="px-[5vw]">
-        <div className="flex flex-col">
-          {list.map(r => (
-            <Link key={r.id} href={r.href} className="flex cursor-pointer flex-wrap items-stretch gap-x-8 gap-y-6 border-b border-line py-8 text-ink tablet:py-14 last:border-b-0">
-              <div className="relative aspect-[16/11] min-w-[220px] flex-[1_1_100%] tablet:flex-[0_1_320px] self-start overflow-hidden rounded-[10px] bg-frame">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                {r.img && <img src={r.img} alt="" loading="lazy" className="absolute inset-0 block size-full object-cover transition-transform duration-900 ease-glide hover:scale-105" />}
-              </div>
-              <div className="flex min-w-0 flex-[1_1_360px] flex-col gap-5">
-                <div className="flex items-start justify-between gap-4">
-                  <h2 lang={bnLang(r.title)} className="m-0 text-[clamp(26px,2.4vw,36px)] leading-[1.02] font-bold tracking-[-0.045em] text-balance">{r.title}</h2>
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F42A41" strokeWidth="1.6" className="mt-0.5 shrink-0"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+      <ViewTransition key={place} enter="page-in" exit="page-out" default="none">
+        <section className="px-[5vw]">
+          <div className="flex flex-col">
+            {list.map(r => (
+              <Link key={r.id} href={r.href} className="flex cursor-pointer flex-wrap items-stretch gap-x-8 gap-y-6 border-b border-line py-8 text-ink tablet:py-14 last:border-b-0">
+                <SharedPhoto name={storyPhoto(r.id)}>
+                  <div className="relative aspect-[16/11] min-w-[220px] flex-[1_1_100%] tablet:flex-[0_1_320px] self-start overflow-hidden rounded-[10px] bg-frame">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {r.img && <img src={r.img} alt="" loading="lazy" className="absolute inset-0 block size-full object-cover transition-transform duration-900 ease-glide hover:scale-105" />}
+                  </div>
+                </SharedPhoto>
+                <div className="flex min-w-0 flex-[1_1_360px] flex-col gap-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <h2 lang={bnLang(r.title)} className="m-0 text-[clamp(26px,2.4vw,36px)] leading-[1.02] font-bold tracking-[-0.045em] text-balance">{r.title}</h2>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F42A41" strokeWidth="1.6" className="mt-0.5 shrink-0"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+                  </div>
+                  <p className="m-0 line-clamp-2 max-w-[640px] text-[16px] leading-[1.55] text-body">{cut(r.excerpt, 150)}</p>
+                  <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-3 text-[16px] text-muted">
+                    <span className="font-bold text-ink">{r.name}</span>
+                    <span className="flex items-center gap-1.5">{PIN}{r.placeName}</span>
+                    <span>{r.when}</span>
+                  </div>
                 </div>
-                <p className="m-0 line-clamp-2 max-w-[640px] text-[16px] leading-[1.55] text-body">{cut(r.excerpt, 150)}</p>
-                <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-3 text-[16px] text-muted">
-                  <span className="font-bold text-ink">{r.name}</span>
-                  <span className="flex items-center gap-1.5">{PIN}{r.placeName}</span>
-                  <span>{r.when}</span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-      {n === 0 && (
-        <div className="mx-[5vw] flex flex-wrap items-center justify-between gap-4 rounded-[10px] border-2 border-dashed border-line p-12 text-[18px] text-muted">No stories from {d ? d.name : 'this place'} yet.<Link href={shareHref} className="cursor-pointer rounded-[10px] bg-ink px-5.5 py-3.5 text-[15px] font-bold text-paper">Write the first one</Link></div>
-      )}
+              </Link>
+            ))}
+          </div>
+        </section>
+        {n === 0 && (
+          <div className="mx-[5vw] flex flex-wrap items-center justify-between gap-4 rounded-[10px] border-2 border-dashed border-line p-12 text-[18px] text-muted">No stories from {d ? d.name : 'this place'} yet.<Link href={shareHref} className="cursor-pointer rounded-[10px] bg-ink px-5.5 py-3.5 text-[15px] font-bold text-paper">Write the first one</Link></div>
+        )}
+      </ViewTransition>
 
-    </div>
+    </PageTransition>
   );
 }

@@ -69,8 +69,9 @@ export default function Nav({ active, home, shareHref = '/share', hideShare = fa
 
   return (
     <div className="sticky top-0 z-30">
-      {/* Phones and tablets show the menu button. From desktop up, a 1fr / auto / 1fr grid keeps the links centred whatever the widths of the logo and buttons. */}
-      <nav className="flex h-[72px] items-center justify-between gap-6 bg-paper/82 px-[5vw] backdrop-blur-[14px] backdrop-saturate-[1.4] tablet:h-[88px] desktop:grid desktop:grid-cols-[1fr_auto_1fr]">
+      {/* Phones and tablets show the menu button. From desktop up, a 1fr / auto / 1fr grid keeps the links centred whatever the widths of the logo and buttons.
+          Its view-transition name keeps it still while the page below fades during navigation (see globals.css). */}
+      <nav style={{ viewTransitionName: 'site-header' }} className="flex h-[72px] items-center justify-between gap-6 bg-paper/82 px-[5vw] backdrop-blur-[14px] backdrop-saturate-[1.4] tablet:h-[88px] desktop:grid desktop:grid-cols-[1fr_auto_1fr]">
         <Link href={home ? '#top' : '/'} onClick={close} aria-label="Jajabor home" className="flex shrink-0 justify-self-start text-ink hover:text-ink">
           <Logo className="h-11 w-auto tablet:h-13" />
         </Link>

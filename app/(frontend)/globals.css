@@ -112,3 +112,47 @@
   }
 }
 
+/* Page transitions (components/Transitions.tsx). A crossfade: the old page fades out quickly, the new
+   one fades in a little slower, so the swap reads as one soft change rather than a cut. */
+::view-transition-old(.page-out) {
+  animation: 140ms ease-in both vt-fade reverse;
+}
+::view-transition-new(.page-in) {
+  animation: 220ms ease-out 60ms both vt-fade;
+}
+@keyframes vt-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* A card's photo growing into the hero of the page it opens. The snapshots fill the moving frame, as
+   the real photos do (object-fit: cover), so they don't stretch while the frame changes shape. */
+::view-transition-group(.photo-morph) {
+  animation-duration: 380ms;
+  animation-timing-function: var(--ease-glide);
+}
+::view-transition-old(.photo-morph),
+::view-transition-new(.photo-morph) {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The nav stays still above the fading page (components/Nav.tsx). */
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) { display: none; }
+::view-transition-new(site-header) { animation: none; }
+
+/* Let clicks through to the page while a transition runs. */
+::view-transition { pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}

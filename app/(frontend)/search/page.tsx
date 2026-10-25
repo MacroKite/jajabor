@@ -5,6 +5,7 @@ import SearchForm from '@/components/SearchForm';
 import { DestinationCard, MoreSection } from '@/components/Cards';
 import { getDestinations } from '@/lib/content';
 import { searchDestinations } from '@/lib/search';
+import { PageTransition } from '@/components/Transitions';
 
 type Props = { searchParams: Promise<{ q?: string | string[] }> };
 const query = async (p: Props) => {
@@ -27,7 +28,7 @@ export default async function Page(p: Props) {
   const n = results.length;
 
   return (
-    <div className="overflow-x-clip bg-paper">
+    <PageTransition>
       <Nav active="destinations" />
 
       <header className="flex flex-col gap-8 px-[5vw] pt-10 tablet:gap-10 tablet:pt-16 desktop:pt-24">
@@ -60,6 +61,6 @@ export default async function Page(p: Props) {
           Not what you were looking for? <Link href="/destinations" className="font-bold text-ink underline underline-offset-4">Browse all destinations</Link>
         </div>
       )}
-    </div>
+    </PageTransition>
   );
 }
