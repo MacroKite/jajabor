@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Nav from '@/components/Nav';
 import { getPhotoCredits } from '@/lib/content';
+import { PageTransition } from '@/components/Transitions';
 
 export const metadata: Metadata = {
   title: 'Photo credits',
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 export default async function Page() {
   const photos = await getPhotoCredits();
   return (
-    <div className="overflow-x-clip bg-white">
+    <PageTransition>
       <Nav />
 
       <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
@@ -40,6 +41,6 @@ export default async function Page() {
           </figure>
         ))}
       </section>
-    </div>
+    </PageTransition>
   );
 }

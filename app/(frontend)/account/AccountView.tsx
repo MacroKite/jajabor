@@ -8,19 +8,20 @@ import Avatar from '@/components/Avatar';
 import { authClient, refreshSession } from '@/lib/auth-client';
 import { BIO_MAX } from '@/lib/data';
 import { resizePhoto } from '@/lib/resize-photo';
+import { PageTransition } from '@/components/Transitions';
 
 type Me = { id: string; name: string; email: string; image: string; hometown: string; bio: string };
 type MyStory = { id: string; title: string; href: string; place: string; when: string; img: string };
 
 const LABEL = 'flex flex-col gap-2 text-[14px] font-medium';
-const FIELD = 'rounded-[10px] border border-[#e2e2e2] bg-white px-4.5 py-3.5 text-[16px] font-normal outline-bd-green';
-const CARD = 'flex flex-col gap-6 rounded-[14px] border border-[#ececec] p-5 tablet:p-8';
+const FIELD = 'rounded-[10px] border border-line bg-paper px-4.5 py-3.5 text-[16px] font-normal outline-bd-green';
+const CARD = 'flex flex-col gap-6 rounded-[14px] border border-line p-5 tablet:p-8';
 const H2 = 'm-0 text-[24px] font-bold tracking-[-0.03em] tablet:text-[28px]';
-const PRIMARY = 'cursor-pointer rounded-full bg-ink px-6 py-3.5 text-[15px] font-bold text-white hover:bg-bd-green disabled:cursor-wait disabled:opacity-70';
-const SECONDARY = 'cursor-pointer rounded-full border border-[#d9d9d9] bg-white px-5 py-2.5 text-[14px] font-medium hover:border-ink disabled:cursor-wait disabled:opacity-70';
+const PRIMARY = 'cursor-pointer rounded-full bg-ink px-6 py-3.5 text-[15px] font-bold text-paper hover:bg-bd-green hover:text-white disabled:cursor-wait disabled:opacity-70';
+const SECONDARY = 'cursor-pointer rounded-full border border-line-strong bg-paper px-5 py-2.5 text-[14px] font-medium hover:border-ink disabled:cursor-wait disabled:opacity-70';
 
 const Note = ({ ok, children }: { ok: boolean; children: React.ReactNode }) =>
-  <span role={ok ? 'status' : 'alert'} className={`text-[14px] font-medium ${ok ? 'text-bd-green' : 'text-bd-red'}`}>{children}</span>;
+  <span role={ok ? 'status' : 'alert'} className={`text-[14px] font-medium ${ok ? 'text-accent' : 'text-bd-red'}`}>{children}</span>;
 
 export default function AccountView({ user, hasPassword, stories }: { user: Me; hasPassword: boolean; stories: MyStory[] }) {
   const router = useRouter();
@@ -82,7 +83,7 @@ export default function AccountView({ user, hasPassword, stories }: { user: Me; 
   const logOut = async () => { await authClient.signOut(); router.replace('/'); router.refresh(); };
 
   return (
-    <div className="overflow-x-clip bg-white">
+    <PageTransition>
       <Nav />
 
       <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
@@ -124,7 +125,7 @@ export default function AccountView({ user, hasPassword, stories }: { user: Me; 
                 <span className="text-[12px] font-normal text-faint">{p.bio.length}/{BIO_MAX} · shown on your public profile</span>
               </label>
               <label className={LABEL}>Email
-                <input value={user.email} readOnly className={`${FIELD} bg-[#f4f4f4] text-muted`} />
+                <input value={user.email} readOnly className={`${FIELD} bg-sunken text-muted`} />
                 <span className="text-[12px] font-normal text-faint">Only you can see this.</span>
               </label>
               {profileMsg && <Note ok={profileMsg.ok}>{profileMsg.text}</Note>}
@@ -161,12 +162,12 @@ export default function AccountView({ user, hasPassword, stories }: { user: Me; 
         <section className={CARD}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className={H2}>Your stories <span className="text-faint">{stories.length}</span></h2>
-            <Link href="/share" className="rounded-full bg-ink px-5 py-2.5 text-[14px] font-bold text-white hover:bg-bd-green hover:text-white">Write a story</Link>
+            <Link href="/share" className="rounded-full bg-ink px-5 py-2.5 text-[14px] font-bold text-paper hover:bg-bd-green hover:text-white">Write a story</Link>
           </div>
           {stories.length ? (
             <ul className="m-0 flex list-none flex-col p-0">
               {stories.map(s => (
-                <li key={s.id} className="flex items-center gap-4 border-t border-[#ececec] py-4 first:border-t-0 first:pt-0">
+                <li key={s.id} className="flex items-center gap-4 border-t border-line py-4 first:border-t-0 first:pt-0">
                   <div className="relative aspect-[16/11] w-24 shrink-0 overflow-hidden rounded-lg bg-frame">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     {s.img && <img src={s.img} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />}
@@ -188,6 +189,6 @@ export default function AccountView({ user, hasPassword, stories }: { user: Me; 
       <div className="px-[5vw] pt-10">
         <button type="button" onClick={logOut} className={SECONDARY}>Log out</button>
       </div>
-    </div>
+    </PageTransition>
   );
 }

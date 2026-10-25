@@ -3,13 +3,14 @@ import Nav from '@/components/Nav';
 import { getAbout } from '@/lib/content';
 import { phones } from '@/lib/format';
 import ContactForm from './ContactForm';
+import { PageTransition } from '@/components/Transitions';
 
 export const metadata: Metadata = {
   title: 'About',
   description: 'Jajabor is a free, honest guide to travelling in Bangladesh, made by people who love exploring it.',
 };
 
-const P = 'm-0 text-[17px] tablet:text-[19px] desktop:text-[clamp(20px,1.6vw,23px)] leading-[1.7] text-pretty text-[#2a2a2a]';
+const P = 'm-0 text-[17px] tablet:text-[19px] desktop:text-[clamp(20px,1.6vw,23px)] leading-[1.7] text-pretty text-body';
 const ICON = 'flex size-9 shrink-0 items-center justify-center rounded-lg bg-frame';
 const ROW = 'flex items-center gap-3.5';
 const TXT = 'text-[15px] font-medium';
@@ -18,7 +19,7 @@ export default async function Page() {
   const about = await getAbout();
   const { contact } = about;
   return (
-    <div className="overflow-x-clip bg-white">
+    <PageTransition>
       <Nav active="about" />
 
       <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
@@ -45,17 +46,17 @@ export default async function Page() {
           <div className="mt-auto flex flex-col gap-4 pt-12">
             {phones(contact.phone).map(p => (
               <a key={p.href} href={p.href} className={ROW}>
-                <span className={ICON}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#141414" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg></span>
+                <span className={ICON}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg></span>
                 <span className={`${TXT} tabular-nums`}>{p.text}</span>
               </a>
             ))}
           </div>
         </div>
-        <div className="rounded-[14px] bg-[#f4f4f4] p-[clamp(24px,3vw,36px)]">
+        <div className="rounded-[14px] bg-sunken p-[clamp(24px,3vw,36px)]">
           <ContactForm />
         </div>
       </section>
 
-    </div>
+    </PageTransition>
   );
 }

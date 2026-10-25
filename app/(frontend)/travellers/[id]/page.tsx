@@ -8,6 +8,7 @@ import { getSession } from '@/lib/auth';
 import { getProfile, listStoriesByUser } from '@/lib/db';
 import { getDestinations } from '@/lib/content';
 import { MON, decorate } from '@/lib/stories';
+import { PageTransition } from '@/components/Transitions';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const p = await getProfile((await params).id);
@@ -29,7 +30,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const first = profile.name.split(' ')[0];
 
   return (
-    <div className="overflow-x-clip bg-white">
+    <PageTransition>
       <Nav />
 
       <header className="flex flex-col gap-6 px-[5vw] pt-10 tablet:flex-row tablet:items-end tablet:gap-8 tablet:pt-16 desktop:pt-24">
@@ -42,13 +43,13 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
             <span>{list.length} {list.length === 1 ? 'story' : 'stories'}</span>
           </div>
         </div>
-        {isMe && <Link href="/account" className="self-start rounded-full border border-[#d9d9d9] px-5 py-2.5 text-[14px] font-bold hover:border-ink tablet:self-end">Edit profile</Link>}
+        {isMe && <Link href="/account" className="self-start rounded-full border border-line-strong px-5 py-2.5 text-[14px] font-bold hover:border-ink tablet:self-end">Edit profile</Link>}
       </header>
 
-      {profile.bio && <p className="m-0 max-w-[720px] px-[5vw] pt-8 text-[17px] leading-[1.65] whitespace-pre-line text-pretty text-[#2a2a2a] tablet:text-[19px]">{profile.bio}</p>}
+      {profile.bio && <p className="m-0 max-w-[720px] px-[5vw] pt-8 text-[17px] leading-[1.65] whitespace-pre-line text-pretty text-body tablet:text-[19px]">{profile.bio}</p>}
 
       <section className="px-[5vw] pt-14 tablet:pt-20">
-        <h2 className="m-0 border-b border-[#e4e4e4] pb-5 text-[clamp(28px,3vw,40px)] font-bold tracking-[-0.04em]">Stories by {first}</h2>
+        <h2 className="m-0 border-b border-line pb-5 text-[clamp(28px,3vw,40px)] font-bold tracking-[-0.04em]">Stories by {first}</h2>
         {list.length ? (
           <div className="grid grid-cols-1 gap-x-8 gap-y-12 pt-8 tablet:grid-cols-2 desktop:grid-cols-3">
             {list.map(s => <StoryCard key={s.id} s={s} />)}
@@ -56,10 +57,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         ) : (
           <div className="flex flex-wrap items-center justify-between gap-4 pt-8 text-[17px] text-muted">
             {isMe ? 'You haven’t shared a story yet.' : `${first} hasn’t shared a story yet.`}
-            {isMe && <Link href="/share" className="rounded-full bg-ink px-5.5 py-3.5 text-[15px] font-bold text-white hover:bg-bd-green hover:text-white">Write your first story</Link>}
+            {isMe && <Link href="/share" className="rounded-full bg-ink px-5.5 py-3.5 text-[15px] font-bold text-paper hover:bg-bd-green hover:text-white">Write your first story</Link>}
           </div>
         )}
       </section>
-    </div>
+    </PageTransition>
   );
 }

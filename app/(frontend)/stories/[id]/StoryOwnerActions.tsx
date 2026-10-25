@@ -38,21 +38,21 @@ export default function StoryOwnerActions({ id, authorId }: { id: string; author
   const BTN = 'cursor-pointer rounded-full border px-4.5 py-2.5 text-[14px] font-bold';
 
   return (
-    <div className="mb-8 flex flex-col gap-3 rounded-[10px] bg-[#f4f4f4] p-4 tablet:mb-10 tablet:flex-row tablet:flex-wrap tablet:items-center tablet:justify-between">
+    <div className="mb-8 flex flex-col gap-3 rounded-[10px] bg-sunken p-4 tablet:mb-10 tablet:flex-row tablet:flex-wrap tablet:items-center tablet:justify-between">
       {confirming ? (
         <>
           <span className="text-[15px] font-medium">Delete this story and its photo? This can’t be undone.</span>
           <div className="flex gap-2">
             <button type="button" onClick={remove} disabled={busy} className={`${BTN} border-bd-red bg-bd-red text-white ${busy ? 'cursor-wait opacity-70' : ''}`}>{busy ? 'Deleting…' : 'Yes, delete'}</button>
-            <button type="button" onClick={() => { setConfirming(false); setErr(''); }} disabled={busy} className={`${BTN} border-[#d9d9d9] bg-white`}>Cancel</button>
+            <button type="button" onClick={() => { setConfirming(false); setErr(''); }} disabled={busy} className={`${BTN} border-line-strong bg-paper`}>Cancel</button>
           </div>
         </>
       ) : (
         <>
           <span className="text-[15px] text-muted">This is your story.</span>
           <div className="flex gap-2">
-            <Link href={`/stories/${id}/edit`} className={`${BTN} border-ink bg-ink text-white hover:border-bd-green hover:bg-bd-green hover:text-white`}>Edit</Link>
-            <button type="button" onClick={() => setConfirming(true)} className={`${BTN} border-[#d9d9d9] bg-white hover:border-bd-red hover:text-bd-red`}>Delete</button>
+            <Link href={`/stories/${id}/edit`} className={`${BTN} border-ink bg-ink text-paper hover:border-accent hover:bg-bd-green hover:text-white`}>Edit</Link>
+            <button type="button" onClick={() => setConfirming(true)} className={`${BTN} border-line-strong bg-paper hover:border-bd-red hover:text-bd-red`}>Delete</button>
           </div>
         </>
       )}

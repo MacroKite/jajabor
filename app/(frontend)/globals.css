@@ -10,24 +10,54 @@
   --font-sans: 'Satoshi', 'Noto Sans Bengali', 'Hind Siliguri', system-ui, sans-serif;
   --font-bangla: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
 
-  /* Bangladesh flag green and red, plus the greys used across the design. */
-  --color-ink: #141414;
+  /* Bangladesh flag green and red, plus the greys used across the design. The flag colours stay the
+     same in dark mode; everything else is redefined under [data-theme="dark"] below. */
   --color-bd-green: #006A4E;
   --color-bd-red: #F42A41;
+  --color-paper: #fff;      /* page and card backgrounds */
+  --color-ink: #141414;     /* headings, links and dark buttons */
+  --color-body: #2a2a2a;    /* long-form text */
   --color-muted: #5c5c5c;
   --color-faint: #8a8a8a;
-  --color-frame: #f2f2f2;
+  --color-frame: #f2f2f2;   /* image placeholders */
+  --color-sunken: #f4f4f4;  /* panels and hovered menu items */
+  --color-line: #e4e4e4;    /* borders and dividers */
+  --color-line-strong: #d9d9d9;
+  --color-accent: #006A4E;  /* green text and borders: brighter in dark mode, so it stays readable */
+  --color-mint: #eef5f1;    /* pale green tint behind the personality test link and answers */
+  --color-warn: #fff4e8;    /* pale orange behind the "important" note in guides */
 
   --ease-glide: cubic-bezier(.2, .8, .2, 1);
   --ease-swing: cubic-bezier(.65, 0, .35, 1);
 }
 
+/* The theme is set on <html> before the page paints (components/SiteDocument.tsx): the reader's choice
+   from the nav toggle, or else their system setting. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root { color-scheme: light; }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper: #111312;
+  --color-ink: #ececea;
+  --color-body: #d2d3cf;
+  --color-muted: #a3a5a0;
+  --color-faint: #80827e;
+  --color-frame: #1d201e;
+  --color-sunken: #1a1d1b;
+  --color-line: #2b2f2d;
+  --color-line-strong: #3b403d;
+  --color-accent: #4cc59a;
+  --color-mint: #12291f;
+  --color-warn: #2e2215;
+}
+
 @layer base {
   /* Preflight sets line-height 1.5; the design was built on the browser default. */
-  body { background: #fff; color: var(--color-ink); line-height: normal; -webkit-font-smoothing: antialiased }
+  body { background: var(--color-paper); color: var(--color-ink); line-height: normal; -webkit-font-smoothing: antialiased }
   a { color: var(--color-ink); text-decoration: none }
-  a:hover { color: var(--color-bd-green) }
-  ::placeholder { color: #757575 }
+  a:hover { color: var(--color-accent) }
+  ::placeholder { color: var(--color-faint) }
 }
 
 /* Bangla headlines: vowel signs sit above and below the letters, so the tight line height used for
@@ -42,7 +72,7 @@
   outline: none;
   font-size: 17px;
   line-height: 1.65;
-  color: #2a2a2a;
+  color: var(--color-body);
   & > * + * { margin-top: 0.9em; }
   & h2 { margin-top: 1.1em; font-size: 28px; line-height: 1.3; font-weight: 700; letter-spacing: -0.03em; color: var(--color-ink); }
   & h3 { margin-top: 1em; font-size: 22px; line-height: 1.35; font-weight: 700; letter-spacing: -0.02em; color: var(--color-ink); }
@@ -60,7 +90,7 @@
     content: attr(data-placeholder);
     float: left;
     height: 0;
-    color: #9a9a9a;
+    color: var(--color-faint);
     pointer-events: none;
   }
 }
@@ -76,5 +106,53 @@
 }
 
 @utility select-chevron {
-  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23141414' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 20px center;
+  background: var(--color-paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23141414' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 20px center;
+  &:where([data-theme="dark"] *) {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ececea' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  }
+}
+
+/* Page transitions (components/Transitions.tsx). A crossfade: the old page fades out quickly, the new
+   one fades in a little slower, so the swap reads as one soft change rather than a cut. */
+::view-transition-old(.page-out) {
+  animation: 140ms ease-in both vt-fade reverse;
+}
+::view-transition-new(.page-in) {
+  animation: 220ms ease-out 60ms both vt-fade;
+}
+@keyframes vt-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* A card's photo growing into the hero of the page it opens. The snapshots fill the moving frame, as
+   the real photos do (object-fit: cover), so they don't stretch while the frame changes shape. */
+::view-transition-group(.photo-morph) {
+  animation-duration: 380ms;
+  animation-timing-function: var(--ease-glide);
+}
+::view-transition-old(.photo-morph),
+::view-transition-new(.photo-morph) {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The nav stays still above the fading page (components/Nav.tsx). */
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) { display: none; }
+::view-transition-new(site-header) { animation: none; }
+
+/* Let clicks through to the page while a transition runs. */
+::view-transition { pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
 }

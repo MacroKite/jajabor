@@ -5,6 +5,7 @@ import SearchForm from '@/components/SearchForm';
 import { DestinationCard, MoreSection } from '@/components/Cards';
 import { getDestinations } from '@/lib/content';
 import { searchDestinations } from '@/lib/search';
+import { PageTransition } from '@/components/Transitions';
 
 type Props = { searchParams: Promise<{ q?: string | string[] }> };
 const query = async (p: Props) => {
@@ -27,7 +28,7 @@ export default async function Page(p: Props) {
   const n = results.length;
 
   return (
-    <div className="overflow-x-clip bg-white">
+    <PageTransition>
       <Nav active="destinations" />
 
       <header className="flex flex-col gap-8 px-[5vw] pt-10 tablet:gap-10 tablet:pt-16 desktop:pt-24">
@@ -35,7 +36,7 @@ export default async function Page(p: Props) {
         <SearchForm defaultValue={q} autoFocus={!q} />
       </header>
 
-      <div className="mx-[5vw] mt-12 border-b border-[#e4e4e4] pb-7 tablet:mt-16">
+      <div className="mx-[5vw] mt-12 border-b border-line pb-7 tablet:mt-16">
         <span className="text-[15px] text-muted">
           {!q ? 'Search by place or district in English or Bangla, like “Sylhet”, “সাজেক” or “সৈকত”.'
             : n ? <>{n} {n === 1 ? 'destination matches' : 'destinations match'} “<b className="font-bold text-ink">{q}</b>”</>
@@ -60,6 +61,6 @@ export default async function Page(p: Props) {
           Not what you were looking for? <Link href="/destinations" className="font-bold text-ink underline underline-offset-4">Browse all destinations</Link>
         </div>
       )}
-    </div>
+    </PageTransition>
   );
 }

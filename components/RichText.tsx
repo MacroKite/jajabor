@@ -2,7 +2,7 @@ import { bold, textBlocks, type ListItem } from '@/lib/format';
 
 // Body text for guides and stories: paragraphs, "## " and "### " headings, bulleted and numbered
 // lists and **bold** (see textBlocks).
-export const P = 'm-0 text-[17px] tablet:text-[19px] desktop:text-[clamp(20px,1.6vw,23px)] leading-[1.7] text-pretty text-[#2a2a2a]';
+export const P = 'm-0 text-[17px] tablet:text-[19px] desktop:text-[clamp(20px,1.6vw,23px)] leading-[1.7] text-pretty text-body';
 const BULLET = 'relative pl-6 before:absolute before:left-0 before:top-[0.75em] before:size-[7px] before:rounded-full before:bg-ink';
 const H2 = 'm-0 mt-[0.6em] text-[clamp(24px,2.4vw,36px)] leading-tight font-bold tracking-[-0.03em]';
 const H3 = 'm-0 mt-[0.4em] text-[clamp(20px,1.8vw,27px)] leading-tight font-bold tracking-[-0.02em]';
