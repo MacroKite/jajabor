@@ -9,14 +9,14 @@ type NavProps = React.ComponentProps<typeof Nav>;
 const Block = ({ className = '' }: { className?: string }) =>
   <div aria-hidden="true" className={`rounded-[10px] bg-frame motion-safe:animate-pulse ${className}`} />;
 
-const CARD = 'flex flex-col gap-6 rounded-[14px] border border-[#ececec] p-5 tablet:p-8';
+const CARD = 'flex flex-col gap-6 rounded-[14px] border border-line p-5 tablet:p-8';
 const H1 = 'm-0 text-[clamp(44px,10vw,160px)] leading-[0.9] font-bold tracking-[-0.055em]';
 const HEADER = 'flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24';
 
 // The real nav, plus a status message for screen readers.
 export function SkeletonShell({ active, hideShare, children }: Pick<NavProps, 'active' | 'hideShare'> & { children: React.ReactNode }) {
   return (
-    <div className="overflow-x-clip bg-white" aria-busy="true">
+    <div className="overflow-x-clip bg-paper" aria-busy="true">
       <Nav active={active} hideShare={hideShare} />
       <span role="status" className="sr-only">Loading…</span>
       {children}
@@ -110,7 +110,7 @@ export function TravellerSkeleton() {
         </div>
       </header>
       <section className="px-[5vw] pt-14 tablet:pt-20">
-        <div className="border-b border-[#e4e4e4] pb-5"><Block className="h-10 w-60 rounded-md" /></div>
+        <div className="border-b border-line pb-5"><Block className="h-10 w-60 rounded-md" /></div>
         <div className="grid grid-cols-1 gap-x-8 gap-y-12 pt-8 tablet:grid-cols-2 desktop:grid-cols-3">
           {[0, 1, 2].map(i => <StoryCardSkeleton key={i} />)}
         </div>
@@ -149,7 +149,7 @@ export function SearchSkeleton() {
         <h1 className={H1}>Search <span className="mesh-word">results</span></h1>
         <Block className="h-[62px] max-w-[760px] rounded-full tablet:h-[82px]" />
       </header>
-      <div className="mx-[5vw] mt-12 border-b border-[#e4e4e4] pb-7 tablet:mt-16"><Block className="h-5 w-72 rounded-md" /></div>
+      <div className="mx-[5vw] mt-12 border-b border-line pb-7 tablet:mt-16"><Block className="h-5 w-72 rounded-md" /></div>
       <section className="grid grid-cols-[repeat(auto-fill,minmax(max(300px,calc((100%_-_80px)_/_3)),1fr))] gap-x-6 gap-y-12 px-[5vw] pt-10 tablet:gap-x-10 desktop:gap-y-20">
         {[0, 1, 2].map(i => <DestinationCardSkeleton key={i} />)}
       </section>

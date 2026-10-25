@@ -3,7 +3,7 @@ import Nav from '@/components/Nav';
 
 export default function NotFound() {
   return (
-    <div className="overflow-x-clip bg-white">
+    <div className="overflow-x-clip bg-paper">
       <Nav />
       <header className="flex flex-col gap-7 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
         <h1 className="m-0 text-[clamp(44px,10vw,160px)] leading-[0.9] font-bold tracking-[-0.055em]">Lost the road.</h1>

@@ -94,7 +94,7 @@ function Btn({ label, on, disabled, onClick, children }: { label: string; on?: b
       // Keep the cursor in the text while clicking the toolbar.
       onMouseDown={e => e.preventDefault()}
       onClick={onClick}
-      className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md px-2 text-[14px] font-bold transition-colors disabled:cursor-default disabled:opacity-30 ${on ? 'bg-ink text-white' : 'text-ink hover:bg-[#ececec]'}`}
+      className={`flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md px-2 text-[14px] font-bold transition-colors disabled:cursor-default disabled:opacity-30 ${on ? 'bg-ink text-paper' : 'text-ink hover:bg-line'}`}
     >
       {children}
     </button>
@@ -102,7 +102,7 @@ function Btn({ label, on, disabled, onClick, children }: { label: string; on?: b
 }
 
 const Icon = ({ d }: { d: React.ReactNode }) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{d}</svg>;
-const SEP = <span aria-hidden="true" className="mx-1 h-5 w-px bg-[#dcdcdc]" />;
+const SEP = <span aria-hidden="true" className="mx-1 h-5 w-px bg-line-strong" />;
 
 function Toolbar({ editor }: { editor: Editor }) {
   const s = useEditorState({
@@ -119,7 +119,7 @@ function Toolbar({ editor }: { editor: Editor }) {
   });
   const c = () => editor.chain().focus();
   return (
-    <div role="toolbar" aria-label="Formatting" className="sticky top-[72px] z-10 flex flex-wrap items-center gap-0.5 rounded-t-[10px] border-b border-[#e2e2e2] bg-[#fafafa] px-2 py-1.5 tablet:top-[88px]">
+    <div role="toolbar" aria-label="Formatting" className="sticky top-[72px] z-10 flex flex-wrap items-center gap-0.5 rounded-t-[10px] border-b border-line bg-sunken px-2 py-1.5 tablet:top-[88px]">
       <Btn label="Normal text" on={!s.h1 && !s.h2 && !s.ul && !s.ol} onClick={() => c().setParagraph().run()}><span className="px-1 font-medium">Text</span></Btn>
       <Btn label="Heading (H1)" on={s.h1} onClick={() => c().toggleHeading({ level: 2 }).run()}>H1</Btn>
       <Btn label="Smaller heading (H2)" on={s.h2} onClick={() => c().toggleHeading({ level: 3 }).run()}>H2</Btn>
@@ -155,8 +155,8 @@ export default function StoryEditor({ value, onChange, placeholder, labelledBy }
   });
 
   return (
-    <div className="rounded-[10px] border border-[#e2e2e2] bg-white focus-within:border-bd-green focus-within:outline focus-within:outline-1 focus-within:outline-bd-green">
-      {editor ? <Toolbar editor={editor} /> : <div className="h-12 rounded-t-[10px] border-b border-[#e2e2e2] bg-[#fafafa]" />}
+    <div className="rounded-[10px] border border-line bg-paper focus-within:border-accent focus-within:outline focus-within:outline-1 focus-within:outline-bd-green">
+      {editor ? <Toolbar editor={editor} /> : <div className="h-12 rounded-t-[10px] border-b border-line bg-sunken" />}
       <EditorContent editor={editor} className="min-h-[320px] cursor-text px-5 py-4.5" onClick={() => editor?.commands.focus()} />
     </div>
   );

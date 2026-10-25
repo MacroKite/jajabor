@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function Page() {
   const photos = await getPhotoCredits();
   return (
-    <div className="overflow-x-clip bg-white">
+    <div className="overflow-x-clip bg-paper">
       <Nav />
 
       <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">

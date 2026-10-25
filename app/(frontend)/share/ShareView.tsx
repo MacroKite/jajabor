@@ -12,7 +12,7 @@ import StoryEditor from '@/components/StoryEditor';
 const MAX_CHARS = 30000;
 
 const LABEL = 'flex flex-col gap-2 text-[14px] font-medium';
-const FIELD = 'rounded-[10px] border border-[#e2e2e2] bg-white px-4.5 py-4 text-[16px] outline-bd-green';
+const FIELD = 'rounded-[10px] border border-line bg-paper px-4.5 py-4 text-[16px] outline-bd-green';
 const GRID = 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))] gap-x-5 gap-y-4';
 
 export type StoryDraft = { place: string; title: string; text: string; from: string; image: string };
@@ -66,7 +66,7 @@ export default function ShareView({ initial, places, authorName, storyId }: { in
   };
 
   return (
-    <div className="overflow-x-clip bg-white">
+    <div className="overflow-x-clip bg-paper">
       <Nav />
 
       <header className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-[5vw] pt-10 tablet:pt-16 desktop:pt-24">
@@ -77,7 +77,7 @@ export default function ShareView({ initial, places, authorName, storyId }: { in
         <form onSubmit={onSubmit} noValidate className="flex flex-col gap-6">
           <div className={GRID}>
             <label className={LABEL}>Where did you go?
-              <select value={f.place} onChange={set('place')} className="select-chevron appearance-none rounded-[10px] font-normal border border-[#e2e2e2] py-4 pr-13 pl-4.5 text-[16px] text-ink outline-bd-green">
+              <select value={f.place} onChange={set('place')} className="select-chevron appearance-none rounded-[10px] font-normal border border-line py-4 pr-13 pl-4.5 text-[16px] text-ink outline-bd-green">
                 <option value="">Choose a place</option>
                 {places.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
               </select>
@@ -89,11 +89,11 @@ export default function ShareView({ initial, places, authorName, storyId }: { in
           <div className={LABEL}>
             <span id="story-label">Your story</span>
             <StoryEditor value={initial.text} onChange={text => { setF(st => ({ ...st, text })); setErr(''); }} labelledBy="story-label" placeholder="Start from the beginning. Use H1 and H2 for sections, and lists for costs or tips." />
-            <span className={`text-[12px] font-medium ${n < MIN_WORDS ? 'text-faint' : 'text-bd-green'}`}>{n < MIN_WORDS ? `${n} words · write at least ${MIN_WORDS}` : n + ' words'}</span>
+            <span className={`text-[12px] font-medium ${n < MIN_WORDS ? 'text-faint' : 'text-accent'}`}>{n < MIN_WORDS ? `${n} words · write at least ${MIN_WORDS}` : n + ' words'}</span>
           </div>
           <div className={GRID}>
             <div className={LABEL}>Published as
-              <span className="truncate rounded-[10px] bg-[#f4f4f4] px-4.5 py-4 text-[16px] font-medium text-ink">{authorName}</span>
+              <span className="truncate rounded-[10px] bg-sunken px-4.5 py-4 text-[16px] font-medium text-ink">{authorName}</span>
               <span className="text-[12px] font-normal text-faint">The name on your account.</span>
             </div>
             <label className={LABEL}>Where you&apos;re from
@@ -101,8 +101,8 @@ export default function ShareView({ initial, places, authorName, storyId }: { in
             </label>
           </div>
           <div className={LABEL}>Photo
-            <label className="relative flex max-w-[520px] cursor-pointer items-center gap-4 rounded-[10px] border-[1.5px] border-dashed border-[#d0d0d0] bg-[#fafafa] p-3.5">
-              <span className="relative flex h-16 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#eee]">
+            <label className="relative flex max-w-[520px] cursor-pointer items-center gap-4 rounded-[10px] border-[1.5px] border-dashed border-line-strong bg-sunken p-3.5">
+              <span className="relative flex h-16 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-line">
                 {f.image
                   ? <span className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${f.image})` }}></span>
                   : <span className="text-[24px] leading-none text-ink">+</span>}
@@ -119,8 +119,8 @@ export default function ShareView({ initial, places, authorName, storyId }: { in
           </label>
           {err && <span role="alert" className="text-[14px] font-medium text-bd-red">{err}</span>}
           <div className="flex flex-col gap-3 tablet:flex-row">
-            <button type="submit" disabled={busy} className={`flex-1 rounded-[10px] bg-ink p-5 text-[16px] font-bold text-white hover:bg-bd-green ${busy ? 'cursor-wait' : 'cursor-pointer'}`}>{busy ? (editing ? 'Saving…' : 'Publishing…') : editing ? 'Save changes' : 'Publish story'}</button>
-            {editing && <Link href={'/stories/' + storyId} className="rounded-[10px] border border-[#e2e2e2] p-5 text-center text-[16px] font-bold tablet:px-10">Cancel</Link>}
+            <button type="submit" disabled={busy} className={`flex-1 rounded-[10px] bg-ink p-5 text-[16px] font-bold text-paper hover:bg-bd-green hover:text-white ${busy ? 'cursor-wait' : 'cursor-pointer'}`}>{busy ? (editing ? 'Saving…' : 'Publishing…') : editing ? 'Save changes' : 'Publish story'}</button>
+            {editing && <Link href={'/stories/' + storyId} className="rounded-[10px] border border-line p-5 text-center text-[16px] font-bold tablet:px-10">Cancel</Link>}
           </div>
         </form>
       </section>

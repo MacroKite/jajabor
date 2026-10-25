@@ -16,8 +16,8 @@ type Step = 'intro' | 'questions' | 'details' | 'result';
 const tiro = Tiro_Bangla({ weight: '400', style: ['normal', 'italic'], subsets: ['bengali', 'latin'] });
 
 const LETTERS = ['ক', 'খ', 'গ', 'ঘ'];
-const BTN = 'cursor-pointer rounded-full bg-ink px-7 py-4 text-[16px] font-bold text-white hover:bg-bd-green disabled:cursor-wait disabled:opacity-60';
-const BTN_LINE = 'cursor-pointer rounded-full border border-[#d9d9d9] bg-white px-6 py-3.5 text-[15px] font-bold text-ink hover:border-ink';
+const BTN = 'cursor-pointer rounded-full bg-ink px-7 py-4 text-[16px] font-bold text-paper hover:bg-bd-green hover:text-white disabled:cursor-wait disabled:opacity-60';
+const BTN_LINE = 'cursor-pointer rounded-full border border-line-strong bg-paper px-6 py-3.5 text-[15px] font-bold text-ink hover:border-ink';
 const H1 = 'm-0 text-[clamp(40px,7vw,96px)] leading-[1.15] font-bold tracking-[-0.03em]';
 
 // The travel personality test: an intro, ten questions one at a time, then the traveller's name
@@ -131,20 +131,20 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
   const suggested = result ? result.places.map(byId).filter((d): d is Destination => !!d) : [];
 
   return (
-    <div className="overflow-x-clip bg-white">
+    <div className="overflow-x-clip bg-paper">
       <Nav active="personality" />
       <div ref={top} className="scroll-mt-24" />
 
       <main lang="bn" className="px-[5vw] pt-10 tablet:pt-16 desktop:pt-20">
         {step === 'intro' && (
           <section className="mx-auto flex max-w-[900px] flex-col items-center gap-7 text-center">
-            <span className="rounded-full bg-[#eef5f1] px-4 py-2 text-[14px] font-bold text-bd-green">ভ্রমণ ব্যক্তিত্ব পরীক্ষা</span>
+            <span className="rounded-full bg-mint px-4 py-2 text-[14px] font-bold text-accent">ভ্রমণ ব্যক্তিত্ব পরীক্ষা</span>
             <h1 className={H1}>আপনি কোন ধরনের পর্যটক?</h1>
             <p className="m-0 max-w-[620px] text-[18px] leading-[1.7] text-pretty text-muted tablet:text-[20px]">
               {bnDigits(total)}টি সহজ প্রশ্নের উত্তর দিন। জেনে নিন আপনার ভ্রমণ ধরন, পছন্দ আর বাংলাদেশের কোন জায়গাগুলো আপনার জন্য সেরা। শেষে পাবেন নিজের নাম আর ছবিসহ একটি ফটো কার্ড।
             </p>
             <div className="flex flex-wrap justify-center gap-2.5 text-[14px] font-medium text-ink">
-              {[`${bnDigits(total)}টি প্রশ্ন`, 'মাত্র ২ মিনিট'].map(t => <span key={t} className="rounded-full border border-[#e2e2e2] px-4 py-2">{t}</span>)}
+              {[`${bnDigits(total)}টি প্রশ্ন`, 'মাত্র ২ মিনিট'].map(t => <span key={t} className="rounded-full border border-line px-4 py-2">{t}</span>)}
             </div>
             <button type="button" onClick={() => setStep('questions')} className={`${BTN} mt-2`}>পরীক্ষা শুরু করুন →</button>
           </section>
@@ -157,7 +157,7 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
                 <span>প্রশ্ন {bnDigits(qi + 1)}/{bnDigits(total)}</span>
                 {qi > 0 && <button type="button" onClick={() => setQi(qi - 1)} className="cursor-pointer text-[15px] font-medium text-muted hover:text-ink">← আগের প্রশ্ন</button>}
               </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-[#ececec]" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={qi + 1}>
+              <div className="h-1.5 overflow-hidden rounded-full bg-line" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={qi + 1}>
                 <div className="h-full rounded-full bg-bd-green transition-[width] duration-300" style={{ width: `${((qi + 1) / total) * 100}%` }} />
               </div>
             </div>
@@ -167,8 +167,8 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
                 const on = answers[qi] === i;
                 return (
                   <button key={i} type="button" onClick={() => choose(i)} aria-pressed={on}
-                    className={`flex cursor-pointer items-center gap-4 rounded-[14px] border-[1.5px] px-5 py-4 text-left text-[17px] font-medium transition-colors tablet:px-6 tablet:py-5 tablet:text-[19px] ${on ? 'border-bd-green bg-[#eef5f1]' : 'border-[#e2e2e2] bg-white hover:border-ink'}`}>
-                    <span className={`flex size-9 shrink-0 items-center justify-center rounded-full text-[16px] font-bold ${on ? 'bg-bd-green text-white' : 'bg-[#f2f2f2] text-ink'}`}>{LETTERS[i]}</span>
+                    className={`flex cursor-pointer items-center gap-4 rounded-[14px] border-[1.5px] px-5 py-4 text-left text-[17px] font-medium transition-colors tablet:px-6 tablet:py-5 tablet:text-[19px] ${on ? 'border-accent bg-mint' : 'border-line bg-paper hover:border-ink'}`}>
+                    <span className={`flex size-9 shrink-0 items-center justify-center rounded-full text-[16px] font-bold ${on ? 'bg-bd-green text-white' : 'bg-sunken text-ink'}`}>{LETTERS[i]}</span>
                     {text}
                   </button>
                 );
@@ -179,15 +179,15 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
 
         {step === 'details' && (
           <section className="mx-auto flex w-full max-w-[640px] flex-col items-center gap-7 text-center">
-            <span className="rounded-full bg-[#eef5f1] px-4 py-2 text-[14px] font-bold text-bd-green">শেষ ধাপ</span>
+            <span className="rounded-full bg-mint px-4 py-2 text-[14px] font-bold text-accent">শেষ ধাপ</span>
             <h1 className="m-0 text-[clamp(32px,5vw,64px)] leading-[1.2] font-bold tracking-[-0.03em]">আপনার ফটো কার্ড তৈরি করি</h1>
             <form onSubmit={showResult} noValidate className="flex w-full flex-col gap-6 text-left">
               <label className="flex flex-col gap-2 text-[15px] font-medium">আপনার নাম
-                <input value={name} onChange={e => { setName(e.target.value); setErr(''); }} maxLength={40} autoFocus placeholder="আপনার নাম লিখুন" className="rounded-[10px] border border-[#e2e2e2] bg-white px-4.5 py-4 text-[17px] font-normal outline-bd-green" />
+                <input value={name} onChange={e => { setName(e.target.value); setErr(''); }} maxLength={40} autoFocus placeholder="আপনার নাম লিখুন" className="rounded-[10px] border border-line bg-paper px-4.5 py-4 text-[17px] font-normal outline-bd-green" />
               </label>
               <div className="flex flex-col gap-2 text-[15px] font-medium">ছবি (ইচ্ছে হলে)
-                <label className="relative flex cursor-pointer items-center gap-4 rounded-[10px] border-[1.5px] border-dashed border-[#d0d0d0] bg-[#fafafa] p-3.5">
-                  <span className="relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#eee]">
+                <label className="relative flex cursor-pointer items-center gap-4 rounded-[10px] border-[1.5px] border-dashed border-line-strong bg-sunken p-3.5">
+                  <span className="relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-line">
                     {photo ? <span className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${photo})` }} /> : <span className="text-[24px] leading-none text-ink">+</span>}
                   </span>
                   <span className="flex flex-col gap-1">
@@ -221,7 +221,7 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
                     {/* Only when the app blocks copying: the link to copy by hand. */}
                     {copied === 'manual' && (
                       <label className="flex flex-col gap-1.5 text-[14px] text-muted">লিংকটি চেপে ধরে কপি করুন:
-                        <input readOnly value={testLink()} onFocus={e => e.target.select()} className="rounded-[8px] border border-[#e2e2e2] bg-white px-3 py-2.5 text-[14px] text-ink" />
+                        <input readOnly value={testLink()} onFocus={e => e.target.select()} className="rounded-[8px] border border-line bg-paper px-3 py-2.5 text-[14px] text-ink" />
                       </label>
                     )}
                   </div>
@@ -234,13 +234,13 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
               </div>
               {/* The type in detail: a paragraph, key points and the suggested places. */}
               <div className="flex min-w-0 flex-col gap-8 desktop:pt-6">
-                <h1 className={`${H1} text-bd-green`}>{result.type.title} {NOMAD}</h1>
-                <p className="m-0 text-[19px] leading-[1.85] text-pretty text-[#2a2a2a] tablet:text-[22px]">{result.type.description}</p>
+                <h1 className={`${H1} text-accent`}>{result.type.title} {NOMAD}</h1>
+                <p className="m-0 text-[19px] leading-[1.85] text-pretty text-body tablet:text-[22px]">{result.type.description}</p>
                 <div className="flex flex-col gap-4">
                   <h2 className="m-0 text-[22px] font-bold tablet:text-[26px]">মূল বৈশিষ্ট্য</h2>
                   <ul className="m-0 grid list-none grid-cols-1 gap-3 p-0 tablet:grid-cols-2">
                     {result.type.traits.map(t => (
-                      <li key={t} className="flex items-start gap-3 rounded-[12px] bg-[#f4f4f4] px-5 py-4 text-[17px] leading-[1.6] tablet:text-[18px]">
+                      <li key={t} className="flex items-start gap-3 rounded-[12px] bg-sunken px-5 py-4 text-[17px] leading-[1.6] tablet:text-[18px]">
                         <span aria-hidden="true" className="mt-[0.55em] size-2.5 shrink-0 rounded-full bg-bd-green" />{t}
                       </li>
                     ))}
@@ -254,7 +254,7 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
                         <li key={d.id} className="flex items-start gap-4">
                           <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-bd-green text-[16px] font-bold text-white">{bnDigits(i + 1)}</span>
                           <span className="flex flex-col gap-1">
-                            <Link href={'/destinations/' + d.id} className="text-[20px] font-bold text-ink hover:text-bd-green tablet:text-[22px]">{d.bn}</Link>
+                            <Link href={'/destinations/' + d.id} className="text-[20px] font-bold text-ink hover:text-accent tablet:text-[22px]">{d.bn}</Link>
                             <span className="text-[16px] leading-[1.6] text-muted tablet:text-[17px]">{d.blurb}</span>
                           </span>
                         </li>
@@ -268,7 +268,7 @@ export default function PersonalityTest({ dests }: { dests: Destination[] }) {
 
             {suggested.length > 0 && (
               <section className="pt-20 tablet:pt-28">
-                <div className="mb-8 flex flex-wrap items-end justify-between gap-6 border-b border-[#e4e4e4] pb-6 tablet:mb-10">
+                <div className="mb-8 flex flex-wrap items-end justify-between gap-6 border-b border-line pb-6 tablet:mb-10">
                   <h2 className="m-0 text-[clamp(30px,3.4vw,48px)] leading-[1.25] font-bold tracking-[-0.02em]">আপনার জন্য সেরা জায়গা</h2>
                   <Link href="/destinations" className={BTN_LINE}>সব গন্তব্য দেখুন →</Link>
                 </div>

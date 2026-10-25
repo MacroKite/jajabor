@@ -12,12 +12,12 @@ const LAYERS = (() => {
   let seed = 7;
   const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   const defs = [
-    { fill: '#dcebe3', base: 120, amp: 70, freq: 2.2, step: 24, spike: 0, par: 0.55 },
-    { fill: '#b2d0c1', base: 175, amp: 55, freq: 3.1, step: 20, spike: 0, par: 0.42 },
-    { fill: '#76a78f', base: 235, amp: 30, freq: 4, step: 12, spike: 26, par: 0.3 },
-    { fill: '#3f7b61', base: 275, amp: 26, freq: 5, step: 11, spike: 34, par: 0.2 },
-    { fill: '#1d5540', base: 310, amp: 20, freq: 6, step: 12, spike: 40, par: 0.1 },
-    { fill: '#0b2a20', base: 350, amp: 14, freq: 7, step: 13, spike: 34, par: 0 },
+    { fill: '#dcebe3', night: '#17221d', base: 120, amp: 70, freq: 2.2, step: 24, spike: 0, par: 0.55 },
+    { fill: '#b2d0c1', night: '#1a2e26', base: 175, amp: 55, freq: 3.1, step: 20, spike: 0, par: 0.42 },
+    { fill: '#76a78f', night: '#1c3a2f', base: 235, amp: 30, freq: 4, step: 12, spike: 26, par: 0.3 },
+    { fill: '#3f7b61', night: '#1a4433', base: 275, amp: 26, freq: 5, step: 11, spike: 34, par: 0.2 },
+    { fill: '#1d5540', night: '#134030', base: 310, amp: 20, freq: 6, step: 12, spike: 40, par: 0.1 },
+    { fill: '#0b2a20', night: '#0b2a20', base: 350, amp: 14, freq: 7, step: 13, spike: 34, par: 0 },
   ];
   return defs.map(L => {
     const ph = [rnd() * 6.28, rnd() * 6.28, rnd() * 6.28];
@@ -30,7 +30,7 @@ const LAYERS = (() => {
         d += `L${x - L.step / 2},${(y + 4).toFixed(1)} L${x},${(y - h).toFixed(1)} `;
       } else d += `L${x},${y.toFixed(1)} `;
     }
-    return { d: d + `L1440,${H} Z`, fill: L.fill, par: L.par };
+    return { d: d + `L1440,${H} Z`, fill: L.fill, night: L.night, par: L.par };
   });
 })();
 const BIRDS = [[0, 10], [18, 4], [34, 14], [52, 2], [70, 12], [90, 6]].map(([x, y], i) => {
@@ -88,17 +88,17 @@ export default function Footer({ contact }: { contact: Contact }) {
   }, []);
 
   return (
-    <footer className="relative mt-24 w-full tablet:mt-36 desktop:mt-[200px] overflow-hidden bg-white font-sans">
+    <footer className="relative mt-24 w-full tablet:mt-36 desktop:mt-[200px] overflow-hidden bg-paper font-sans">
       <div ref={scene} aria-hidden="true" className="relative h-[clamp(280px,34vw,520px)]">
         <svg ref={birds} viewBox="0 0 120 40" className="absolute top-[14%] left-0 w-[clamp(70px,7vw,120px)] overflow-visible opacity-55">
-          {BIRDS.map(d => <path key={d} d={d} suppressHydrationWarning fill="none" stroke="#1f4f3d" strokeWidth="1.4" strokeLinecap="round"></path>)}
+          {BIRDS.map(d => <path key={d} d={d} suppressHydrationWarning fill="none" className="stroke-[#1f4f3d] dark:stroke-[#6f9886]" strokeWidth="1.4" strokeLinecap="round"></path>)}
         </svg>
         {LAYERS.map((l, i) => (
           <svg key={l.fill} ref={el => { layers.current[i] = el; }} viewBox="0 0 1440 400" preserveAspectRatio="none" className="absolute -bottom-px left-[-2%] h-full w-[104%] will-change-transform">
-            <path d={l.d} fill={l.fill} suppressHydrationWarning></path>
+            <path d={l.d} style={{ '--day': l.fill, '--night': l.night } as React.CSSProperties} className="fill-(--day) dark:fill-(--night)" suppressHydrationWarning></path>
           </svg>
         ))}
-        <div ref={mist} className="pointer-events-none absolute bottom-[26%] left-[-30%] h-[22%] w-[160%] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(255,255,255,0.55)_0%,rgba(255,255,255,0)_70%)] blur-[10px]"></div>
+        <div ref={mist} className="pointer-events-none absolute bottom-[26%] left-[-30%] h-[22%] w-[160%] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(255,255,255,0.55)_0%,rgba(255,255,255,0)_70%)] blur-[10px] dark:bg-[radial-gradient(50%_50%_at_50%_50%,rgba(255,255,255,0.07)_0%,rgba(255,255,255,0)_70%)]"></div>
       </div>
 
       <div className="relative -mt-px bg-[#0b2a20] px-[5vw] pt-6 pb-8 text-white">

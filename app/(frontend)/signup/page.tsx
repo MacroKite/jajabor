@@ -11,7 +11,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ n
   if (await getSession()) redirect(next);
 
   return (
-    <div className="overflow-x-clip bg-white">
+    <div className="overflow-x-clip bg-paper">
       <Nav hideShare />
       <section className="flex flex-col items-center px-[5vw] pt-12 tablet:pt-20 desktop:pt-24">
         <h1 className="m-0 text-center text-[clamp(40px,7vw,96px)] leading-[0.95] font-bold tracking-[-0.05em]">Join <span className="mesh-word">Jajabor</span></h1>

@@ -38,19 +38,19 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const img = story.img ? new URL(story.img, siteUrl()).toString() : '';
 
   return (
-    <div className="overflow-x-clip bg-white">
+    <div className="overflow-x-clip bg-paper">
       <Nav active="stories" />
 
       <article className="px-[5vw] pt-14">
-        <Link href="/stories" className="mb-10 inline-block text-[14px] font-medium text-muted hover:text-bd-green">← All stories</Link>
+        <Link href="/stories" className="mb-10 inline-block text-[14px] font-medium text-muted hover:text-accent">← All stories</Link>
         <h1 lang={bnLang(story.title)} className="m-0 max-w-[1100px] text-[clamp(30px,4.2vw,64px)] leading-[0.98] font-bold tracking-[-0.05em] text-balance">{story.title}</h1>
         <div className="mt-6 mb-8 flex tablet:mt-10 tablet:mb-14 flex-wrap items-center gap-x-5 gap-y-2 text-[16px] text-muted">
           {story.authorId ? (
-            <Link href={`/travellers/${story.authorId}`} className="flex items-center gap-2 font-bold text-ink hover:text-bd-green">
+            <Link href={`/travellers/${story.authorId}`} className="flex items-center gap-2 font-bold text-ink hover:text-accent">
               <Avatar name={story.name} image={story.authorImage} className="size-8 text-[13px]" />{story.name}
             </Link>
           ) : <span className="font-bold text-ink">{story.name}</span>}
-          <span className="flex items-center gap-1.5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5c5c5c" strokeWidth="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>{story.placeName}</span>
+          <span className="flex items-center gap-1.5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="stroke-muted" strokeWidth="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>{story.placeName}</span>
           <span>{story.when}</span>
         </div>
         <StoryOwnerActions id={story.id} authorId={story.authorId} />

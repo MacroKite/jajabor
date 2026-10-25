@@ -19,7 +19,7 @@ export default function DestinationsView({ dests, initialFilter }: { dests: Dest
   const tabs: [Filter, string][] = [['all', 'All'], ['popular', 'Popular'], ['gem', 'Hidden gems']];
 
   return (
-    <div className="overflow-x-clip bg-white">
+    <div className="overflow-x-clip bg-paper">
       <Nav active="destinations" />
 
       <header className="flex flex-col gap-7 px-[5vw] pt-10 tablet:pt-16 desktop:pt-22">
@@ -27,18 +27,18 @@ export default function DestinationsView({ dests, initialFilter }: { dests: Dest
       </header>
 
       <div className="flex flex-wrap items-center justify-between gap-4 px-[5vw] pt-14 tablet:pt-20 desktop:pt-30">
-        <div role="tablist" className="flex flex-wrap gap-1 rounded-full border border-[#e6e6e6] p-1">
+        <div role="tablist" className="flex flex-wrap gap-1 rounded-full border border-line p-1">
           {tabs.map(([k, label]) => {
             const on = filter === k;
             return (
-              <button key={k} role="tab" aria-selected={on} onClick={() => setFilter(k)} className={`flex cursor-pointer items-center gap-2 rounded-full px-5 py-3 text-[15px] font-medium transition-colors duration-250 ${on ? 'bg-ink text-white' : 'bg-transparent text-ink'}`}>
+              <button key={k} role="tab" aria-selected={on} onClick={() => setFilter(k)} className={`flex cursor-pointer items-center gap-2 rounded-full px-5 py-3 text-[15px] font-medium transition-colors duration-250 ${on ? 'bg-ink text-paper' : 'bg-transparent text-ink'}`}>
                 {label}<span className="text-[13px] opacity-60">{k === 'all' ? dests.length : dests.filter(d => d.type === k).length}</span>
               </button>
             );
           })}
         </div>
-        <label className="flex w-full tablet:w-[min(100%,320px)] items-center gap-2.5 rounded-full border border-[#e6e6e6] px-5">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#141414" strokeWidth="2" className="shrink-0"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+        <label className="flex w-full tablet:w-[min(100%,320px)] items-center gap-2.5 rounded-full border border-line px-5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
           <input aria-label="Search places or districts" value={q} onChange={e => setQ(e.target.value)} placeholder="Search places or districts" className="min-w-0 flex-1 bg-transparent py-3.5 text-[15px] text-ink outline-0" />
         </label>
       </div>

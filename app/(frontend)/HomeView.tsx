@@ -59,11 +59,11 @@ const sectionHeight = (n: number, slow = false) => `${((slow ? 1.1 : 0) + 1.5 + 
 
 
 const LINE = 'transition-[opacity,filter,transform] duration-300 ease-out';
-const PILL = 'flex items-center gap-2.5 rounded-full bg-ink px-5.5 py-3.5 text-[15px] font-bold text-white transition-colors duration-250 hover:bg-bd-green hover:text-white';
+const PILL = 'flex items-center gap-2.5 rounded-full bg-ink px-5.5 py-3.5 text-[15px] font-bold text-paper transition-colors duration-250 hover:bg-bd-green hover:text-white';
 const BIG = 'absolute inset-0 flex items-center justify-center text-center text-[clamp(40px,10vw,180px)] leading-[0.92] font-bold tracking-[-0.055em] text-ink';
 const BIG_WORD = 'text-mesh inline-block px-[0.04em] pb-[0.16em] -mb-[0.1em]';
-const COVER = 'pointer-events-none absolute inset-0 overflow-hidden bg-white [transition:clip-path_0.25s_ease-out,opacity_0.3s_linear]';
-const Arrow = ({ c = '#fff' }: { c?: string }) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.2" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>;
+const COVER = 'pointer-events-none absolute inset-0 overflow-hidden bg-paper [transition:clip-path_0.25s_ease-out,opacity_0.3s_linear]';
+const Arrow = ({ c = 'currentColor' }: { c?: string }) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.2" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>;
 const PIN = <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>;
 // Story card width per layout, shared by the cards and the track's slide distance.
 const CARD_W = '[--card-w:88vw] tablet:[--card-w:78vw] desktop:[--card-w:min(78vw,1080px)]';
@@ -136,7 +136,7 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
 
   const places = (s: Seq) => (
     <>
-      <div className="absolute inset-x-[5vw] top-[22vh] bottom-[38vh] overflow-hidden rounded-[10px] bg-ink desktop:top-[12vh] desktop:bottom-[18vh] desktop:left-[33vw]">
+      <div className="absolute inset-x-[5vw] top-[22vh] bottom-[38vh] overflow-hidden rounded-[10px] bg-frame desktop:top-[12vh] desktop:bottom-[18vh] desktop:left-[33vw]">
         {s.list.map(d => (
           // eslint-disable-next-line @next/next/no-img-element
           <img key={d.id} src={d.img} alt={d.on ? d.name : ''} className={`absolute inset-0 size-full object-cover [transition:opacity_0.8s_ease,scale_1.6s_var(--ease-glide)] ${d.on ? 'scale-100 opacity-100' : 'scale-[1.08] opacity-0'}`} />
@@ -148,15 +148,15 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
             <h3 className="m-0 text-[34px] leading-[0.95] font-bold tracking-[-0.045em] wrap-break-word text-ink tablet:text-[56px] desktop:w-[25vw] desktop:text-[clamp(34px,4.2vw,80px)]">{d.line1}<br />{d.line2}</h3>
           </div>
           <div aria-hidden={!d.on} className={`absolute top-[65vh] right-[5vw] left-[5vw] flex max-w-[560px] flex-col gap-1.5 text-[14px] leading-[1.45] text-ink [transition:opacity_0.6s_ease] desktop:top-auto desktop:right-auto desktop:bottom-[18vh] desktop:w-[24vw] desktop:min-w-[200px] ${d.on ? 'opacity-100' : 'pointer-events-none opacity-0'}`}>
-            <span lang="bn" className="mb-1 font-bangla text-[20px] font-semibold text-bd-green tablet:mb-2 tablet:text-[24px]">{d.bn}</span>
-            <span className="text-[16px] leading-normal text-pretty text-[#3a3a3a]">{d.blurb}</span>
+            <span lang="bn" className="mb-1 font-bangla text-[20px] font-semibold text-accent tablet:mb-2 tablet:text-[24px]">{d.bn}</span>
+            <span className="text-[16px] leading-normal text-pretty text-body">{d.blurb}</span>
             <Link href={'/destinations/' + d.id} tabIndex={d.on ? 0 : -1} className={`${PILL} mt-3 self-start tablet:mt-5`}>Read the guide <Arrow /></Link>
           </div>
         </div>
       ))}
       <div className="absolute right-[5vw] bottom-[3vh] left-[5vw] flex items-center justify-between text-[13px] font-medium text-ink desktop:bottom-[5vh]">
         <div className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5">
-          {s.list.map(d => <span key={d.id} className={`h-1 rounded-[4px] [transition:all_0.4s_ease] ${d.on ? 'w-7 bg-ink' : 'w-2 bg-[#d9d9d9]'}`}></span>)}
+          {s.list.map(d => <span key={d.id} className={`h-1 rounded-[4px] [transition:all_0.4s_ease] ${d.on ? 'w-7 bg-ink' : 'w-2 bg-line-strong'}`}></span>)}
         </div>
       </div>
     </>
@@ -166,7 +166,7 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
   const cover = (s: Seq) => ({ clipPath: s.grClip, opacity: s.grOp });
 
   return (
-    <div className="overflow-x-clip bg-white">
+    <div className="overflow-x-clip bg-paper">
       <Nav home />
 
       <header id="top" className="mx-auto flex max-w-[1360px] flex-col items-center px-[5vw] pt-10 text-center tablet:px-8 tablet:pt-16 desktop:pt-18">
@@ -186,7 +186,7 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
       </section>
 
       <section id="about" className="relative mt-16 w-full scroll-mt-24 overflow-hidden tablet:mt-24 tablet:h-[920px] desktop:mt-[140px]">
-        <svg viewBox="0 0 1200 920" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 hidden size-full tablet:block" fill="none" stroke="#141414" strokeOpacity="0.35" strokeWidth="1" strokeDasharray="6 8">
+        <svg viewBox="0 0 1200 920" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 hidden size-full tablet:block" fill="none" stroke="currentColor" strokeOpacity="0.35" strokeWidth="1" strokeDasharray="6 8">
           <path vectorEffect="non-scaling-stroke" d="M0 150 H60 Q80 150 80 170 V210 Q80 230 100 230 H250"></path>
           <path vectorEffect="non-scaling-stroke" d="M0 330 H60 Q80 330 80 310 V270 Q80 250 100 250 H250"></path>
           <path vectorEffect="non-scaling-stroke" d="M300 250 Q280 250 280 270 V380 Q280 400 260 400 H190 Q170 400 170 420 V560 Q170 580 190 580 H230 Q250 580 250 600 V680"></path>
@@ -199,14 +199,14 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
         {DOTS.map(pos => <span key={pos} className={`absolute -mt-[5px] -ml-[5px] hidden size-2.5 rounded-full bg-ink tablet:block ${pos}`}></span>)}
         <div className="relative flex flex-col items-center px-[5vw] text-center tablet:px-6 tablet:pt-20">
           <h2 className="m-0 max-w-[900px] text-[clamp(32px,6vw,84px)] leading-[1.02] font-medium tracking-[-0.045em]">Stop digging <span aria-label="Facebook" className="mx-[0.04em] -mt-[0.12em] inline-flex h-[0.78em] w-[1.6em] items-center justify-center rounded-full bg-frame align-middle"><span className="translate-y-[0.04em] font-[family-name:Arial,Helvetica,sans-serif] text-[0.62em] leading-none font-black tracking-[0] text-[#1877F2]">f</span></span> through<br />old Facebook posts</h2>
-          <p className="mt-5 mb-0 max-w-[440px] text-[16px] tablet:mt-6 tablet:text-[18px] leading-normal text-pretty text-[#6b6b6b]">{bold(home.introText)}</p>
+          <p className="mt-5 mb-0 max-w-[440px] text-[16px] tablet:mt-6 tablet:text-[18px] leading-normal text-pretty text-muted">{bold(home.introText)}</p>
           <Link href="/stories" className={`${PILL} mt-7`}>Browse all stories <Arrow /></Link>
           {newest && (
-            <div className="relative mt-8 aspect-[16/10.5] w-[min(100%,460px)] tablet:mt-11 overflow-hidden rounded-[10px] bg-ink text-left">
+            <div className="relative mt-8 aspect-[16/10.5] w-[min(100%,460px)] tablet:mt-11 overflow-hidden rounded-[10px] bg-frame text-left">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {newest.img && <img src={newest.img} alt={newest.title} className="absolute inset-0 size-full object-cover" />}
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_40%,rgba(0,0,0,0.7)_100%)]"></div>
-              <Link href={newest.href} className="absolute top-3.5 right-3.5 rounded-full bg-white/85 px-3.5 py-2 text-[13px] font-medium text-ink backdrop-blur-[8px]">Read story →</Link>
+              <Link href={newest.href} className="absolute top-3.5 right-3.5 rounded-full bg-paper/85 px-3.5 py-2 text-[13px] font-medium text-ink backdrop-blur-[8px]">Read story →</Link>
               <div className="absolute right-5 bottom-4.5 left-5 text-white">
                 <div className="line-clamp-2 text-[21px] font-medium tracking-[-0.02em]">{newest.title}</div>
                 <div className="mt-1.5 truncate text-[13px] opacity-85">A story by {newest.name} · {newest.readTime}</div>
@@ -217,7 +217,7 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
       </section>
 
       <section id="popular" ref={lovedEl} className="relative mt-[140px]" style={{ height: sectionHeight(popular.length) }}>
-        <div className="sticky top-0 h-screen overflow-hidden bg-white">
+        <div className="sticky top-0 h-screen overflow-hidden bg-paper">
           {places(loved)}
           <div aria-hidden="true" className={COVER} style={cover(loved)}>
             {loved.thumbs.map(th => (
@@ -237,17 +237,17 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
       </section>
 
       <section id="gems" ref={gemsEl} className="relative" style={{ height: sectionHeight(gems.length, true) }}>
-        <div className="sticky top-0 h-screen overflow-hidden bg-white">
+        <div className="sticky top-0 h-screen overflow-hidden bg-paper">
           {places(gs)}
           <div aria-hidden="true" className={COVER} style={cover(gs)}>
             <div className={BIG}>
               <div className="relative px-[0.1em] pb-[0.22em]">
-                <div className="pointer-events-none absolute -top-[0.28em] -left-[0.3em] border-[1.5px] border-bd-green bg-[rgba(0,106,78,0.05)] transition-opacity duration-300 ease-out" style={{ width: gs.selW, height: gs.selH, opacity: gs.selOp }}>
+                <div className="pointer-events-none absolute -top-[0.28em] -left-[0.3em] border-[1.5px] border-accent bg-[rgba(0,106,78,0.05)] transition-opacity duration-300 ease-out" style={{ width: gs.selW, height: gs.selH, opacity: gs.selOp }}>
                   <div className="pointer-events-none absolute top-full left-full z-2 -mt-1 -ml-1 size-7 drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]">
                     <svg width="28" height="28" viewBox="0 0 24 24"><path d="M4 2 L4 20 L9 15.5 L12.5 22 L15.5 20.5 L12 14 L19 14 Z" fill="#141414" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round"></path></svg>
                   </div>
                   {HANDLES.map(pos => (
-                    <span key={pos} className={`absolute size-[9px] border-[1.5px] border-bd-green bg-white transition-opacity duration-200 ${pos}`} style={{ opacity: gs.hOp }}></span>
+                    <span key={pos} className={`absolute size-[9px] border-[1.5px] border-accent bg-paper transition-opacity duration-200 ${pos}`} style={{ opacity: gs.hOp }}></span>
                   ))}
                 </div>
                 <div className={LINE} style={lineStyle(gs.l1)}>Hidden</div>
@@ -261,7 +261,7 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
       <section id="reviews" className="w-full overflow-hidden pt-24 tablet:pt-32 desktop:pt-[200px]">
         <div className="mb-8 flex tablet:mb-12 flex-wrap items-end justify-between gap-6 px-[5vw]">
           <h2 className="m-0 text-[clamp(36px,6vw,88px)] leading-[0.95] font-bold tracking-[-0.045em]">Stories</h2>
-          <Link href="/stories" className="flex items-center gap-2.5 rounded-full border border-[#e2e2e2] px-5.5 py-3.5 text-[15px] font-bold hover:border-ink">All stories <Arrow c="#141414" /></Link>
+          <Link href="/stories" className="flex items-center gap-2.5 rounded-full border border-line px-5.5 py-3.5 text-[15px] font-bold hover:border-ink">All stories <Arrow /></Link>
         </div>
         <div className="px-[5vw]">
           <div
@@ -279,8 +279,8 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
             {track.map((r, k) => {
               const on = k === hi, d = k - hi;
               return (
-                <article key={`${r.id}-${k}`} aria-hidden={!on} onClick={() => { if (!on) setHs(k); }} className={`flex flex-[0_0_var(--card-w)] origin-left flex-wrap gap-x-10 gap-y-5 tablet:gap-y-7 overflow-hidden rounded-[10px] bg-[#f8f8f7] p-[clamp(20px,2.4vw,36px)] [transition:opacity_1s_var(--ease-swing),scale_1s_var(--ease-swing)] ${on ? 'scale-100 cursor-default opacity-100' : 'scale-[0.94] cursor-pointer opacity-55'}`}>
-                  <div className="relative aspect-[4/3] flex-[1.5_1_360px] overflow-hidden rounded-md bg-[#eeeeec]">
+                <article key={`${r.id}-${k}`} aria-hidden={!on} onClick={() => { if (!on) setHs(k); }} className={`flex flex-[0_0_var(--card-w)] origin-left flex-wrap gap-x-10 gap-y-5 tablet:gap-y-7 overflow-hidden rounded-[10px] bg-sunken p-[clamp(20px,2.4vw,36px)] [transition:opacity_1s_var(--ease-swing),scale_1s_var(--ease-swing)] ${on ? 'scale-100 cursor-default opacity-100' : 'scale-[0.94] cursor-pointer opacity-55'}`}>
+                  <div className="relative aspect-[4/3] flex-[1.5_1_360px] overflow-hidden rounded-md bg-line">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     {r.img && <img src={r.img} alt="" loading="lazy" className={`absolute inset-0 block size-full object-cover [transition:scale_1.4s_var(--ease-swing),translate_1.4s_var(--ease-swing)] ${on ? 'translate-x-0 scale-100' : d > 0 ? '-translate-x-[6%] scale-[1.15]' : 'translate-x-[6%] scale-[1.15]'}`} />}
                   </div>
@@ -302,25 +302,25 @@ export default function HomeView({ stories, dests, home, faqs }: { stories: Stor
           </div>
           <div className="mt-6 flex tablet:mt-9 flex-wrap items-center gap-x-8 gap-y-6">
             <div className="flex gap-3">
-              <button onClick={() => go(-1)} aria-label="Previous story" className={`flex size-12 cursor-pointer tablet:size-15 items-center justify-center rounded-full border-[1.5px] border-ink bg-white [transition:opacity_0.3s,background-color_0.25s,translate_0.25s] hover:-translate-x-0.5 hover:bg-frame ${!loop && hi === 0 ? 'opacity-30' : 'opacity-100'}`}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#141414" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
-              <button onClick={() => go(1)} aria-label="Next story" className={`flex size-12 cursor-pointer tablet:size-15 items-center justify-center rounded-full bg-ink [transition:opacity_0.3s,background-color_0.25s,translate_0.25s] hover:translate-x-0.5 hover:bg-bd-green ${!loop && hi >= track.length - 1 ? 'opacity-30' : 'opacity-100'}`}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+              <button onClick={() => go(-1)} aria-label="Previous story" className={`flex size-12 cursor-pointer tablet:size-15 items-center justify-center rounded-full border-[1.5px] border-ink bg-paper [transition:opacity_0.3s,background-color_0.25s,translate_0.25s] hover:-translate-x-0.5 hover:bg-frame ${!loop && hi === 0 ? 'opacity-30' : 'opacity-100'}`}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></button>
+              <button onClick={() => go(1)} aria-label="Next story" className={`flex size-12 cursor-pointer tablet:size-15 items-center justify-center rounded-full bg-ink text-paper [transition:opacity_0.3s,background-color_0.25s,translate_0.25s] hover:translate-x-0.5 hover:bg-bd-green ${!loop && hi >= track.length - 1 ? 'opacity-30' : 'opacity-100'}`}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="faq" className="flex w-full flex-col items-center bg-white px-[5vw] pt-24 tablet:pt-32 desktop:pt-[220px]">
+      <section id="faq" className="flex w-full flex-col items-center bg-paper px-[5vw] pt-24 tablet:pt-32 desktop:pt-[220px]">
         <span className="text-[13px] font-bold tracking-[0.14em] text-ink uppercase">Good to know</span>
         <h2 className="mt-4.5 mb-0 text-center text-[clamp(34px,5.4vw,80px)] leading-none font-medium tracking-[-0.045em]">Frequently<br />asked questions</h2>
         <div className="mt-10 flex tablet:mt-14 w-full max-w-[820px] flex-col gap-2.5">
           {faqs.map((f, i) => {
             const open = faq === i;
             return (
-              <div key={f.q} className={`overflow-hidden rounded-[22px] border [transition:background-color_0.35s_ease,border-color_0.35s_ease] ${open ? 'border-[#e6e6e4] bg-white' : 'border-[#f5f5f4] bg-[#f5f5f4]'}`}>
+              <div key={f.q} className={`overflow-hidden rounded-[22px] border [transition:background-color_0.35s_ease,border-color_0.35s_ease] ${open ? 'border-line bg-paper' : 'border-sunken bg-sunken'}`}>
                 <button aria-expanded={open} onClick={() => setFaq(open ? -1 : i)} className="flex w-full cursor-pointer items-center justify-between gap-4 bg-transparent py-3 pr-3 pl-5 tablet:pl-7 text-left text-ink">
                   <span className="py-2.5 text-[clamp(17px,1.4vw,19px)] font-medium tracking-[-0.01em]">{f.q}</span>
-                  <span className={`flex size-11 shrink-0 items-center justify-center rounded-full [transition:background-color_0.35s_ease] ${open ? 'bg-[#f2f2f0]' : 'bg-white'}`}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#141414" strokeWidth="2" strokeLinecap="round" className={`transition-transform duration-400 ease-glide ${open ? 'rotate-45' : 'rotate-0'}`}><path d="M12 5v14M5 12h14"></path></svg>
+                  <span className={`flex size-11 shrink-0 items-center justify-center rounded-full [transition:background-color_0.35s_ease] ${open ? 'bg-sunken' : 'bg-paper'}`}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className={`transition-transform duration-400 ease-glide ${open ? 'rotate-45' : 'rotate-0'}`}><path d="M12 5v14M5 12h14"></path></svg>
                   </span>
                 </button>
                 <div className={`grid [transition:grid-template-rows_0.45s_var(--ease-glide)] ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
