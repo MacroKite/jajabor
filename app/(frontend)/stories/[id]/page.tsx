@@ -17,6 +17,13 @@ import { SharedPhoto, storyPhoto } from '@/components/Transitions';
 
 export const revalidate = 300;
 
+// No stories are built ahead of time. Each one is rendered on its first visit and then cached like a
+// static page, so links to it are prefetched and open instantly. Publishing, editing or deleting a
+// story refreshes it (app/api/stories).
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const s = await getStory((await params).id);
   if (!s) return {};
