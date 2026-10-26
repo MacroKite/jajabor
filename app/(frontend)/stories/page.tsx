@@ -8,8 +8,11 @@ export const metadata: Metadata = {
   description: 'Travel stories from Bangladesh, written by travellers, for the next person who goes.',
 };
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ place?: string }> }) {
-  const { place } = await searchParams;
+// Built ahead of time and cached, so the nav link opens instantly; publishing or changing a story
+// refreshes it (app/api/stories). The ?place= filter is read in the browser by StoriesView.
+export const revalidate = 300;
+
+export default async function Page() {
   const [stories, dests] = await Promise.all([listStories(), getDestinations()]);
-  return <StoriesView stories={stories} dests={dests} initialPlace={dests.some(d => d.id === place) ? place! : 'all'} />;
+  return <StoriesView stories={stories} dests={dests} />;
 }

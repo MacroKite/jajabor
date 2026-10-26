@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { startTransition, useEffect, useRef, useState, ViewTransition } from 'react';
+import { startTransition, useEffect, useLayoutEffect, useRef, useState, ViewTransition } from 'react';
 import Nav from '@/components/Nav';
 import { findDest, type Destination, type Story } from '@/lib/data';
 import { cut, decorate } from '@/lib/stories';
@@ -10,8 +10,8 @@ import { PageTransition, SharedPhoto, storyPhoto } from '@/components/Transition
 
 const PIN = <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="stroke-muted" strokeWidth="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>;
 
-export default function StoriesView({ stories, dests, initialPlace }: { stories: Story[]; dests: Destination[]; initialPlace: string }) {
-  const [place, setPlaceState] = useState(initialPlace);
+export default function StoriesView({ stories, dests }: { stories: Story[]; dests: Destination[] }) {
+  const [place, setPlaceState] = useState('all');
   const [filterOpen, setFilterOpen] = useState(false);
   const filterEl = useRef<HTMLDivElement>(null);
 
@@ -26,6 +26,12 @@ export default function StoriesView({ stories, dests, initialPlace }: { stories:
     setFilterOpen(false);
     window.history.replaceState(null, '', key === 'all' ? '/stories' : '/stories?place=' + key);
   };
+
+  // The page is built without the query string, so pick up ?place= from the URL before the first paint.
+  useLayoutEffect(() => {
+    const p = new URLSearchParams(window.location.search).get('place');
+    if (p && dests.some(x => x.id === p)) setPlaceState(p);
+  }, [dests]);
 
   useEffect(() => {
     if (!filterOpen) return;

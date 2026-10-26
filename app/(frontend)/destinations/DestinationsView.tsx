@@ -1,6 +1,6 @@
 'use client';
 
-import { startTransition, useState, ViewTransition } from 'react';
+import { startTransition, useLayoutEffect, useState, ViewTransition } from 'react';
 import Nav from '@/components/Nav';
 import { DestinationCard } from '@/components/Cards';
 import type { Destination } from '@/lib/data';
@@ -8,14 +8,19 @@ import { PageTransition } from '@/components/Transitions';
 
 type Filter = 'all' | 'popular' | 'gem';
 
-export default function DestinationsView({ dests, initialFilter }: { dests: Destination[]; initialFilter: Filter }) {
-  const [filter, setFilterState] = useState<Filter>(initialFilter);
+export default function DestinationsView({ dests }: { dests: Destination[] }) {
+  const [filter, setFilterState] = useState<Filter>('all');
   const [q, setQ] = useState('');
   // A transition, so the grid crossfades to the new filter's places.
   const setFilter = (k: Filter) => {
     startTransition(() => setFilterState(k));
     window.history.replaceState(null, '', k === 'all' ? '/destinations' : '/destinations?filter=' + k);
   };
+  // The page is built without the query string, so pick up ?filter= from the URL before the first paint.
+  useLayoutEffect(() => {
+    const f = new URLSearchParams(window.location.search).get('filter');
+    if (f === 'popular' || f === 'gem') setFilterState(f);
+  }, []);
   const qq = q.trim().toLowerCase();
   const list = dests.filter(d => (filter === 'all' || d.type === filter) && (!qq || (d.name + ' ' + d.district + ' ' + d.bn).toLowerCase().includes(qq)));
   const tabs: [Filter, string][] = [['all', 'All'], ['popular', 'Popular'], ['gem', 'Hidden gems']];
