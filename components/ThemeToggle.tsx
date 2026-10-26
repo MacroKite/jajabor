@@ -2,8 +2,8 @@
 
 import { useSyncExternalStore } from 'react';
 
-// Switches between light and dark mode and remembers the choice. Until someone uses it, the site
-// follows the system setting (see the theme script in components/SiteDocument.tsx).
+// Switches between light and dark mode and remembers the choice. The site starts in light mode
+// (see the theme script in components/SiteDocument.tsx).
 
 const root = () => document.documentElement;
 const isDark = () => root().dataset.theme === 'dark';

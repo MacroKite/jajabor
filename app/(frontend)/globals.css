@@ -31,8 +31,8 @@
   --ease-swing: cubic-bezier(.65, 0, .35, 1);
 }
 
-/* The theme is set on <html> before the page paints (components/SiteDocument.tsx): the reader's choice
-   from the nav toggle, or else their system setting. */
+/* The theme is set on <html> before the page paints (components/SiteDocument.tsx): light, unless the
+   reader chose dark with the nav toggle. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 :root { color-scheme: light; }
