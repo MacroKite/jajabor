@@ -4,9 +4,9 @@ import { getAbout } from '@/lib/content';
 // Hides images that fail to load (hot-linked photos can disappear).
 const hideBroken = `document.addEventListener('error',function(e){var t=e.target;if(t&&t.tagName==='IMG')t.style.visibility='hidden'},true);`;
 
-// Sets light or dark mode before the page paints, so it never flashes the wrong colours: the choice
-// made with the nav toggle (components/ThemeToggle.tsx), or else the system setting, followed live.
-const setTheme = `(function(){var d=document.documentElement,m=matchMedia('(prefers-color-scheme: dark)');function a(){var t;try{t=localStorage.getItem('theme')}catch(e){}d.dataset.theme=t==='light'||t==='dark'?t:m.matches?'dark':'light'}a();m.addEventListener('change',a)})();`;
+// Sets light or dark mode before the page paints, so it never flashes the wrong colours. The site is
+// light unless the reader chose dark with the nav toggle (components/ThemeToggle.tsx).
+const setTheme = `(function(){var t;try{t=localStorage.getItem('theme')}catch(e){}document.documentElement.dataset.theme=t==='dark'?'dark':'light'})();`;
 
 // The <html> shell shared by the site layout and the global 404 page. The footer shows the
 // contact details and social links from the CMS (About page & contact).
